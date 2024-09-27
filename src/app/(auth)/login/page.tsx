@@ -40,7 +40,6 @@ const LoginPage: React.FC = () => {
     setLoading(true); // Set loading state to true
     await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate a delay
     router.push(`/register/${encodeURIComponent(username)}`);
-    setLoading(false);
   };
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {

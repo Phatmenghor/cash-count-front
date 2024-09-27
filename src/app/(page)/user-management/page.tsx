@@ -3,11 +3,14 @@
 
 import React, { useState } from "react";
 import Button from "@/components/ui/Button";
-import ConfirmationDialog from "@/components/ui/Modal";
+import ConfirmationDialog from "@/components/ui/ConfirmationDialog";
 import { toast } from "react-toastify";
-import { Switch } from "@/components/ui/switch";
+import { Switch } from "@/components/ui/Switch";
+import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { useRouter } from "next/navigation";
+import { route } from "@/utils/constants/routed";
 
-interface User {
+export interface User {
   id: number;
   fullName: string;
   staffId: string;
@@ -45,6 +48,7 @@ const UserManagement = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [userToDelete, setUserToDelete] = useState<User | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const router = useRouter();
 
   const handleDeleteUser = (user: User) => {
     setUserToDelete(user);
@@ -122,14 +126,14 @@ const UserManagement = () => {
               <td className="border px-4 py-2">{user.department}</td>
               <td className="border px-4 py-2">{user.position}</td>
               <td className="border px-4 py-2">{user.role}</td>
-              <td className="border px-4  py-2">
-                <div className="flex-1 flex items-center bg-red-700">
+              <td className="border px-4 py-2">
+                <div className="flex-1 flex items-center ">
                   <Switch
                     checked={user.status}
                     onChange={() => toggleUserStatus(user)}
                   />
                   <span
-                    className={`ml-2 px-2   rounded-full text-xs ${
+                    className={`ml-2 px-2 py-1  rounded-full text-xs ${
                       user.status ? "bg-green-500" : "bg-red-500"
                     } text-white`}
                   >
@@ -137,14 +141,24 @@ const UserManagement = () => {
                   </span>
                 </div>
               </td>
-              <td className="border px-4 py-2">
-                <Button className="text-blue-500 mr-2">Edit</Button>
-                <Button
-                  className="text-red-500"
-                  onClick={() => handleDeleteUser(user)}
+              <td className="border px-4 py-2 flex items-center">
+                <button
+                  onClick={() => {
+                    // Implement edit functionality here
+                    router.push(`/${route.UserManagement}/${route.edit}/${user.id}`);
+                  }}
+                  className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"
                 >
-                  Delete
-                </Button>
+                  <FiEdit size={18} />
+                  <span className="ml-1">Edit</span>
+                </button>
+                <button
+                  onClick={() => handleDeleteUser(user)}
+                  className="bg-red-500 text-white px-2 p-1 rounded hover:bg-red-600 flex items-center"
+                >
+                  <FiTrash2 size={18} />
+                  <span className="ml-1">Delete</span>
+                </button>
               </td>
             </tr>
           ))}
@@ -154,6 +168,7 @@ const UserManagement = () => {
       {/* Confirmation Dialog */}
       <ConfirmationDialog
         isOpen={isDeleteDialogOpen}
+        title="Confirm Delete!" // Title added
         onClose={() => setIsDeleteDialogOpen(false)}
         onConfirm={confirmDelete}
         message={`Are you sure you want to delete ${userToDelete?.fullName}?`}

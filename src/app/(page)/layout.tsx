@@ -2,6 +2,9 @@
 import localFont from "next/font/local";
 import "../globals.css";
 import Navbar from "@/components/navbar/Navbar";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+// import { ToastContainer } from "react-toastify";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -34,6 +37,7 @@ export default function RootLayout({
         <div style={{ paddingTop: "64px" }}>
           {/* Adjust this value based on your Navbar height */}
           {children}
+          <ToastContainer />
         </div>
       </body>
     </html>
