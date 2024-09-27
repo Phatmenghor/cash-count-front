@@ -1,8 +1,11 @@
-"use client";
 // src/app/manage-users/page.tsx
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
+"use client";
+
 import React, { useState } from "react";
+import Button from "@/components/ui/Button";
+import ConfirmationDialog from "@/components/ui/Modal";
+import { toast } from "react-toastify";
+import { Switch } from "@/components/ui/switch";
 
 interface User {
   id: number;
@@ -12,12 +15,11 @@ interface User {
   department: string;
   position: string;
   role: string;
-  status: string;
+  status: boolean; // Changed to boolean for the switch
 }
 
 const UserManagement = () => {
-  // Mock user data
-  const [users] = useState<User[]>([
+  const [users, setUsers] = useState<User[]>([
     {
       id: 1,
       fullName: "John Doe",
@@ -26,7 +28,7 @@ const UserManagement = () => {
       department: "HR",
       position: "Manager",
       role: "Admin",
-      status: "Active",
+      status: true, // true for Active
     },
     {
       id: 2,
@@ -36,70 +38,66 @@ const UserManagement = () => {
       department: "IT",
       position: "Developer",
       role: "User",
-      status: "Inactive",
+      status: false, // false for Inactive
     },
-    {
-      id: 3,
-      fullName: "Mike Johnson",
-      staffId: "S125",
-      username: "mikej",
-      department: "Finance",
-      position: "Accountant",
-      role: "Admin",
-      status: "Active",
-    },
-    {
-      id: 4,
-      fullName: "Emily Brown",
-      staffId: "S126",
-      username: "emilyb",
-      department: "IT",
-      position: "Developer",
-      role: "User",
-      status: "Active",
-    },
-    // Add more user data as needed
   ]);
 
-  const [search, setSearch] = useState("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 5;
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
-  // Filter users by search term
-  const filteredUsers = users.filter(
-    (user) =>
-      user.fullName.toLowerCase().includes(search.toLowerCase()) ||
-      user.username.toLowerCase().includes(search.toLowerCase())
+  const handleDeleteUser = (user: User) => {
+    setUserToDelete(user);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    if (userToDelete) {
+      setUsers(users.filter((user) => user.id !== userToDelete.id));
+      toast.success(`${userToDelete.fullName} has been deleted!`);
+      setUserToDelete(null);
+      setIsDeleteDialogOpen(false);
+    }
+  };
+
+  const toggleUserStatus = (user: User) => {
+    const updatedUsers = users.map((u) =>
+      u.id === user.id ? { ...u, status: !u.status } : u
+    );
+    setUsers(updatedUsers);
+    const statusMessage = user.status ? "deactivated" : "activated";
+    toast.success(`${user.fullName} has been ${statusMessage}!`);
+  };
+
+  const filteredUsers = users.filter((user) =>
+    user.fullName.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  // Pagination logic
-  const indexOfLastUser = currentPage * usersPerPage;
-  const indexOfFirstUser = indexOfLastUser - usersPerPage;
-  const currentUsers = filteredUsers.slice(indexOfFirstUser, indexOfLastUser);
-  const totalPages = Math.ceil(filteredUsers.length / usersPerPage);
 
   return (
     <div className="container mx-auto p-4">
-      <div className="flex justify-between mb-4">
-        {/* Search input */}
-        <Input
+      <h1 className="text-2xl font-bold mb-4">User Management</h1>
+
+      {/* Search and Add User Section */}
+      <div className="flex items-center mb-4 justify-between">
+        <input
           type="text"
-          placeholder="Search users"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          className="w-1/2"
+          placeholder="Search by name..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="border rounded p-2 flex-grow mr-4 max-w-md"
         />
         <Button
           onClick={() => {
-            // eslint-disable-next-line react-hooks/rules-of-hooks
+            // Implement add user functionality here
+            toast.info("Add User feature coming soon!");
           }}
           className="bg-blue-500 text-white"
         >
-          Add New User
+          Add User
         </Button>
       </div>
 
-      {/* User Table */}
+      {/* User List Table */}
       <table className="min-w-full bg-white border border-gray-200">
         <thead>
           <tr className="bg-gray-100">
@@ -111,12 +109,12 @@ const UserManagement = () => {
             <th className="py-2 px-4">Position</th>
             <th className="py-2 px-4">Role</th>
             <th className="py-2 px-4">Status</th>
-            <th className="py-2 px-4">Action</th>
+            <th className="py-2 px-4">Actions</th>
           </tr>
         </thead>
         <tbody>
-          {currentUsers.map((user) => (
-            <tr key={user.id}>
+          {filteredUsers.map((user) => (
+            <tr key={user.id} className="hover:bg-gray-100">
               <td className="border px-4 py-2">{user.id}</td>
               <td className="border px-4 py-2">{user.fullName}</td>
               <td className="border px-4 py-2">{user.staffId}</td>
@@ -124,44 +122,42 @@ const UserManagement = () => {
               <td className="border px-4 py-2">{user.department}</td>
               <td className="border px-4 py-2">{user.position}</td>
               <td className="border px-4 py-2">{user.role}</td>
-              <td className="border px-4 py-2">
-                <span
-                  className={`px-2 py-1 rounded-full text-xs ${
-                    user.status === "Active" ? "bg-green-500" : "bg-red-500"
-                  } text-white`}
-                >
-                  {user.status}
-                </span>
+              <td className="border px-4  py-2">
+                <div className="flex-1 flex items-center bg-red-700">
+                  <Switch
+                    checked={user.status}
+                    onChange={() => toggleUserStatus(user)}
+                  />
+                  <span
+                    className={`ml-2 px-2   rounded-full text-xs ${
+                      user.status ? "bg-green-500" : "bg-red-500"
+                    } text-white`}
+                  >
+                    {user.status ? "Active" : "Inactive"}
+                  </span>
+                </div>
               </td>
               <td className="border px-4 py-2">
-                <button className="text-blue-500 mr-2">Edit</button>
-                <button className="text-red-500">Delete</button>
+                <Button className="text-blue-500 mr-2">Edit</Button>
+                <Button
+                  className="text-red-500"
+                  onClick={() => handleDeleteUser(user)}
+                >
+                  Delete
+                </Button>
               </td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* Pagination */}
-      <div className="flex justify-between items-center mt-4">
-        <button
-          className="bg-gray-200 px-4 py-2 rounded"
-          disabled={currentPage === 1}
-          onClick={() => setCurrentPage(currentPage - 1)}
-        >
-          Previous
-        </button>
-        <span>
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          className="bg-gray-200 px-4 py-2 rounded"
-          disabled={currentPage === totalPages}
-          onClick={() => setCurrentPage(currentPage + 1)}
-        >
-          Next
-        </button>
-      </div>
+      {/* Confirmation Dialog */}
+      <ConfirmationDialog
+        isOpen={isDeleteDialogOpen}
+        onClose={() => setIsDeleteDialogOpen(false)}
+        onConfirm={confirmDelete}
+        message={`Are you sure you want to delete ${userToDelete?.fullName}?`}
+      />
     </div>
   );
 };

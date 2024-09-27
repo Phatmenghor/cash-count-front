@@ -21,13 +21,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head></head>
-
+      <head>
+        <title>Your App Title</title>
+        <meta name="description" content="Description of your app" />
+        <meta charSet="UTF-8" />
+        <link rel="icon" href="/favicon.ico" />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased pt-16`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
         <Navbar />
-        {children}
+        <div style={{ paddingTop: "64px" }}>
+          {/* Adjust this value based on your Navbar height */}
+          {children}
+        </div>
       </body>
     </html>
   );
