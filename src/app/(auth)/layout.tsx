@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "../globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import Footer from "@/components/layout/Footer";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -22,10 +23,19 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <title>Your App Title</title>
+        <meta name="description" content="Description of your app" />
+        <meta charSet="UTF-8" />
+        <link rel="icon" href="/favicon.ico" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <div className="min-h-screen flex flex-col">
+          <main className="flex-grow">{children}</main>
+          <Footer />
+        </div>
         <ToastContainer />
       </body>
     </html>

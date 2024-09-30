@@ -1,9 +1,10 @@
 "use client";
 import localFont from "next/font/local";
 import "../globals.css";
-import Navbar from "@/components/navbar/Navbar";
+import Navbar from "@/components/layout/Navbar";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import Footer from "@/components/layout/Footer";
 // import { ToastContainer } from "react-toastify";
 
 const geistSans = localFont({
@@ -34,10 +35,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased `}
       >
         <Navbar />
-        <div style={{ paddingTop: "64px" }}>
-          {/* Adjust this value based on your Navbar height */}
-          {children}
-          <ToastContainer />
+        <div className="min-h-screen flex flex-col pt-16">
+          <main className="flex-grow">{children}</main>
+          <Footer />
         </div>
       </body>
     </html>

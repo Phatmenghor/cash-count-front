@@ -23,7 +23,7 @@ const Register: React.FC = () => {
     e.preventDefault();
     setLoading(true); // Set loading state to true
     await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate a delay
-    router.push(`/${route.DeactivateUser}`);
+    router.push(`/${route.DEACTIVATE_USER}`);
   };
 
   return (

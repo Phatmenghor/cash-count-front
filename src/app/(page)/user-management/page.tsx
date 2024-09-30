@@ -153,7 +153,7 @@ const UserManagement = () => {
                     onClick={() => {
                       // Implement edit functionality here
                       router.push(
-                        `/${route.UserManagement}/${route.Edit}/${user.id}`
+                        `/${route.USER_MANAGEMENT}/${route.EDIT}/${user.id}`
                       );
                     }}
                     className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"

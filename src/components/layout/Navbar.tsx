@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
   };
 
   return (
-    <nav className="bg-gray-800 text-white fixed top-0 left-0 right-0 z-50 shadow-md">
+    <nav className="bg-gray-700 text-white fixed top-0 left-0 right-0 z-50 shadow-md">
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         <h1 className="text-xl font-bold">My App</h1>
         <div className="flex items-center space-x-4">
@@ -29,12 +29,12 @@ const Navbar: React.FC = () => {
             Login
           </Link>
           <Link
-            href={`/${route.Register}/${encodeURIComponent("new user")}`}
+            href={`/${route.REGISTER}/${encodeURIComponent("new user")}`}
             className="hover:underline"
           >
             Register
           </Link>
-          <Link href={`/${route.CashRecords}`} className="hover:underline">
+          <Link href={`/${route.CASH_RECORDS}`} className="hover:underline">
             CashRecords
           </Link>
           {/* User and Logout Section */}

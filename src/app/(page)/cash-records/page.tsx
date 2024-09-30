@@ -69,7 +69,7 @@ const CashRecords = () => {
   );
 
   const addCashNew = () => {
-    router.push(`${route.CashRecords}/add`);
+    router.push(`${route.CASH_RECORDS}/add`);
   };
 
   return (
@@ -125,7 +125,7 @@ const CashRecords = () => {
                     onClick={() => {
                       /* Handle Edit Routing */
 
-                      router.push(`/${route.CashRecords}/2`);
+                      router.push(`/${route.CASH_RECORDS}/2`);
                     }}
                     className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"
                   >
@@ -138,7 +138,7 @@ const CashRecords = () => {
                     <FiTrash2 size={15} />
                   </button>
                   <Button
-                    onClick={() => router.push(`/${route.CashRecords}/add`)}
+                    onClick={() => router.push(`/${route.CASH_RECORDS}/add`)}
                     className="px-2 p-[1px]"
                   >
                     Check
