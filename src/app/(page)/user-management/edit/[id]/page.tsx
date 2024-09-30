@@ -38,13 +38,19 @@ const EditUser = () => {
     },
   ];
 
+  const departments = ["HR", "IT", "Finance", "Sales"];
+  const positions = ["Manager", "Developer", "Analyst", "Intern"];
+  const roles = ["Admin", "User", "Guest"];
+
   useEffect(() => {
     const foundUser = usersData.find((user) => user.id === Number(id));
     setUser(foundUser || null);
     setLoading(false);
   }, [id]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     if (user) {
       setUser({ ...user, [e.target.name]: e.target.value });
     }
@@ -56,15 +62,15 @@ const EditUser = () => {
     router.push("/manage-users");
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <div className="text-center">Loading...</div>;
   if (!user) return <div>User not found</div>;
 
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Edit User</h1>
-      <div className="bg-gray-100 rounded-lg p-6">
+    <div className="container mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6 text-gray-800">Edit User</h1>
+      <div className="rounded-lg bg-white shadow-sm">
         <form onSubmit={handleSubmit}>
-          <div className="flex flex-col gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             <div>
               <label
                 className="block mb-1 font-semibold text-gray-700"
@@ -72,109 +78,150 @@ const EditUser = () => {
               >
                 ID
               </label>
-              <Input type="text" name="id" value={user.id} readOnly />
+              <Input
+                type="text"
+                name="id"
+                value={user.id}
+                readOnly
+                className="bg-gray-100 cursor-not-allowed py-1"
+              />
             </div>
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <label
-                  className="block mb-1 font-semibold text-gray-700"
-                  htmlFor="fullName"
-                >
-                  Full Name
-                </label>
-                <Input
-                  type="text"
-                  name="fullName"
-                  value={user.fullName}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="flex-1">
-                <label
-                  className="block mb-1 font-semibold text-gray-700"
-                  htmlFor="staffId"
-                >
-                  Staff ID
-                </label>
-                <Input
-                  type="text"
-                  name="staffId"
-                  value={user.staffId}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+            <div>
+              <label
+                className="block mb-1 font-semibold text-gray-700"
+                htmlFor="fullName"
+              >
+                Full Name
+              </label>
+              <Input
+                type="text"
+                name="fullName"
+                value={user.fullName}
+                onChange={handleChange}
+                required
+                placeholder="Enter full name"
+                className="py-1"
+              />
             </div>
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <label
-                  className="block mb-1 font-semibold text-gray-700"
-                  htmlFor="username"
-                >
-                  Username
-                </label>
-                <Input
-                  type="text"
-                  name="username"
-                  value={user.username}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="flex-1">
-                <label
-                  className="block mb-1 font-semibold text-gray-700"
-                  htmlFor="department"
-                >
-                  Department
-                </label>
-                <Input
-                  type="text"
-                  name="department"
-                  value={user.department}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+            <div>
+              <label
+                className="block mb-1 font-semibold text-gray-700"
+                htmlFor="staffId"
+              >
+                Staff ID
+              </label>
+              <Input
+                type="text"
+                name="staffId"
+                value={user.staffId}
+                onChange={handleChange}
+                required
+                placeholder="Enter staff ID"
+                className="py-1"
+              />
             </div>
-            <div className="flex gap-4">
-              <div className="flex-1">
-                <label
-                  className="block mb-1 font-semibold text-gray-700"
-                  htmlFor="position"
-                >
-                  Position
-                </label>
-                <Input
-                  type="text"
-                  name="position"
-                  value={user.position}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
-              <div className="flex-1">
-                <label
-                  className="block mb-1 font-semibold text-gray-700"
-                  htmlFor="role"
-                >
-                  Role
-                </label>
-                <Input
-                  type="text"
-                  name="role"
-                  value={user.role}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+            <div>
+              <label
+                className="block mb-1 font-semibold text-gray-700"
+                htmlFor="username"
+              >
+                Username
+              </label>
+              <Input
+                type="text"
+                name="username"
+                value={user.username}
+                onChange={handleChange}
+                required
+                placeholder="Enter username"
+                className="py-1"
+              />
+            </div>
+            <div>
+              <label
+                className="block mb-1 font-semibold text-gray-700"
+                htmlFor="department"
+              >
+                Department
+              </label>
+              <select
+                name="department"
+                value={user.department}
+                onChange={handleChange}
+                required
+                className="py-0.5 px-2"
+              >
+                <option value="" disabled>
+                  Select department
+                </option>
+                {departments.map((dept) => (
+                  <option key={dept} value={dept}>
+                    {dept}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label
+                className="block mb-1 font-semibold text-gray-700"
+                htmlFor="position"
+              >
+                Position
+              </label>
+              <select
+                name="position"
+                value={user.position}
+                onChange={handleChange}
+                required
+                className="py-0.5 px-2"
+              >
+                <option value="" disabled>
+                  Select position
+                </option>
+                {positions.map((pos) => (
+                  <option key={pos} value={pos}>
+                    {pos}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label
+                className="block mb-1 font-semibold text-gray-700"
+                htmlFor="role"
+              >
+                Role
+              </label>
+              <select
+                name="role"
+                value={user.role}
+                onChange={handleChange}
+                required
+                className="py-0.5 px-2"
+              >
+                <option value="" disabled>
+                  Select role
+                </option>
+                {roles.map((role) => (
+                  <option key={role} value={role}>
+                    {role}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
-          <div className="flex justify-end mt-6">
+          <div className="flex justify-end space-x-4 mt-8">
+            <Button
+              onClick={() => {
+                router.back();
+              }}
+              className="bg-red-500 hover:bg-red-600 text-white rounded py-1"
+            >
+              Cancel
+            </Button>
             <Button
               type="submit"
-              className="bg-blue-500 text-white hover:bg-blue-600 transition p-2 rounded-md"
+              className="bg-blue-500 hover:bg-blue-600 text-white rounded py-1"
             >
               Save Changes
             </Button>

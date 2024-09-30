@@ -62,7 +62,7 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
+      <div className="max-w-lg w-full bg-white p-8 rounded-lg shadow-lg">
         <h1 className="text-3xl font-bold text-center mb-4">Welcome Back!</h1>
         <h2 className="text-lg text-center text-gray-600 mb-6">
           Login to your account
@@ -83,7 +83,7 @@ const LoginPage: React.FC = () => {
               value={username}
               onChange={handleUsernameChange} // Use new handler
               placeholder="Enter your username"
-              className="mt-1 w-full"
+              className="mt-1 w-full py-2 px-4"
             />
             {usernameError && (
               <FormMessage message={usernameError} type="error" />
@@ -96,6 +96,7 @@ const LoginPage: React.FC = () => {
               className="block text-sm font-medium text-gray-700"
             >
               Password
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <div className="relative">
               <Input
@@ -104,7 +105,7 @@ const LoginPage: React.FC = () => {
                 value={password}
                 onChange={handlePasswordChange} // Use new handler
                 placeholder="Enter your password"
-                className="mt-1 w-full"
+                className="mt-1 w-full py-2.5 px-4"
                 autoComplete="new-password"
               />
               <button
@@ -123,7 +124,7 @@ const LoginPage: React.FC = () => {
 
           <Button
             type="submit"
-            className="w-full flex items-center justify-center"
+            className="w-full flex items-center justify-center py-2"
             disabled={loading}
           >
             {loading ? (

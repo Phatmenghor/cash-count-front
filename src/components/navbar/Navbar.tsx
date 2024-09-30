@@ -22,9 +22,6 @@ const Navbar: React.FC = () => {
       <div className="container mx-auto px-4 py-2 flex justify-between items-center">
         <h1 className="text-xl font-bold">My App</h1>
         <div className="flex items-center space-x-4">
-          <Link href="/" className="hover:underline">
-            Home
-          </Link>
           <Link href="/user-management" className="hover:underline">
             Manage Users
           </Link>
@@ -32,15 +29,18 @@ const Navbar: React.FC = () => {
             Login
           </Link>
           <Link
-            href={`/${route.register}/${encodeURIComponent("new user")}`}
+            href={`/${route.Register}/${encodeURIComponent("new user")}`}
             className="hover:underline"
           >
             Register
           </Link>
+          <Link href={`/${route.CashRecords}`} className="hover:underline">
+            CashRecords
+          </Link>
           {/* User and Logout Section */}
           <Button
             onClick={() => setIsDialogOpen(true)}
-            className="flex items-center space-x-2 ml-auto cursor-pointer hover:text-gray-400"
+            className="flex items-center space-x-2 ml-auto py-1"
           >
             <span className="text-white">{fullName}</span>{" "}
             {/* Replace 'User' with the actual username */}

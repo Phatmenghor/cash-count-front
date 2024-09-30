@@ -11,10 +11,10 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    "px-4 py-2 rounded focus:outline-none transition duration-200";
+    "px-4 rounded focus:outline-none transition duration-200 cursor-pointer";
   const variantStyles =
     variant === "primary"
-      ? "bg-blue-600 text-white hover:bg-blue-700"
+      ? "bg-blue-500 text-white hover:bg-blue-600"
       : "bg-gray-300 text-gray-700 hover:bg-gray-400";
 
   return (

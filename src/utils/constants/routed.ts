@@ -1,8 +1,10 @@
 const route = {
   Login: "login",
   UserManagement: "user-management",
-  register: "register",
-  edit: "edit",
+  Register: "register",
+  Edit: "edit",
+  DeactivateUser: "deactivate-user",
+  CashRecords: "cash-records",
 };
 
 export { route };
