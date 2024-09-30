@@ -121,8 +121,8 @@ const AddCashCountPage = () => {
           <thead>
             <tr>
               <th rowSpan={2}>Description</th>
-              <th colSpan={3}>Vault</th>
-              <th colSpan={3}>Nostro Account</th>
+              <th colSpan={3} className="text-center">Vault</th>
+              <th colSpan={3} className="text-center">Nostro Account</th>
               <th rowSpan={2}>Supporting Documents</th>
             </tr>
             <tr>
