@@ -1,6 +1,6 @@
-"use client"
+"use client";
+import CenteredLoading from "@/components/centerLoading/CenteredLoading";
 import { useEffect, useState } from "react";
-import Spinner from "@/components/centerLoading/Spinner";
 
 const TestPage = () => {
   const [loading, setLoading] = useState(true);
@@ -16,7 +16,7 @@ const TestPage = () => {
   }, []);
 
   if (loading) {
-    return <Spinner />;
+    return <CenteredLoading />;
   }
 
   return (

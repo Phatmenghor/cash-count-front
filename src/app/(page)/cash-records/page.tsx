@@ -1,7 +1,7 @@
 // src/app/unauthorized-records/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 import Input from "@/components/ui/Input";
@@ -13,6 +13,7 @@ import EmptyState from "@/components/emthyData/EmptyState";
 import { BiFileBlank } from "react-icons/bi";
 import Pagination from "@/components/pagination/Pagination";
 import { Record, recordsData } from "@/utils/constants/data";
+import CenteredLoading from "@/components/centerLoading/CenteredLoading";
 
 const CashRecords = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -25,6 +26,16 @@ const CashRecords = () => {
   const filteredRecords = recordsData.filter((record) =>
     record.srNumber.toLowerCase().includes(searchTerm.toLowerCase())
   );
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000); // Set loading time to 2 seconds
+
+    return () => clearTimeout(timer); // Cleanup timer on unmount
+  }, []);
 
   const currentRecords = filteredRecords.slice(
     (currentPage - 1) * recordsPerPage,
@@ -86,7 +97,13 @@ const CashRecords = () => {
             </tr>
           </thead>
           <tbody>
-            {currentRecords.length == 0 ? (
+            {loading ? (
+              <tr>
+                <td colSpan={10} className="text-center py-4">
+                  <CenteredLoading className="min-h-[40vh]" />
+                </td>
+              </tr>
+            ) : currentRecords.length == 0 ? (
               <tr>
                 <td colSpan={40} className="hover:bg-white">
                   <EmptyState
@@ -139,13 +156,15 @@ const CashRecords = () => {
       </div>
 
       {/* Pagination Component - Moved to the bottom */}
-      <div className="flex justify-center mt-4">
-        <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+      {!loading && (
+        <div className="flex justify-center mt-4">
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
 
       {/* Confirmation Dialog */}
       <ConfirmationDialog

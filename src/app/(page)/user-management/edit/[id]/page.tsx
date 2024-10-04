@@ -1,11 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
-import { toast } from "react-toastify";
-
 import { useParams, useRouter } from "next/navigation";
 import Input from "@/components/ui/Input"; // Import your custom Input component
-import { User } from "@/utils/constants/data";
+import { User, usersData } from "@/utils/constants/data";
 
 const EditUser = () => {
   const params = useParams<{ id: string }>();
@@ -14,30 +12,6 @@ const EditUser = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-
-  // Simulated user data
-  const usersData: User[] = [
-    {
-      id: 1,
-      fullName: "John Doe",
-      staffId: "S123",
-      username: "johndoe",
-      department: "HR",
-      position: "Manager",
-      role: "Admin",
-      status: true,
-    },
-    {
-      id: 2,
-      fullName: "Jane Smith",
-      staffId: "S124",
-      username: "janesmith",
-      department: "IT",
-      position: "Developer",
-      role: "User",
-      status: false,
-    },
-  ];
 
   const departments = ["HR", "IT", "Finance", "Sales"];
   const positions = ["Manager", "Developer", "Analyst", "Intern"];
@@ -59,8 +33,7 @@ const EditUser = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success(`${user?.fullName} has been updated!`);
-    router.push("/manage-users");
+    router.back();
   };
 
   if (loading) return <div className="text-center">Loading...</div>;
@@ -212,22 +185,10 @@ const EditUser = () => {
             </div>
           </div>
           <div className="flex justify-end space-x-4 mt-8">
-            <Button
-              onClick={() => {
-                router.back();
-              }}
-              variant="cancel"
-              className="py-1.5"
-            >
+            <Button variant="cancel" className="py-1.5">
               Cancel
             </Button>
-            <Button
-              type="submit"
-              onClick={() => {
-                router.back();
-              }}
-              className="py-1.5"
-            >
+            <Button type="submit" className="py-1.5">
               Save Changes
             </Button>
           </div>

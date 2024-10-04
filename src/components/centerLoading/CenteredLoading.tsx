@@ -1,6 +1,6 @@
-const CenteredLoading = () => {
+const CenteredLoading = ({ className = "" }) => {
   return (
-    <div className="flex items-center justify-center min-h-screen -mt-16">
+    <div className={`flex items-center justify-center ${className}`}>
       <div className="flex flex-col items-center">
         <svg
           className="animate-spin h-12 w-12 text-blue-600"

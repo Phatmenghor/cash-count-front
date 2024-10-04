@@ -1,7 +1,7 @@
 // src/app/manage-users/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 import { toast } from "react-toastify";
@@ -14,6 +14,7 @@ import EmptyState from "@/components/emthyData/EmptyState";
 import { AiOutlineUser } from "react-icons/ai"; // or any other icon you prefer
 import Pagination from "@/components/pagination/Pagination";
 import { User, usersData } from "@/utils/constants/data";
+import CenteredLoading from "@/components/centerLoading/CenteredLoading";
 
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>(usersData);
@@ -32,6 +33,18 @@ const UserManagement = () => {
     (currentPage - 1) * usersPerPage,
     currentPage * usersPerPage
   );
+  const [loading, setLoading] = useState(true);
+
+  // Loading state
+
+  useEffect(() => {
+    // setLoading(true);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000); // Set loading time to 2 seconds
+
+    return () => clearTimeout(timer); // Cleanup timer on unmount
+  }, []);
 
   const handleDeleteUser = (user: User) => {
     setUserToDelete(user);
@@ -102,9 +115,15 @@ const UserManagement = () => {
             </tr>
           </thead>
           <tbody>
-            {currentUsers.length === 0 ? (
+            {loading ? (
               <tr>
-                <td colSpan={40} className="hover:bg-white">
+                <td colSpan={9} className="text-center py-4">
+                  <CenteredLoading className="min-h-[40vh]" />
+                </td>
+              </tr>
+            ) : currentUsers.length === 0 ? (
+              <tr>
+                <td colSpan={9} className="hover:bg-white">
                   <EmptyState
                     message="No user available."
                     icon={<AiOutlineUser size={64} />}
@@ -162,13 +181,15 @@ const UserManagement = () => {
       </div>
 
       {/* Pagination Component - Moved to the bottom */}
-      <div className="flex justify-center mt-4">
-        <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-        />
-      </div>
+      {!loading && (
+        <div className="flex justify-center mt-4">
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
 
       {/* Confirmation Dialog */}
       <ConfirmationDialog
