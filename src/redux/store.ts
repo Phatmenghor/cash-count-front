@@ -1,13 +1,17 @@
 import { configureStore } from "@reduxjs/toolkit";
+import rootReducer from "./features/rootReducer";
+import loggerMiddleware from "./middleware/loggerMiddleware";
 
-export function makeStore() {
-  return configureStore({
-    reducer: {
-     
-    },
-  });
-}
+// Create and configure the Redux store
+const store = configureStore({
+  reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(loggerMiddleware),
+  devTools: process.env.NODE_ENV !== "production",
+});
 
-export const store = makeStore();
+// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export default store;
