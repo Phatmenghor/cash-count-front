@@ -1,54 +1,46 @@
 // src/app/unauthorized-records/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
-import ConfirmationDialog from "@/components/ui/ConfirmationDialog";
+import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 import Input from "@/components/ui/Input";
 import { toast } from "react-toastify";
 import { FiEdit, FiTrash2, FiPlus } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import { route } from "@/utils/constants/routed";
-// import { useRouter } from "next/navigation";
-
-const recordsData = [
-  {
-    srNumber: "2024080003",
-    reconcileDate: "8/31/2024",
-    branch: "ASL",
-    txnType: "Unauthorized Type 1",
-    cashCustodian: "Ouk Makara",
-    checker: "Mao Kimhong",
-    approver: "Hong Sokviet",
-    status: "Processing",
-  },
-  {
-    srNumber: "2024080004",
-    reconcileDate: "8/31/2024",
-    branch: "ASL",
-    txnType: "Unauthorized Type 2",
-    cashCustodian: "Ouk Makara",
-    checker: "Mao Kimhong",
-    approver: "Hong Sokviet",
-    status: "Processing",
-  },
-];
-
-interface Record {
-  srNumber: string;
-  reconcileDate: string;
-  branch: string;
-  txnType: string;
-  cashCustodian: string;
-  checker: string;
-  approver: string;
-  status: string;
-}
+import EmptyState from "@/components/emthyData/EmptyState";
+import { BiFileBlank } from "react-icons/bi";
+import Pagination from "@/components/pagination/Pagination";
+import { Record, recordsData } from "@/utils/constants/data";
+import CenteredLoading from "@/components/centerLoading/CenteredLoading";
 
 const CashRecords = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState<Record | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const recordsPerPage = 4; // Number of users per page
+  const totalRecords = recordsData.length;
+  const totalPages = Math.ceil(totalRecords / recordsPerPage);
+  const filteredRecords = recordsData.filter((record) =>
+    record.srNumber.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2000); // Set loading time to 2 seconds
+
+    return () => clearTimeout(timer); // Cleanup timer on unmount
+  }, []);
+
+  const currentRecords = filteredRecords.slice(
+    (currentPage - 1) * recordsPerPage,
+    currentPage * recordsPerPage
+  );
   const router = useRouter();
 
   const handleDeleteRecord = (record: Record) => {
@@ -63,10 +55,6 @@ const CashRecords = () => {
       setIsDeleteDialogOpen(false);
     }
   };
-
-  const filteredRecords = recordsData.filter((record) =>
-    record.srNumber.toLowerCase().includes(searchTerm.toLowerCase())
-  );
 
   const addCashNew = () => {
     router.push(`${route.CASH_RECORDS}/add`);
@@ -92,7 +80,7 @@ const CashRecords = () => {
       </div>
 
       {/* Records List Table */}
-      <div className="overflow-auto">
+      <div className="overflow-auto  min-h-[50vh] flex-1">
         <table>
           <thead>
             <tr>
@@ -109,46 +97,74 @@ const CashRecords = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredRecords.map((record, index) => (
-              <tr key={index} className="hover:bg-gray-100">
-                <td>{index + 1}</td>
-                <td>{record.srNumber}</td>
-                <td>{record.reconcileDate}</td>
-                <td>{record.branch}</td>
-                <td>{record.txnType}</td>
-                <td>{record.cashCustodian}</td>
-                <td>{record.checker}</td>
-                <td>{record.approver}</td>
-                <td>{record.status}</td>
-                <td className="flex">
-                  <button
-                    onClick={() => {
-                      /* Handle Edit Routing */
-
-                      router.push(`/${route.CASH_RECORDS}/2`);
-                    }}
-                    className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"
-                  >
-                    <FiEdit size={15} />
-                  </button>
-                  <button
-                    onClick={() => handleDeleteRecord(record)}
-                    className="bg-red-500 text-white px-2 p-1 rounded hover:bg-red-600 flex items-center mr-2"
-                  >
-                    <FiTrash2 size={15} />
-                  </button>
-                  <Button
-                    onClick={() => router.push(`/${route.CASH_RECORDS}/add`)}
-                    className="px-2 p-[1px]"
-                  >
-                    Check
-                  </Button>
+            {loading ? (
+              <tr>
+                <td colSpan={10} className="text-center py-4">
+                  <CenteredLoading className="min-h-[40vh]" />
                 </td>
               </tr>
-            ))}
+            ) : currentRecords.length == 0 ? (
+              <tr>
+                <td colSpan={40} className="hover:bg-white">
+                  <EmptyState
+                    message="No data record available."
+                    icon={<BiFileBlank size={64} />}
+                  />
+                </td>
+              </tr>
+            ) : (
+              currentRecords.map((record, index) => (
+                <tr key={index} className="hover:bg-gray-100">
+                  <td>{index + 1}</td>
+                  <td>{record.srNumber}</td>
+                  <td>{record.reconcileDate}</td>
+                  <td>{record.branch}</td>
+                  <td>{record.txnType}</td>
+                  <td>{record.cashCustodian}</td>
+                  <td>{record.checker}</td>
+                  <td>{record.approver}</td>
+                  <td>{record.status}</td>
+                  <td className="flex">
+                    <button
+                      onClick={() => {
+                        /* Handle Edit Routing */
+
+                        router.push(`/${route.CASH_RECORDS}/2`);
+                      }}
+                      className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"
+                    >
+                      <FiEdit size={15} />
+                    </button>
+                    <button
+                      onClick={() => handleDeleteRecord(record)}
+                      className="bg-red-500 text-white px-2 p-1 rounded hover:bg-red-600 flex items-center mr-2"
+                    >
+                      <FiTrash2 size={15} />
+                    </button>
+                    <Button
+                      onClick={() => router.push(`/${route.CASH_RECORDS}/add`)}
+                      className="px-2 p-[1px]"
+                    >
+                      Check
+                    </Button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Component - Moved to the bottom */}
+      {!loading && (
+        <div className="flex justify-center mt-4">
+          <Pagination
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        </div>
+      )}
 
       {/* Confirmation Dialog */}
       <ConfirmationDialog

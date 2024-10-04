@@ -1,10 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
-import { toast, ToastContainer } from "react-toastify";
-import { User } from "../../page";
 import { useParams, useRouter } from "next/navigation";
 import Input from "@/components/ui/Input"; // Import your custom Input component
+import { User, usersData } from "@/utils/constants/data";
 
 const EditUser = () => {
   const params = useParams<{ id: string }>();
@@ -13,30 +12,6 @@ const EditUser = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-
-  // Simulated user data
-  const usersData: User[] = [
-    {
-      id: 1,
-      fullName: "John Doe",
-      staffId: "S123",
-      username: "johndoe",
-      department: "HR",
-      position: "Manager",
-      role: "Admin",
-      status: true,
-    },
-    {
-      id: 2,
-      fullName: "Jane Smith",
-      staffId: "S124",
-      username: "janesmith",
-      department: "IT",
-      position: "Developer",
-      role: "User",
-      status: false,
-    },
-  ];
 
   const departments = ["HR", "IT", "Finance", "Sales"];
   const positions = ["Manager", "Developer", "Analyst", "Intern"];
@@ -58,8 +33,7 @@ const EditUser = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    toast.success(`${user?.fullName} has been updated!`);
-    router.push("/manage-users");
+    router.back();
   };
 
   if (loading) return <div className="text-center">Loading...</div>;
@@ -76,7 +50,7 @@ const EditUser = () => {
                 className="block mb-1 font-semibold text-gray-700"
                 htmlFor="id"
               >
-                ID
+                ID <span className="text-red-500 ml-1">*</span>
               </label>
               <Input
                 type="text"
@@ -91,7 +65,7 @@ const EditUser = () => {
                 className="block mb-1 font-semibold text-gray-700"
                 htmlFor="fullName"
               >
-                Full Name
+                Full Name <span className="text-red-500 ml-1">*</span>
               </label>
               <Input
                 type="text"
@@ -108,7 +82,7 @@ const EditUser = () => {
                 className="block mb-1 font-semibold text-gray-700"
                 htmlFor="staffId"
               >
-                Staff ID
+                Staff ID <span className="text-red-500 ml-1">*</span>
               </label>
               <Input
                 type="text"
@@ -125,7 +99,7 @@ const EditUser = () => {
                 className="block mb-1 font-semibold text-gray-700"
                 htmlFor="username"
               >
-                Username
+                Username <span className="text-red-500 ml-1">*</span>
               </label>
               <Input
                 type="text"
@@ -142,7 +116,7 @@ const EditUser = () => {
                 className="block mb-1 font-semibold text-gray-700"
                 htmlFor="department"
               >
-                Department
+                Department <span className="text-red-500 ml-1">*</span>
               </label>
               <select
                 name="department"
@@ -166,7 +140,7 @@ const EditUser = () => {
                 className="block mb-1 font-semibold text-gray-700"
                 htmlFor="position"
               >
-                Position
+                Position <span className="text-red-500 ml-1">*</span>
               </label>
               <select
                 name="position"
@@ -190,7 +164,7 @@ const EditUser = () => {
                 className="block mb-1 font-semibold text-gray-700"
                 htmlFor="role"
               >
-                Role
+                Role <span className="text-red-500 ml-1">*</span>
               </label>
               <select
                 name="role"
@@ -211,33 +185,15 @@ const EditUser = () => {
             </div>
           </div>
           <div className="flex justify-end space-x-4 mt-8">
-            <Button
-              onClick={() => {
-                router.back();
-              }}
-              className="bg-red-500 hover:bg-red-600 text-white rounded py-1"
-            >
+            <Button variant="cancel" className="py-1.5">
               Cancel
             </Button>
-            <Button
-              type="submit"
-              className="bg-blue-500 hover:bg-blue-600 text-white rounded py-1"
-            >
+            <Button type="submit" className="py-1.5">
               Save Changes
             </Button>
           </div>
         </form>
       </div>
-      {/* Toast message */}
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        closeOnClick
-        pauseOnHover
-        draggable
-        pauseOnFocusLoss
-      />
     </div>
   );
 };

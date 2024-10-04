@@ -1,8 +1,10 @@
 "use client";
+import ModalVerify from "@/components/modal/ModalVerify";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
+import { FiCheckCircle } from "react-icons/fi";
 
 type Currency = "USD" | "KHR" | "THB"; // Define a type for currency keys
 
@@ -20,6 +22,7 @@ const EditCashCountPage = () => {
     nostro: { USD: 0, KHR: 0, THB: 0 },
   });
   const [isVerified, setIsVerified] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
   const router = useRouter();
 
   // Static data for the other categories
@@ -103,18 +106,31 @@ const EditCashCountPage = () => {
     setCashVariance(newCashVariance);
   };
 
+  const handleSaveClick = () => {
+    if (!isVerified) {
+      setIsModalOpen(true); // Open modal if not verified
+    } else {
+      router.back(); // Proceed to save if verified
+    }
+  };
+
+  console.log("## ===isVerified", isVerified);
+
   return (
     <div className="2xl:container mx-auto p-6 bg-white rounded-lg">
       <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Cash Count</h1>
-        <button
-          onClick={handleVerifyClick}
-          className="bg-blue-500 text-white rounded px-4 py-2"
-        >
-          Verify
-        </button>
-      </div>
+        <h1 className="text-2xl font-bold">Edit Cashcount</h1>
 
+        <Button
+          onClick={handleVerifyClick}
+          className="flex items-center py-1.5"
+        >
+          <FiCheckCircle className="mr-2 animate-spin" />
+          {/* Icon with margin for spacing */}
+          Verify
+        </Button>
+      </div>
+      {/* Display the message */}
       <div className="overflow-auto">
         {/* Table Header */}
         <table>
@@ -228,7 +244,6 @@ const EditCashCountPage = () => {
           </tbody>
         </table>
       </div>
-
       {/* Remarks and file upload sections */}
       <div className="mt-4 flex flex-col sm:flex-row sm:items-start">
         <div className="max-w-2xl flex-1 mb-4 sm:mr-2">
@@ -257,7 +272,6 @@ const EditCashCountPage = () => {
           />
         </div>
       </div>
-
       {/* Approvals section */}
       <div className="grid grid-cols-3 gap-4 mt-4 sm:mt-0">
         <div>
@@ -300,18 +314,21 @@ const EditCashCountPage = () => {
           onClick={() => {
             router.back();
           }}
-          className="bg-red-500 hover:bg-red-600 py-1"
+           variant="cancel"
+          className="py-1"
         >
           Cancel
         </Button>
-        <Button
-          onClick={() => {}}
-          className="py-1"
-          // disabled={!isChanged} // Disable if no changes
-        >
+        <Button onClick={handleSaveClick} className="py-1">
           Save
         </Button>
       </div>
+      {/* Modal for alert */}
+      <ModalVerify
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        message="Please click 'Verify' before saving."
+      />
     </div>
   );
 };
