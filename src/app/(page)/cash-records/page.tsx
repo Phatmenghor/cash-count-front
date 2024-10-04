@@ -32,7 +32,7 @@ const CashRecords = () => {
     setLoading(true);
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 2000); // Set loading time to 2 seconds
+    }, 700); // Set loading time to 2 seconds
 
     return () => clearTimeout(timer); // Cleanup timer on unmount
   }, []);

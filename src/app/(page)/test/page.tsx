@@ -16,7 +16,7 @@ const TestPage = () => {
   }, []);
 
   if (loading) {
-    return <CenteredLoading />;
+    return <CenteredLoading className="min-h-screen -mt-16"/>;
   }
 
   return (
