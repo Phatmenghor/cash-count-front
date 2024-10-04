@@ -2,9 +2,10 @@
 import React, { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import { toast } from "react-toastify";
-import { User } from "../../page";
+
 import { useParams, useRouter } from "next/navigation";
 import Input from "@/components/ui/Input"; // Import your custom Input component
+import { User } from "@/utils/constants/data";
 
 const EditUser = () => {
   const params = useParams<{ id: string }>();
