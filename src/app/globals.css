@@ -108,3 +108,16 @@ select {
 option {
   @apply text-gray-700; /* Optional: Customize the color of the options */
 }
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-fadeIn {
+  animation: fadeIn 0.3s ease forwards;
+}

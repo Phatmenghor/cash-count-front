@@ -3,7 +3,7 @@
 
 import React, { useState } from "react";
 import Button from "@/components/ui/Button";
-import ConfirmationDialog from "@/components/ui/ConfirmationDialog";
+import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 import Input from "@/components/ui/Input";
 import { toast } from "react-toastify";
 import { FiEdit, FiTrash2, FiPlus } from "react-icons/fi";

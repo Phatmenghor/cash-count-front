@@ -8,7 +8,7 @@ interface FormMessageProps {
 const FormMessage: React.FC<FormMessageProps> = ({ message, type }) => {
   return (
     <div
-      className={`mt-2 text-sm ${
+      className={`mt-2 text-xs ${
         type === "error" ? "text-red-500" : "text-green-500"
       }`}
     >

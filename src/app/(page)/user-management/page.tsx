@@ -3,7 +3,7 @@
 
 import React, { useState } from "react";
 import Button from "@/components/ui/Button";
-import ConfirmationDialog from "@/components/ui/ConfirmationDialog";
+import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
 import { toast } from "react-toastify";
 import { Switch } from "@/components/ui/Switch";
 import { FiEdit, FiPlus, FiTrash2 } from "react-icons/fi";
@@ -100,7 +100,7 @@ const UserManagement = () => {
             // Optionally redirect to the add record page
             // router.push(`/${route.AddRecord}`);
           }}
-          className="text-white flex items-center py-1"
+          className="text-white flex items-center py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
         >
           <FiPlus size={18} />
           <span className="ml-1">Add Record</span>

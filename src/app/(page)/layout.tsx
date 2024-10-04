@@ -1,11 +1,10 @@
 "use client";
+import "react-toastify/dist/ReactToastify.css";
 import localFont from "next/font/local";
 import "../globals.css";
 import Navbar from "@/components/layout/Navbar";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
 import Footer from "@/components/layout/Footer";
-// import { ToastContainer } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -39,6 +38,7 @@ export default function RootLayout({
           <main className="flex-grow">{children}</main>
           <Footer />
         </div>
+        <ToastContainer />
       </body>
     </html>
   );

@@ -60,10 +60,16 @@ const LoginPage: React.FC = () => {
     setPasswordVisible(!passwordVisible); // Toggle the visibility state
   };
 
+  const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      handleLogin(e as unknown as React.FormEvent); // Call handleLogin on Enter key press
+    }
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="max-w-lg w-full bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-center mb-4">Welcome Back!</h1>
+      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
+        <h1 className="text-3xl font-bold text-center mb-1">Welcome Back!</h1>
         <h2 className="text-lg text-center text-gray-600 mb-6">
           Login to your account
         </h2>
@@ -84,6 +90,7 @@ const LoginPage: React.FC = () => {
               onChange={handleUsernameChange} // Use new handler
               placeholder="Enter your username"
               className="mt-1 w-full py-2 px-4"
+              onKeyDown={handleKeyPress}
             />
             {usernameError && (
               <FormMessage message={usernameError} type="error" />
@@ -105,8 +112,9 @@ const LoginPage: React.FC = () => {
                 value={password}
                 onChange={handlePasswordChange} // Use new handler
                 placeholder="Enter your password"
-                className="mt-1 w-full py-2.5 px-4"
+                className="mt-1 w-full py-2 px-4"
                 autoComplete="new-password"
+                onKeyDown={handleKeyPress}
               />
               <button
                 type="button"
@@ -124,7 +132,7 @@ const LoginPage: React.FC = () => {
 
           <Button
             type="submit"
-            className="w-full flex items-center justify-center py-2"
+            className="w-full flex items-center justify-center py-1.5"
             disabled={loading}
           >
             {loading ? (

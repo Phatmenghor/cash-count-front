@@ -1,7 +1,7 @@
 "use client";
+import "react-toastify/dist/ReactToastify.css";
 import localFont from "next/font/local";
 import "../globals.css";
-import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import Footer from "@/components/layout/Footer";
 
