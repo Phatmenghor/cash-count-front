@@ -20,7 +20,7 @@ const CashRecords = () => {
   const [recordToDelete, setRecordToDelete] = useState<Record | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const recordsPerPage = 4; // Number of users per page
+  const recordsPerPage = 7; // Number of users per page
   const totalRecords = recordsData.length;
   const totalPages = Math.ceil(totalRecords / recordsPerPage);
   const filteredRecords = recordsData.filter((record) =>

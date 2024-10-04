@@ -1,6 +1,5 @@
 // src/components/Pagination.tsx
 import React from "react";
-import Button from "../ui/Button";
 
 interface PaginationProps {
   currentPage: number;
@@ -41,11 +40,11 @@ const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <div className="flex justify-center mt-4">
+    <div className="flex justify-center mt-4 mb-8">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="mx-2 px-1.5 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
+        className="mx-2 px-1.5  bg-blue-500 text-white rounded disabled:opacity-50 text-xs"
       >
         Previous
       </button>
@@ -54,8 +53,10 @@ const Pagination: React.FC<PaginationProps> = ({
         <button
           key={index}
           onClick={() => typeof page === "number" && onPageChange(page)}
-          className={`mx-1 px-1.5 py-1 rounded ${
-            page === currentPage ? "bg-blue-600 text-white" : "bg-gray-300"
+          className={`mx-0.5 px-1.5  rounded ${
+            page === currentPage
+              ? "bg-blue-600 text-white"
+              : "bg-gray-300 text-xs"
           }`}
         >
           {page}
@@ -65,7 +66,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="mx-2 px-1.5 py-1 bg-blue-500 text-white rounded disabled:opacity-50"
+        className="mx-2 px-1.5  bg-blue-500 text-white rounded disabled:opacity-50 text-xs"
       >
         Next
       </button>
