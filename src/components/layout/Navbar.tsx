@@ -5,7 +5,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 import ConfirmationDialog from "../modal/ConfirmationDialog";
 import Button from "../ui/Button";
 import { useRouter, usePathname } from "next/navigation";
-import { route } from "@/utils/constants/routed";
+import { route } from "@/constants/routed";
 
 const Navbar: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);

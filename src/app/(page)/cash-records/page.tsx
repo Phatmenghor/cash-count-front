@@ -8,11 +8,11 @@ import Input from "@/components/ui/Input";
 import { toast } from "react-toastify";
 import { FiEdit, FiTrash2, FiPlus } from "react-icons/fi";
 import { useRouter } from "next/navigation";
-import { route } from "@/utils/constants/routed";
+import { route } from "@/constants/routed";
 import EmptyState from "@/components/emthyData/EmptyState";
 import { BiFileBlank } from "react-icons/bi";
 import Pagination from "@/components/pagination/Pagination";
-import { Record, recordsData } from "@/utils/constants/data";
+import { Record, recordsData } from "@/constants/data";
 import CenteredLoading from "@/components/centerLoading/CenteredLoading";
 
 const CashRecords = () => {

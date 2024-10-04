@@ -1,4 +1,4 @@
-import { keyStorage } from "../constants/keyStorage";
+import { keyStorage } from "../../constants/keyStorage";
 
 // src/utils/auth.ts
 const isAuthenticated = () => {

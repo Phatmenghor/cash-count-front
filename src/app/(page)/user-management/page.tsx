@@ -8,12 +8,12 @@ import { toast } from "react-toastify";
 import { Switch } from "@/components/ui/Switch";
 import { FiEdit, FiPlus, FiTrash2 } from "react-icons/fi";
 import { useRouter } from "next/navigation";
-import { route } from "@/utils/constants/routed";
+import { route } from "@/constants/routed";
 import Input from "@/components/ui/Input";
 import EmptyState from "@/components/emthyData/EmptyState";
 import { AiOutlineUser } from "react-icons/ai"; // or any other icon you prefer
 import Pagination from "@/components/pagination/Pagination";
-import { User, usersData } from "@/utils/constants/data";
+import { User, usersData } from "@/constants/data";
 import CenteredLoading from "@/components/centerLoading/CenteredLoading";
 
 const UserManagement = () => {

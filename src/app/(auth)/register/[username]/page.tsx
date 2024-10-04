@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation"; // Import useParams to get the username from the URL
 import { FiLoader } from "react-icons/fi";
-import { route } from "@/utils/constants/routed";
+import { route } from "@/constants/routed";
 import Input from "@/components/ui/Input";
 import FormMessage from "@/components/ui/FormMessage"; // Import the FormMessage component
 import Button from "@/components/ui/Button";

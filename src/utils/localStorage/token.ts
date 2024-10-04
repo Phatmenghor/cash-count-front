@@ -1,7 +1,6 @@
 // tokenUtils.ts
 
-import { keyStorage } from "../constants/keyStorage";
-
+import { keyStorage } from "../../constants/keyStorage";
 
 export const setToken = (token: string, useSessionStorage: boolean = false) => {
   const storage = useSessionStorage ? sessionStorage : localStorage;

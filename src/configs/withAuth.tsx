@@ -4,7 +4,7 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { isAuthenticated } from "@/utils/localStorage/auth";
-import { route } from "@/utils/constants/routed";
+import { route } from "@/constants/routed";
 
 const withAuth = (WrappedComponent: React.FC) => {
   const AuthenticatedComponent: React.FC = (props) => {

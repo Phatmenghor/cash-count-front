@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import { useParams, useRouter } from "next/navigation";
 import Input from "@/components/ui/Input"; // Import your custom Input component
-import { User, usersData } from "@/utils/constants/data";
+import { User, usersData } from "@/constants/data";
 
 const EditUser = () => {
   const params = useParams<{ id: string }>();
