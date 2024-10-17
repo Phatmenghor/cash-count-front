@@ -1,4 +1,3 @@
-// src/hocs/withAuth.tsx
 "use client";
 
 import React from "react";
@@ -19,7 +18,7 @@ const withAuth = (WrappedComponent: React.FC) => {
 
     // If the user is not authenticated, you can return null or a loading spinner
     if (!isAuthenticated()) {
-      return null; // Optionally, you can return a loading spinner or a message
+      return null;
     }
 
     return <WrappedComponent {...props} />;

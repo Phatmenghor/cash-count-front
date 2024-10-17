@@ -5,7 +5,7 @@ import { FiEye, FiEyeOff } from "react-icons/fi"; // Import loading icon from re
 import Button from "../../../components/ui/Button"; // Adjust the import path as necessary
 import Input from "../../../components/ui/Input"; // Adjust the import path as necessary
 import FormMessage from "../../../components/ui/FormMessage"; // Import the FormMessage component
-import { LoginService } from "@/redux/actions/loginService";
+import { LoginService } from "@/redux/service/loginService";
 import TokenUtils from "@/utils/localStorage/token";
 import { route } from "@/constants/routed";
 

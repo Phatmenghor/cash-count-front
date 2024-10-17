@@ -13,7 +13,7 @@ import { BiFileBlank } from "react-icons/bi";
 import Pagination from "@/components/pagination/Pagination";
 import { Record, recordsData } from "@/constants/data";
 import CenteredLoading from "@/components/centerLoading/CenteredLoading";
-import { CashRecordService } from "@/redux/actions/cashRecordService";
+import { CashRecordService } from "@/redux/service/cashRecordService";
 
 const CashRecords = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
