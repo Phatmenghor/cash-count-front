@@ -28,8 +28,6 @@ export class CashRecordService {
       //     url += `&status=${status}`;
       //   }
 
-      //   console.log("### ===response", url);
-
       const response = await axios.get(
         `${keyEnv.BASE_URL}/api/admin/get-all-users`,
         {
