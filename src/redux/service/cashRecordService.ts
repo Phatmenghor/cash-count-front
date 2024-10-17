@@ -1,6 +1,7 @@
 import keyEnv from "@/constants/env";
 import { StatusEnum } from "@/models/cashRecord/StatusEnum";
 import { axiosNoAuth, axiosWithAuth } from "@/utils/api/axios";
+import TokenUtils from "@/utils/localStorage/token";
 import axios from "axios";
 
 interface FetchRecordsParams {
@@ -28,7 +29,16 @@ export class CashRecordService {
       //   }
 
       //   console.log("### ===response", url);
-      const response = await axiosWithAuth.get("/api/role/get-roles");
+
+      const response = await axios.get(
+        `${keyEnv.BASE_URL}/api/admin/get-all-users`,
+        {
+          headers: {
+            Authorization: `Bearer ${TokenUtils.getToken()}`, // Include token in the header
+          },
+        }
+      );
+      // const response = await axiosWithAuth.get("/api/admin/get-all-users");
 
       console.log("### ===response", response);
 
