@@ -2,52 +2,49 @@
 
 import { keyStorage } from "../../constants/keyStorage";
 
-export const setToken = (token: string, useSessionStorage: boolean = false) => {
-  const storage = useSessionStorage ? sessionStorage : localStorage;
-  const expiryTime = calculateExpiryTime();
-  const tokenData = {
-    token,
-    expiry: expiryTime,
-  };
-  storage.setItem(keyStorage.TOKEN_KEY, JSON.stringify(tokenData));
-};
+class TokenUtils {
+  private static calculateExpiryTime(): string {
+    const now = new Date();
+    const expiry = new Date();
+    // Set time to 5:30 PM today
+    expiry.setHours(17, 30, 0, 0);
 
-export const getToken = (useSessionStorage: boolean = false): string | null => {
-  const storage = useSessionStorage ? sessionStorage : localStorage;
-  const tokenData = JSON.parse(storage.getItem(keyStorage.TOKEN_KEY) || "null");
-  if (tokenData) {
-    const { token, expiry } = tokenData;
-    if (isTokenExpired(expiry)) {
-      removeToken(useSessionStorage); // Remove expired token
-      return null;
+    // Check if current time is after 5:30 PM
+    if (now > expiry) {
+      // If yes, set expiry to 5:30 PM tomorrow
+      expiry.setDate(expiry.getDate() + 1);
     }
-    return token;
-  }
-  return null;
-};
 
-export const removeToken = (useSessionStorage: boolean = false) => {
-  const storage = useSessionStorage ? sessionStorage : localStorage;
-  storage.removeItem(keyStorage.TOKEN_KEY);
-};
-
-const isTokenExpired = (expiryTime: string): boolean => {
-  const currentTime = Date.now();
-  return currentTime > new Date(expiryTime).getTime();
-};
-
-const calculateExpiryTime = (): string => {
-  const now = new Date();
-  const expiry = new Date();
-
-  // Set time to 5:30 PM today
-  expiry.setHours(17, 30, 0, 0);
-
-  // Check if current time is after 5:30 PM
-  if (now > expiry) {
-    // If yes, set expiry to 5:30 PM tomorrow
-    expiry.setDate(expiry.getDate() + 1);
+    return expiry.toISOString();
   }
 
-  return expiry.toISOString();
-};
+  public static setToken(token: string): void {
+    const expiryTime = this.calculateExpiryTime();
+    const tokenData = JSON.stringify({ token, expiry: expiryTime });
+    localStorage.setItem(keyStorage.TOKEN_KEY, tokenData);
+  }
+
+  public static getToken(): string | null {
+    const tokenData = localStorage.getItem(keyStorage.TOKEN_KEY);
+    if (tokenData) {
+      const { token, expiry } = JSON.parse(tokenData);
+      if (this.isTokenExpired(expiry)) {
+        this.removeToken(); // Remove expired token
+        return null;
+      }
+      return token;
+    }
+    return null;
+  }
+
+  public static removeToken(): void {
+    localStorage.removeItem(keyStorage.TOKEN_KEY);
+  }
+
+  private static isTokenExpired(expiryTime: string): boolean {
+    const currentTime = Date.now();
+    return currentTime > new Date(expiryTime).getTime();
+  }
+}
+
+export default TokenUtils;

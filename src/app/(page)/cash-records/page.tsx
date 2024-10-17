@@ -1,4 +1,3 @@
-// src/app/unauthorized-records/page.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -14,6 +13,7 @@ import { BiFileBlank } from "react-icons/bi";
 import Pagination from "@/components/pagination/Pagination";
 import { Record, recordsData } from "@/constants/data";
 import CenteredLoading from "@/components/centerLoading/CenteredLoading";
+import { CashRecordService } from "@/redux/actions/cashRecordService";
 
 const CashRecords = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -29,13 +29,14 @@ const CashRecords = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 700); // Set loading time to 2 seconds
-
-    return () => clearTimeout(timer); // Cleanup timer on unmount
+    fetchData();
   }, []);
+
+  async function fetchData() {
+    setLoading(true);
+    const response = await CashRecordService.fetchCash({});
+    setLoading(false);
+  }
 
   const currentRecords = filteredRecords.slice(
     (currentPage - 1) * recordsPerPage,
@@ -88,7 +89,6 @@ const CashRecords = () => {
               <th>SR Number</th>
               <th>Reconcile Date</th>
               <th>Branch</th>
-              <th>Txn Type</th>
               <th>Cash Custodian</th>
               <th>Checker</th>
               <th>Approver</th>
@@ -119,7 +119,6 @@ const CashRecords = () => {
                   <td>{record.srNumber}</td>
                   <td>{record.reconcileDate}</td>
                   <td>{record.branch}</td>
-                  <td>{record.txnType}</td>
                   <td>{record.cashCustodian}</td>
                   <td>{record.checker}</td>
                   <td>{record.approver}</td>

@@ -1,14 +1,17 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FiEye, FiEyeOff, FiLoader } from "react-icons/fi"; // Import loading icon from react-icons
+import { FiEye, FiEyeOff } from "react-icons/fi"; // Import loading icon from react-icons
 import Button from "../../../components/ui/Button"; // Adjust the import path as necessary
 import Input from "../../../components/ui/Input"; // Adjust the import path as necessary
 import FormMessage from "../../../components/ui/FormMessage"; // Import the FormMessage component
+import { LoginService } from "@/redux/actions/loginService";
+import TokenUtils from "@/utils/localStorage/token";
+import { route } from "@/constants/routed";
 
 const LoginPage: React.FC = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("sokrann@gmail.com");
+  const [password, setPassword] = useState("123456789");
   const [usernameError, setUsernameError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false); // New loading state
@@ -22,10 +25,9 @@ const LoginPage: React.FC = () => {
     setUsernameError(null);
     setPasswordError(null);
 
-    // Validate inputs
     let hasError = false;
 
-    if (username.trim().length === 0) {
+    if (email.trim().length === 0) {
       setUsernameError("Username must contain at least 1 character");
       hasError = true;
     }
@@ -38,16 +40,23 @@ const LoginPage: React.FC = () => {
     if (hasError) return; // Stop if there are validation errors
 
     setLoading(true); // Set loading state to true
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate a delay
-    router.push(`/register/${encodeURIComponent(username)}`);
+    const response = await LoginService.loginUser({
+      email: email,
+      password: password,
+    });
+    if (response) {
+      router.push(`/${route.CASH_RECORDS}`);
+    }
   };
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUsername(e.target.value);
+    setEmail(e.target.value);
     if (usernameError) {
       setUsernameError(null); // Clear error message if user starts typing
     }
   };
+
+  console.log("### haha", TokenUtils.getToken());
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
@@ -80,15 +89,15 @@ const LoginPage: React.FC = () => {
               htmlFor="username"
               className="block text-sm font-medium text-gray-700"
             >
-              Username
+              Email
               <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
               type="text"
-              id="username"
-              value={username}
+              id="email"
+              value={email}
               onChange={handleUsernameChange} // Use new handler
-              placeholder="Enter your username"
+              placeholder="Enter your email"
               className="mt-1 w-full py-2 px-4"
               onKeyDown={handleKeyPress}
             />
@@ -118,11 +127,10 @@ const LoginPage: React.FC = () => {
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500"
-                onClick={togglePasswordVisibility} // Toggle password visibility
+                className="absolute inset-y-0 right-0 z-10 pr-3 flex items-center text-gray-500"
+                onClick={togglePasswordVisibility}
               >
-                {passwordVisible ? <FiEyeOff /> : <FiEye />}{" "}
-                {/* Show the appropriate icon */}
+                {passwordVisible ? <FiEyeOff /> : <FiEye />}
               </button>
             </div>
             {passwordError && (
@@ -132,17 +140,11 @@ const LoginPage: React.FC = () => {
 
           <Button
             type="submit"
-            className="w-full flex items-center justify-center py-1.5"
-            disabled={loading}
+            className={`w-full flex items-center justify-center py-1.5`}
+            loading={loading}
+            textLoading="Logging in..."
           >
-            {loading ? (
-              <>
-                <FiLoader className="animate-spin mr-2" /> {/* Loading icon */}
-                Logging in...
-              </>
-            ) : (
-              "Login"
-            )}
+            Login
           </Button>
         </form>
       </div>
