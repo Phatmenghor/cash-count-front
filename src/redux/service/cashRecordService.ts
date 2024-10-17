@@ -38,7 +38,6 @@ export class CashRecordService {
       );
       // const response = await axiosWithAuth.get("/api/admin/get-all-users");
 
-      console.log("### ===response", response);
 
       return response;
     } catch (error) {
