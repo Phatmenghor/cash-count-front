@@ -1,11 +1,13 @@
 import React from "react";
 
 interface FormMessageProps {
-  message: string;
-  type: "error" | "success"; // Define the type of message
+  message?: string; // Make message optional
+  type: "error" | "success";
 }
 
 const FormMessage: React.FC<FormMessageProps> = ({ message, type }) => {
+  if (!message) return null; // Don't render if message is not provided
+
   return (
     <div
       className={`mt-2 text-xs ${

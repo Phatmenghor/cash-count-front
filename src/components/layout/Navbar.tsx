@@ -6,6 +6,8 @@ import ModalConfirmation from "../modal/ModalConfirmation";
 import Button from "../ui/Button";
 import { useRouter, usePathname } from "next/navigation";
 import { route } from "@/constants/routed";
+import showToast from "../toast/useToast";
+import TokenUtils from "@/utils/localStorage/token";
 
 const Navbar: React.FC = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -19,7 +21,8 @@ const Navbar: React.FC = () => {
   }, [pathname]);
 
   const handleLogout = () => {
-    console.log("User logged out");
+    showToast("You have successfully logged out.", "success");
+    TokenUtils.removeToken();
     setIsDialogOpen(false);
     router.push("/login");
   };

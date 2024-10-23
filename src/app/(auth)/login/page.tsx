@@ -141,9 +141,10 @@ const LoginPage: React.FC = () => {
 
           <Button
             type="submit"
-            className={`w-full flex items-center justify-center py-1.5`}
+            className={`w-full py-1.5`}
             loading={loading}
             textLoading="Logging in..."
+            scaleOnHover={false}
           >
             Login
           </Button>

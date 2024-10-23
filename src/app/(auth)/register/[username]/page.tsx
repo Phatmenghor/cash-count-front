@@ -1,4 +1,4 @@
-"use client"; // Ensure this component is a client component
+"use client";
 import React, { useState } from "react";
 import { useParams, useRouter } from "next/navigation"; // Import useParams to get the username from the URL
 import { FiLoader } from "react-icons/fi";
@@ -7,6 +7,7 @@ import Input from "@/components/ui/Input";
 import FormMessage from "@/components/ui/FormMessage"; // Import the FormMessage component
 import Button from "@/components/ui/Button";
 import withAnimation from "@/configs/withAnimation";
+import CustomSelect from "@/components/ui/CustomSelect";
 
 const Register: React.FC = () => {
   const params = useParams<{ username: string }>();
@@ -68,6 +69,18 @@ const Register: React.FC = () => {
     }
   };
 
+  const departmentOptions = [
+    { value: "hr", label: "Human Resources" },
+    { value: "it", label: "IT" },
+    { value: "finance", label: "Finance" },
+  ];
+
+  const positionOptions = [
+    { value: "manager", label: "Manager" },
+    { value: "staff", label: "Staff" },
+    { value: "intern", label: "Intern" },
+  ];
+
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
       <div className="max-w-lg w-full bg-white p-8 rounded-lg shadow-xl border border-gray-200 transition-transform duration-300 hover:scale-x-105">
@@ -88,63 +101,30 @@ const Register: React.FC = () => {
           {/* Container for select fields */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
             {/* Department Select */}
-            <div>
-              <label
-                htmlFor="department"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Department
-                <span className="text-red-500 ml-1">*</span>
-              </label>
-              <select
-                id="department"
-                name="department"
-                value={department}
-                onChange={handleInputChange(setDepartment, "department")}
-                className={`py-1 ${
-                  !department ? "text-gray-500" : "text-black"
-                }`}
-              >
-                <option disabled className="text-gray-500" value="">
-                  Select Department
-                </option>
-                <option value="hr">Human Resources</option>
-                <option value="it">IT</option>
-                <option value="finance">Finance</option>
-              </select>
-              {errors.department && (
-                <FormMessage message={errors.department} type="error" />
-              )}
-            </div>
+            <CustomSelect
+              id="department"
+              name="department"
+              value={department}
+              onChange={handleInputChange(setDepartment, "department")}
+              options={departmentOptions}
+              label="Department"
+              errorMessage={errors.department}
+              required={true}
+            />
 
             {/* Position Select */}
-            <div>
-              <label
-                htmlFor="position"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Position
-                <span className="text-red-500 ml-1">*</span>
-              </label>
-              <select
-                id="position"
-                name="position"
-                value={position}
-                onChange={handleInputChange(setPosition, "position")} // Use the updated handler
-                className={`py-1 ${
-                  !department ? "text-gray-500" : "text-black"
-                }`}
-              >
-                <option value="" disabled className="text-gray-500">Select Position</option>
-                <option value="manager">Manager</option>
-                <option value="staff">Staff</option>
-                <option value="intern">Intern</option>
-              </select>
-              {errors.position && (
-                <FormMessage message={errors.position} type="error" />
-              )}
-            </div>
+            <CustomSelect
+              id="position"
+              name="position"
+              value={position}
+              onChange={handleInputChange(setPosition, "position")}
+              options={positionOptions}
+              label="Position"
+              errorMessage={errors.position}
+              required={true}
+            />
 
+            {/* Email Input */}
             <div>
               <label
                 htmlFor="email"
@@ -159,7 +139,7 @@ const Register: React.FC = () => {
                 value={email}
                 placeholder="Enter your email"
                 onChange={handleInputChange(setEmail, "email")}
-                className="py-1"
+                className="py-1.5"
               />
               {errors.email && (
                 <FormMessage message={errors.email} type="error" />
@@ -180,8 +160,8 @@ const Register: React.FC = () => {
                 id="idCard"
                 value={idCard}
                 placeholder="Enter your Id Card"
-                onChange={handleInputChange(setIdCard, "idCard")} // Use the updated handler
-                className="py-1"
+                onChange={handleInputChange(setIdCard, "idCard")}
+                className="py-1.5"
               />
               {errors.idCard && (
                 <FormMessage message={errors.idCard} type="error" />
@@ -189,31 +169,19 @@ const Register: React.FC = () => {
             </div>
 
             {/* Role Select */}
-            <div>
-              <label
-                htmlFor="role"
-                className="block text-sm font-medium text-gray-700 mb-2"
-              >
-                Role
-                <span className="text-red-500 ml-1">*</span>
-              </label>
-              <select
-                id="role"
-                name="role"
-                value={role}
-                onChange={handleInputChange(setRole, "role")} // Use the updated handler
-                className={`py-1 ${
-                  !department ? "text-gray-500" : "text-black"
-                }`}
-              >
-                <option value="" disabled className="text-gray-500">Select Role</option>
-                <option value="admin">Admin</option>
-                <option value="user">User</option>
-              </select>
-              {errors.role && (
-                <FormMessage message={errors.role} type="error" />
-              )}
-            </div>
+            <CustomSelect
+              id="role"
+              name="role"
+              value={role}
+              onChange={handleInputChange(setRole, "role")}
+              options={[
+                { value: "admin", label: "Admin" },
+                { value: "user", label: "User" },
+              ]}
+              label="Role"
+              errorMessage={errors.role}
+              required={true}
+            />
           </div>
 
           {successMessage && (
@@ -222,17 +190,12 @@ const Register: React.FC = () => {
 
           <Button
             type="submit"
-            className="w-full flex items-center justify-center py-1.5"
+            className="w-full py-1 hover:scale-x-100"
             disabled={loading}
+            textLoading="Register ..."
+            scaleOnHover={false}
           >
-            {loading ? (
-              <>
-                <FiLoader className="animate-spin mr-2" />
-                Logging in...
-              </>
-            ) : (
-              "Register"
-            )}
+            Register
           </Button>
         </form>
       </div>

@@ -46,7 +46,8 @@ const ModalConfirmation: React.FC<ConfirmationDialogProps> = ({
               <div className="flex justify-end space-x-2">
                 <Button
                   onClick={onClose}
-                  className="px-4 py-1 bg-gray-400 text-gray-700 rounded hover:bg-gray-500 transition"
+                  className="px-4 py-1"
+                  variant="cancel"
                 >
                   Cancel
                 </Button>
