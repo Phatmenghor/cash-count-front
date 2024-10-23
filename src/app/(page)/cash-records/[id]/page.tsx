@@ -2,6 +2,7 @@
 import ModalVerify from "@/components/modal/ModalVerify";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import withAuth from "@/configs/withAuth";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FiCheckCircle } from "react-icons/fi";
@@ -123,14 +124,20 @@ const EditCashCountPage = () => {
 
         <Button
           onClick={handleVerifyClick}
-          className="flex items-center py-1.5"
+          disabled={isVerified}
+          className={`flex items-center py-1.5 ${
+            isVerified
+              ? "bg-gray-400 cursor-not-allowed hover:bg-gray-400"
+              : "bg-blue-500"
+          }`}
         >
-          <FiCheckCircle className="mr-2 animate-spin" />
-          {/* Icon with margin for spacing */}
+          <FiCheckCircle
+            className={`mr-2 ${isVerified ? "opacity-50" : "animate-spin"}`}
+          />
           Verify
         </Button>
       </div>
-      {/* Display the message */}
+      
       <div className="overflow-auto">
         {/* Table Header */}
         <table>
@@ -314,7 +321,7 @@ const EditCashCountPage = () => {
           onClick={() => {
             router.back();
           }}
-           variant="cancel"
+          variant="cancel"
           className="py-1"
         >
           Cancel
@@ -333,4 +340,4 @@ const EditCashCountPage = () => {
   );
 };
 
-export default EditCashCountPage;
+export default withAuth(EditCashCountPage);

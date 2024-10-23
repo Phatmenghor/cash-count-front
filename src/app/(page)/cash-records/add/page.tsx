@@ -2,6 +2,7 @@
 import ModalVerify from "@/components/modal/ModalVerify";
 import Button from "@/components/ui/Button";
 import Input from "@/components/ui/Input";
+import withAuth from "@/configs/withAuth";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FiCheckCircle } from "react-icons/fi";
@@ -123,22 +124,29 @@ const AddCashCountPage = () => {
 
         <Button
           onClick={handleVerifyClick}
-          className="flex items-center py-1.5"
+          disabled={isVerified}
+          className={`flex items-center py-1.5 ${
+            isVerified ? "bg-gray-400 cursor-not-allowed hover:bg-gray-400" : "bg-blue-500"
+          }`} 
         >
-          <FiCheckCircle className="mr-2 animate-spin" />
-          {/* Icon with margin for spacing */}
+          <FiCheckCircle
+            className={`mr-2 ${isVerified ? "opacity-50" : "animate-spin"}`}
+          />
           Verify
         </Button>
       </div>
-      {/* Display the message */}
       <div className="overflow-auto">
         {/* Table Header */}
         <table>
           <thead>
             <tr>
               <th rowSpan={2}>Description</th>
-              <th colSpan={3} className="text-center">Vault</th>
-              <th colSpan={3} className="text-center">Nostro Account</th>
+              <th colSpan={3} className="text-center">
+                Vault
+              </th>
+              <th colSpan={3} className="text-center">
+                Nostro Account
+              </th>
               <th rowSpan={2}>Supporting Documents</th>
             </tr>
             <tr>
@@ -305,7 +313,7 @@ const AddCashCountPage = () => {
         </div>
       </div>
       {/* Save and Cancel Buttons */}
-      <div className="flex justify-end space-x-4 mt-6">
+      <div className="flex justify-end space-x-2 mt-6">
         <Button
           onClick={() => {
             router.back();
@@ -329,4 +337,4 @@ const AddCashCountPage = () => {
   );
 };
 
-export default AddCashCountPage;
+export default withAuth(AddCashCountPage);

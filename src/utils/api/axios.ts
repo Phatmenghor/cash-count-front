@@ -6,6 +6,7 @@ import TokenUtils from "../localStorage/token";
 // Base Axios instance (no token required)
 const axiosNoAuth = axios.create({
   baseURL: keyEnv.BASE_URL,
+  timeout: 400000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -14,6 +15,7 @@ const axiosNoAuth = axios.create({
 // Axios instance with token (authentication required)
 const axiosWithAuth = axios.create({
   baseURL: keyEnv.BASE_URL,
+  timeout: 400000,
   headers: {
     "Content-Type": "application/json",
   },
@@ -27,7 +29,6 @@ axiosWithAuth.interceptors.request.use(
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     } else {
-      // Optionally handle cases where token is missing
       console.warn("## No token found");
     }
 

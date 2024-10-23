@@ -1,16 +1,16 @@
-import { FaBuilding, FaCode } from "react-icons/fa"; // Importing icons from FontAwesome
-
 const Footer = () => {
   return (
-    <footer className="bg-gray-400 text-gray-300 py-2">
+    <footer className="bg-gray-400 text-gray-300 py-3 transition-colors duration-300 hover:bg-gray-500">
       <div className="container mx-auto text-center">
-        <p className="text-sm text-white flex items-center justify-center gap-2">
-          <FaBuilding className="text-white" /> {/* Bank icon */}
+        <p className="text-xs md:text-sm text-white">
           Powered by{" "}
-          <span className="font-semibold text-white">
+          <span className="font-semibold underline decoration-gray-200">
             CP Bank | IT Development
           </span>
-          <FaCode className="text-white" /> {/* Code icon */}
+          {" | "}
+          <span className="text-gray-200">
+            &copy; {new Date().getFullYear()}
+          </span>
         </p>
       </div>
     </footer>

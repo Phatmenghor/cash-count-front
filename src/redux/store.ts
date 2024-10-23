@@ -10,7 +10,6 @@ const store = configureStore({
   devTools: process.env.NEXT_PUBLIC_NODE_ENV !== "production",
 });
 
-// Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 

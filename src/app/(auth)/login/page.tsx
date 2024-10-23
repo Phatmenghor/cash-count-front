@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-import { FiEye, FiEyeOff } from "react-icons/fi"; // Import loading icon from react-icons
-import Button from "../../../components/ui/Button"; // Adjust the import path as necessary
-import Input from "../../../components/ui/Input"; // Adjust the import path as necessary
-import FormMessage from "../../../components/ui/FormMessage"; // Import the FormMessage component
+import { FiEye, FiEyeOff } from "react-icons/fi";
+import Button from "../../../components/ui/Button";
+import Input from "../../../components/ui/Input";
+import FormMessage from "../../../components/ui/FormMessage";
 import { LoginService } from "@/redux/service/loginService";
-import TokenUtils from "@/utils/localStorage/token";
 import { route } from "@/constants/routed";
+import withAnimation from "@/configs/withAnimation";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("sokrann@gmail.com");
@@ -39,13 +39,16 @@ const LoginPage: React.FC = () => {
 
     if (hasError) return; // Stop if there are validation errors
 
+    router.push(`/${route.REGISTER}/hoe`);
+    return;
+
     setLoading(true); // Set loading state to true
     const response = await LoginService.loginUser({
       email: email,
       password: password,
     });
     if (response) {
-      router.push(`/${route.CASH_RECORDS}`);
+      router.push(`/${route.REGISTER}`);
     }
   };
 
@@ -55,8 +58,6 @@ const LoginPage: React.FC = () => {
       setUsernameError(null); // Clear error message if user starts typing
     }
   };
-
-  console.log("### haha", TokenUtils.getToken());
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
@@ -77,13 +78,13 @@ const LoginPage: React.FC = () => {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
+      <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg transition-transform duration-300 hover:scale-x-105">
         <h1 className="text-3xl font-bold text-center mb-1">Welcome Back!</h1>
         <h2 className="text-lg text-center text-gray-600 mb-6">
           Login to your account
         </h2>
 
-        <form onSubmit={handleLogin}>
+        <form onSubmit={handleLogin} className="">
           <div className="mb-4">
             <label
               htmlFor="username"
@@ -152,4 +153,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default LoginPage;
+export default withAnimation(LoginPage);

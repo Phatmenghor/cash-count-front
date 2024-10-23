@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
-import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
+import ModalConfirmation from "@/components/modal/ModalConfirmation";
 import Input from "@/components/ui/Input";
 import { toast } from "react-toastify";
 import { FiEdit, FiTrash2, FiPlus } from "react-icons/fi";
@@ -14,6 +14,7 @@ import Pagination from "@/components/pagination/Pagination";
 import { Record, recordsData } from "@/constants/data";
 import CenteredLoading from "@/components/centerLoading/CenteredLoading";
 import { CashRecordService } from "@/redux/service/cashRecordService";
+import withAuth from "@/configs/withAuth";
 
 const CashRecords = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -33,9 +34,11 @@ const CashRecords = () => {
   }, []);
 
   async function fetchData() {
-    setLoading(true);
+    // setLoading(true);
     const response = await CashRecordService.fetchCash({});
-    setLoading(false);
+
+    console.log("### ===response", response);
+    // setLoading(false);
   }
 
   const currentRecords = filteredRecords.slice(
@@ -166,7 +169,7 @@ const CashRecords = () => {
       )}
 
       {/* Confirmation Dialog */}
-      <ConfirmationDialog
+      <ModalConfirmation
         isOpen={isDeleteDialogOpen}
         title="Confirm Delete!"
         onClose={() => setIsDeleteDialogOpen(false)}
@@ -177,4 +180,4 @@ const CashRecords = () => {
   );
 };
 
-export default CashRecords;
+export default withAuth(CashRecords);

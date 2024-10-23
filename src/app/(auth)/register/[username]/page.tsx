@@ -6,22 +6,22 @@ import { route } from "@/constants/routed";
 import Input from "@/components/ui/Input";
 import FormMessage from "@/components/ui/FormMessage"; // Import the FormMessage component
 import Button from "@/components/ui/Button";
+import withAnimation from "@/configs/withAnimation";
 
 const Register: React.FC = () => {
-  const params = useParams<{ username: string }>(); // Get the username from route parameters
-  const username = params.username; // This will contain the username from the route
+  const params = useParams<{ username: string }>();
+  const username = params.username;
 
   // State variables for form inputs and errors
   const [department, setDepartment] = useState("");
   const [position, setPosition] = useState("");
   const [role, setRole] = useState("");
-  const [email, setEmail] = useState(""); // New email state
-  const [idCard, setIdCard] = useState(""); // New ID card state
-  const [loading, setLoading] = useState(false); // New loading state
+  const [email, setEmail] = useState("");
+  const [idCard, setIdCard] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  // Error state for each field
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [successMessage, setSuccessMessage] = useState<string>(""); // Success message state
+  const [successMessage, setSuccessMessage] = useState<string>("");
   const router = useRouter();
 
   const validateForm = () => {
@@ -40,37 +40,37 @@ const Register: React.FC = () => {
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Returns true if no errors
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleInputChange =
     (setter: React.Dispatch<React.SetStateAction<string>>, field: string) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-      setter(e.target.value); // Set the value of the input
-      setErrors((prevErrors) => ({ ...prevErrors, [field]: "" })); // Clear the specific error
+      setter(e.target.value);
+      setErrors((prevErrors) => ({ ...prevErrors, [field]: "" }));
     };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!validateForm()) return; // Validate the form
+    if (!validateForm()) return;
 
-    setLoading(true); // Set loading state to true
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate a delay
+    setLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     setLoading(false); // Reset loading state
-    setSuccessMessage("Registration successful!"); // Set success message
+    setSuccessMessage("Registration successful!");
     router.push(`/${route.DEACTIVATE_USER}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
-      handleSubmit(e as unknown as React.FormEvent); // Call handleSubmit on Enter key press
+      handleSubmit(e as unknown as React.FormEvent);
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
-      <div className="max-w-lg w-full bg-white p-8 rounded-lg shadow-xl border border-gray-200">
+      <div className="max-w-lg w-full bg-white p-8 rounded-lg shadow-xl border border-gray-200 transition-transform duration-300 hover:scale-x-105">
         <h1 className="text-3xl font-bold mb-1 text-center text-gray-800">
           Register
         </h1>
@@ -100,10 +100,14 @@ const Register: React.FC = () => {
                 id="department"
                 name="department"
                 value={department}
-                onChange={handleInputChange(setDepartment, "department")} // Use the updated handler
-                className="py-1"
+                onChange={handleInputChange(setDepartment, "department")}
+                className={`py-1 ${
+                  !department ? "text-gray-500" : "text-black"
+                }`}
               >
-                <option value="">Select Department</option>
+                <option disabled className="text-gray-500" value="">
+                  Select Department
+                </option>
                 <option value="hr">Human Resources</option>
                 <option value="it">IT</option>
                 <option value="finance">Finance</option>
@@ -127,9 +131,11 @@ const Register: React.FC = () => {
                 name="position"
                 value={position}
                 onChange={handleInputChange(setPosition, "position")} // Use the updated handler
-                className="py-1 "
+                className={`py-1 ${
+                  !department ? "text-gray-500" : "text-black"
+                }`}
               >
-                <option value="">Select Position</option>
+                <option value="" disabled className="text-gray-500">Select Position</option>
                 <option value="manager">Manager</option>
                 <option value="staff">Staff</option>
                 <option value="intern">Intern</option>
@@ -139,7 +145,6 @@ const Register: React.FC = () => {
               )}
             </div>
 
-            {/* Email Input */}
             <div>
               <label
                 htmlFor="email"
@@ -152,7 +157,8 @@ const Register: React.FC = () => {
                 type="email"
                 id="email"
                 value={email}
-                onChange={handleInputChange(setEmail, "email")} // Use the updated handler
+                placeholder="Enter your email"
+                onChange={handleInputChange(setEmail, "email")}
                 className="py-1"
               />
               {errors.email && (
@@ -173,6 +179,7 @@ const Register: React.FC = () => {
                 type="text"
                 id="idCard"
                 value={idCard}
+                placeholder="Enter your Id Card"
                 onChange={handleInputChange(setIdCard, "idCard")} // Use the updated handler
                 className="py-1"
               />
@@ -195,9 +202,11 @@ const Register: React.FC = () => {
                 name="role"
                 value={role}
                 onChange={handleInputChange(setRole, "role")} // Use the updated handler
-                className="py-1 "
+                className={`py-1 ${
+                  !department ? "text-gray-500" : "text-black"
+                }`}
               >
-                <option value="">Select Role</option>
+                <option value="" disabled className="text-gray-500">Select Role</option>
                 <option value="admin">Admin</option>
                 <option value="user">User</option>
               </select>
@@ -231,4 +240,4 @@ const Register: React.FC = () => {
   );
 };
 
-export default Register;
+export default withAnimation(Register);

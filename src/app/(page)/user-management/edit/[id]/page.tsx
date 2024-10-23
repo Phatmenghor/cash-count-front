@@ -4,6 +4,7 @@ import Button from "@/components/ui/Button";
 import { useParams, useRouter } from "next/navigation";
 import Input from "@/components/ui/Input"; // Import your custom Input component
 import { User, usersData } from "@/constants/data";
+import withAuth from "@/configs/withAuth";
 
 const EditUser = () => {
   const params = useParams<{ id: string }>();
@@ -198,4 +199,4 @@ const EditUser = () => {
   );
 };
 
-export default EditUser;
+export default withAuth(EditUser);

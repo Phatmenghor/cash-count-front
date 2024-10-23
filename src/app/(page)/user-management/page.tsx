@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
-import ConfirmationDialog from "@/components/modal/ConfirmationDialog";
+import ModalConfirmation from "@/components/modal/ModalConfirmation";
 import { toast } from "react-toastify";
 import { Switch } from "@/components/ui/Switch";
 import { FiEdit, FiPlus, FiTrash2 } from "react-icons/fi";
@@ -15,6 +15,7 @@ import { AiOutlineUser } from "react-icons/ai"; // or any other icon you prefer
 import Pagination from "@/components/pagination/Pagination";
 import { User, usersData } from "@/constants/data";
 import CenteredLoading from "@/components/centerLoading/CenteredLoading";
+import withAuth from "@/configs/withAuth";
 
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>(usersData);
@@ -33,17 +34,16 @@ const UserManagement = () => {
     (currentPage - 1) * usersPerPage,
     currentPage * usersPerPage
   );
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   // Loading state
 
   useEffect(() => {
     // setLoading(true);
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 700); // Set loading time to 2 seconds
-
-    return () => clearTimeout(timer); // Cleanup timer on unmount
+    // const timer = setTimeout(() => {
+    //   setLoading(false);
+    // }, 700); // Set loading time to 2 seconds
+    // return () => clearTimeout(timer); // Cleanup timer on unmount
   }, []);
 
   const handleDeleteUser = (user: User) => {
@@ -192,7 +192,7 @@ const UserManagement = () => {
       )}
 
       {/* Confirmation Dialog */}
-      <ConfirmationDialog
+      <ModalConfirmation
         isOpen={isDeleteDialogOpen}
         title="Confirm Delete!" // Title added
         onClose={() => setIsDeleteDialogOpen(false)}
@@ -203,4 +203,4 @@ const UserManagement = () => {
   );
 };
 
-export default UserManagement;
+export default withAuth(UserManagement);

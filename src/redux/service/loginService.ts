@@ -29,9 +29,9 @@ export class LoginService {
       const url = `/auth/auth-cpjson123bank/generateToken/${encodeURIComponent(
         data.email
       )}/${encodeURIComponent(data.password)}`;
-      const response = await axiosNoAuth.get<LoginUserModel>(url);
+      const response = await axiosNoAuth.get(url);
       if (response.status === 200) {
-        TokenUtils.setToken(response.data.userToken);
+        TokenUtils.setToken(response.data.data.userToken);
         return true;
       }
       return false;
