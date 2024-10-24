@@ -4,7 +4,7 @@ const route = {
   REGISTER: "register",
   EDIT: "edit",
   DEACTIVATE_USER: "deactivate-user",
-  CASH_RECORDS: "cash-records",
+  CASH_RECORDS: "cash-record",
   TEST: "test",
   FORBIDDEN: "forbidden",
 };

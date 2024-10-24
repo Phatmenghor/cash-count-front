@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import React, { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
@@ -11,6 +12,10 @@ import { clearLocalStorage } from "@/utils/localStorage/auth";
 import { UserRole } from "@/constants/userRole";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 import Dropdown from "../ui/Dropdown";
+import { useDispatch } from "react-redux";
+import { fetchUserData } from "@/redux/service/userService";
+import { useAppDispatch } from "@/redux/hooks";
+import { AppDispatch } from "@/redux/store";
 
 const Navbar: React.FC = () => {
   const [userRole, setUserRole] = useState<UserRole | null>(null);
@@ -19,8 +24,10 @@ const Navbar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [currentPath, setCurrentPath] = useState(pathname);
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
+    fetchData();
     const role = UserRoleStorage.getUserRole();
     if (role && Object.values(UserRole).includes(role as UserRole)) {
       setUserRole(role as UserRole);
@@ -32,6 +39,10 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     setCurrentPath(pathname);
   }, [pathname]);
+
+  function fetchData() {
+    dispatch(fetchUserData());
+  }
 
   const positionOptions = ["Manager", "Staff", "Intern"];
 

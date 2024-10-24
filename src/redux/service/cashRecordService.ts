@@ -1,5 +1,5 @@
 import keyEnv from "@/constants/env";
-import { StatusEnum } from "@/models/cashRecord/StatusEnum";
+import { StatusEnum } from "@/redux/models/cashRecord/StatusEnum";
 import { axiosNoAuth, axiosWithAuth } from "@/utils/api/axios";
 import TokenStorage from "@/utils/localStorage/tokenStorage";
 import axios from "axios";
