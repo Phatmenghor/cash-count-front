@@ -6,7 +6,6 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { ToastContainer } from "react-toastify";
 
-
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -32,10 +31,10 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen"`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased "`}
       >
         <Navbar />
-        <main className="flex-grow pt-12">{children}</main>
+        <main className="flex flex-col min-h-screen pt-12">{children}</main>
         <Footer />
         <ToastContainer />
       </body>

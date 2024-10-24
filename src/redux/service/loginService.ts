@@ -6,19 +6,6 @@ import { axiosNoAuth } from "@/utils/api/axios";
 import TokenStorage from "@/utils/localStorage/tokenStorage";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 
-// // Async thunk for fetching user data
-// export const fetchUserData = createAsyncThunk(
-//   "user/fetchUserData",
-//   async (userId: string, { rejectWithValue }) => {
-//     try {
-//       const response = await apiService.get(`/users/${userId}`);
-//       return response.data;
-//     } catch (error) {
-//       return rejectWithValue(error.response.data);
-//     }
-//   }
-// );
-
 interface LoginPayload {
   email: string;
   password: string;

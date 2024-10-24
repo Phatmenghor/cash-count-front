@@ -1,19 +1,13 @@
 export interface UserProfile {
-  branchId: number;
-  role: Role[];
+  roleId: number;
   name: string;
-  branchMnemonic: string;
+  roleName: string;
   id: number;
-  userType: string;
   position: Position;
   department: Department;
+  branch: Branch;
   email: string;
   username: string;
-}
-
-interface Role {
-  id: number;
-  name: string;
 }
 
 interface Position {
@@ -25,4 +19,12 @@ interface Department {
   id: number;
   code: string;
   name: string;
+}
+
+interface Branch {
+  id: number;
+  branchCode: string;
+  mnemonic: string;
+  city: string;
+  userType: string;
 }

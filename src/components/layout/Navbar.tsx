@@ -13,9 +13,9 @@ import { UserRole } from "@/constants/userRole";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 import Dropdown from "../ui/Dropdown";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchUserData } from "@/redux/service/userService";
 import { AppDispatch, RootState } from "@/redux/store";
 import { menuNarbar } from "@/constants/dataListing";
+import UserService from "@/redux/service/userService";
 
 const Navbar: React.FC = () => {
   const [userRole, setUserRole] = useState<UserRole | null>(null);
@@ -41,7 +41,7 @@ const Navbar: React.FC = () => {
   }, [pathname]);
 
   function fetchData() {
-    dispatch(fetchUserData());
+    dispatch(UserService.getUserData());
   }
 
   const handleLogout = () => {
@@ -70,7 +70,6 @@ const Navbar: React.FC = () => {
   }, [userRole]);
 
   const handlePositionSelect = (option: string) => {
-    
     console.log("## Selected Position:", option);
   };
 
