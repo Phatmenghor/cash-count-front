@@ -1,31 +1,56 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { isAuthenticated } from "@/utils/localStorage/auth";
 import { route } from "@/constants/routed";
 import { motion } from "framer-motion";
+import LoadingFullPage from "@/components/centerLoading/LoadingFullPage";
+import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
+import TokenStorage from "@/utils/localStorage/tokenStorage";
 
 // Animation variants
 const variants = {
-  initial: { opacity: 0, y: 50 },
-  enter: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: -50 },
+  initial: { opacity: 0, y: 100 }, // Start from below
+  enter: { opacity: 1, y: 0 }, // Move to original position
+  exit: { opacity: 0, y: -100 }, // Exit upwards
 };
 
-const withAuth = (WrappedComponent: React.FC) => {
-  const AuthenticatedComponent: React.FC = (props) => {
+interface WithAuthProps {
+  allowedRoles?: string[]; // Optional
+}
+
+const withAuth = (
+  WrappedComponent: React.FC<WithAuthProps>,
+  options?: WithAuthProps
+) => {
+  const AuthenticatedComponent: React.FC<WithAuthProps> = (props) => {
     const router = useRouter();
+    const [loading, setLoading] = useState(true);
+    const role = UserRoleStorage.getUserRole();
 
-    React.useEffect(() => {
-      if (isAuthenticated()) {
+    useEffect(() => {
+      if (!TokenStorage.getToken()) {
         router.push(route.LOGIN);
+      } else {
+        if (
+          options?.allowedRoles &&
+          role &&
+          !options.allowedRoles.includes(role)
+        ) {
+          router.push(route.FORBIDDEN);
+        }
       }
-    }, [router]);
+      window.scrollTo(0, 0);
+      setLoading(false);
+    }, [router, options?.allowedRoles, role]);
 
-    // If the user is not authenticated, you can return null or a loading spinner
-    if (isAuthenticated()) {
-      return null;
+    if (
+      !role ||
+      (options?.allowedRoles && !options.allowedRoles.includes(role)) ||
+      loading
+    ) {
+      return <LoadingFullPage />;
     }
 
     return (

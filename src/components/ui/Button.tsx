@@ -19,7 +19,7 @@ const Button: React.FC<ButtonProps> = ({
   ...props
 }) => {
   const baseStyles =
-    "px-4 rounded focus:outline-none transition duration-300 transform"; // Base styles for the button
+    "px-4 rounded focus:outline-none transition duration-300 transform flex justify-center items-center"; // Base styles for the button
   const variantStyles =
     variant === "submit"
       ? "bg-blue-500 text-white hover:bg-blue-600"

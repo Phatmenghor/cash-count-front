@@ -5,8 +5,6 @@ import "../globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { ToastContainer } from "react-toastify";
-import { usePathname } from "next/navigation";
-import { useEffect } from "react";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -24,12 +22,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const pathname = usePathname();
-
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
-
   return (
     <html lang="en">
       <head>
@@ -39,10 +31,12 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen"`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased"`}
       >
         <Navbar />
-        <main className="flex-grow pt-12">{children}</main>
+        <main className="flex-grow pt-12 flex flex-col min-h-screen">
+          {children}
+        </main>
         <Footer />
         <ToastContainer />
       </body>

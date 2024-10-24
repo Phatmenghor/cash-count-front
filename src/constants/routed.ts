@@ -6,6 +6,7 @@ const route = {
   DEACTIVATE_USER: "deactivate-user",
   CASH_RECORDS: "cash-records",
   TEST: "test",
+  FORBIDDEN: "forbidden",
 };
 
 export { route };

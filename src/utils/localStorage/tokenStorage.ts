@@ -2,7 +2,7 @@
 
 import { keyStorage } from "../../constants/keyStorage";
 
-class TokenUtils {
+class TokenStorage {
   private static calculateExpiryTime(): string {
     const now = new Date();
     const expiry = new Date();
@@ -47,4 +47,4 @@ class TokenUtils {
   }
 }
 
-export default TokenUtils;
+export default TokenStorage;

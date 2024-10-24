@@ -3,7 +3,8 @@
 
 import { LoginUserModel } from "@/models/login/LoginUserModel";
 import { axiosNoAuth } from "@/utils/api/axios";
-import TokenUtils from "@/utils/localStorage/token";
+import TokenStorage from "@/utils/localStorage/tokenStorage";
+import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 
 // // Async thunk for fetching user data
 // export const fetchUserData = createAsyncThunk(
@@ -31,12 +32,13 @@ export class LoginService {
       )}/${encodeURIComponent(data.password)}`;
       const response = await axiosNoAuth.get(url);
       if (response.status === 200) {
-        TokenUtils.setToken(response.data.data.userToken);
-        return true;
+        TokenStorage.setToken(response.data.data.userToken);
+        UserRoleStorage.setUserRole(response.data.data.roleName);
+        return response.data.data.roleName;
       }
-      return false;
+      return null;
     } catch {
-      return false;
+      return null;
     }
   };
 }

@@ -15,6 +15,7 @@ import { Record, recordsData } from "@/constants/data";
 import CenteredLoading from "@/components/centerLoading/CenteredLoading";
 import { CashRecordService } from "@/redux/service/cashRecordService";
 import withAuth from "@/configs/withAuth";
+import { UserRole } from "@/constants/userRole";
 
 const CashRecords = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -180,4 +181,10 @@ const CashRecords = () => {
   );
 };
 
-export default withAuth(CashRecords);
+export default withAuth(CashRecords, {
+  allowedRoles: [
+    UserRole.AUTHORIZER_USER,
+    UserRole.CHECKER_USER,
+    UserRole.INPUTTER_USER,
+  ],
+});

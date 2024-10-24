@@ -24,7 +24,7 @@ const UserManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(1);
-  const usersPerPage = 7; // Number of users per page
+  const usersPerPage = 15; // Number of users per page
   const totalUsers = users.length;
   const totalPages = Math.ceil(totalUsers / usersPerPage);
   const filteredUsers = users.filter((user) =>

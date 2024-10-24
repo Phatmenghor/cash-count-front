@@ -2,8 +2,9 @@
 import "react-toastify/dist/ReactToastify.css";
 import localFont from "next/font/local";
 import "../globals.css";
-import { ToastContainer } from "react-toastify";
+import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import { ToastContainer } from "react-toastify";
 
 
 const geistSans = localFont({
@@ -31,9 +32,10 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen"`}
       >
-        <main className="flex-grow">{children}</main>
+        <Navbar />
+        <main className="flex-grow pt-12">{children}</main>
         <Footer />
         <ToastContainer />
       </body>

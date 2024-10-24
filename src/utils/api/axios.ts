@@ -1,7 +1,7 @@
 import keyEnv from "@/constants/env";
 import { keyStorage } from "@/constants/keyStorage";
 import axios from "axios";
-import TokenUtils from "../localStorage/token";
+import TokenStorage from "../localStorage/tokenStorage";
 
 // Base Axios instance (no token required)
 const axiosNoAuth = axios.create({
@@ -24,7 +24,7 @@ const axiosWithAuth = axios.create({
 // Adding an interceptor to include the token for requests that require authentication
 axiosWithAuth.interceptors.request.use(
   (config) => {
-    const token = TokenUtils.getToken();
+    const token = TokenStorage.getToken();
 
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;

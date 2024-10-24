@@ -8,9 +8,10 @@ import FormMessage from "../../../components/ui/FormMessage";
 import { LoginService } from "@/redux/service/loginService";
 import { route } from "@/constants/routed";
 import withAnimation from "@/configs/withAnimation";
+import { UserRole } from "@/constants/userRole";
 
 const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState("sokrann@gmail.com");
+  const [email, setEmail] = useState("phat.menghor");
   const [password, setPassword] = useState("123456789");
   const [usernameError, setUsernameError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
@@ -39,40 +40,37 @@ const LoginPage: React.FC = () => {
 
     if (hasError) return; // Stop if there are validation errors
 
-    router.push(`/${route.REGISTER}/hoe`);
-    return;
-
-    setLoading(true); // Set loading state to true
+    setLoading(true);
     const response = await LoginService.loginUser({
       email: email,
       password: password,
     });
-    if (response) {
-      router.push(`/${route.REGISTER}`);
+    if (response === UserRole.IT_ADMIN_USER || UserRole.OPERATION_ADMIN_USER) {
+      router.push(`/${route.USER_MANAGEMENT}`);
     }
   };
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEmail(e.target.value);
     if (usernameError) {
-      setUsernameError(null); // Clear error message if user starts typing
+      setUsernameError(null);
     }
   };
 
   const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPassword(e.target.value);
     if (passwordError) {
-      setPasswordError(null); // Clear error message if user starts typing
+      setPasswordError(null);
     }
   };
 
   const togglePasswordVisibility = () => {
-    setPasswordVisible(!passwordVisible); // Toggle the visibility state
+    setPasswordVisible(!passwordVisible);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      handleLogin(e as unknown as React.FormEvent); // Call handleLogin on Enter key press
+      handleLogin(e as unknown as React.FormEvent);
     }
   };
 
