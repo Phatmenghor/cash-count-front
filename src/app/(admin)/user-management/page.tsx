@@ -1,21 +1,21 @@
 // src/app/manage-users/page.tsx
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Button from "@/components/ui/Button";
-import ModalConfirmation from "@/components/modal/ModalConfirmation";
-import { toast } from "react-toastify";
-import { Switch } from "@/components/ui/Switch";
-import { FiEdit, FiPlus, FiTrash2 } from "react-icons/fi";
-import { useRouter } from "next/navigation";
-import { route } from "@/constants/routed";
-import Input from "@/components/ui/Input";
-import EmptyState from "@/components/emthyData/EmptyState";
-import { AiOutlineUser } from "react-icons/ai"; // or any other icon you prefer
-import Pagination from "@/components/pagination/Pagination";
-import { User, usersData } from "@/constants/data";
 import CenteredLoading from "@/components/centerLoading/CenteredLoading";
+import EmptyState from "@/components/emthyData/EmptyState";
+import ModalConfirmation from "@/components/modal/ModalConfirmation";
+import Pagination from "@/components/pagination/Pagination";
+import Button from "@/components/ui/Button";
+import Input from "@/components/ui/Input";
+import { Switch } from "@/components/ui/Switch";
 import withAuth from "@/configs/withAuth";
+import { User, usersData } from "@/constants/data";
+import { route } from "@/constants/routed";
+import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+import { AiOutlineUser } from "react-icons/ai";
+import { FiEdit, FiPlus, FiTrash2 } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 const UserManagement = () => {
   const [users, setUsers] = useState<User[]>(usersData);

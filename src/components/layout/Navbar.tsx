@@ -12,19 +12,19 @@ import { clearLocalStorage } from "@/utils/localStorage/auth";
 import { UserRole } from "@/constants/userRole";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 import Dropdown from "../ui/Dropdown";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchUserData } from "@/redux/service/userService";
-import { useAppDispatch } from "@/redux/hooks";
-import { AppDispatch } from "@/redux/store";
+import { AppDispatch, RootState } from "@/redux/store";
+import { menuNarbar } from "@/constants/dataListing";
 
 const Navbar: React.FC = () => {
   const [userRole, setUserRole] = useState<UserRole | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const fullName = "Phat Menghor"; // Replace with dynamic user name if needed
   const pathname = usePathname();
   const router = useRouter();
   const [currentPath, setCurrentPath] = useState(pathname);
   const dispatch = useDispatch<AppDispatch>();
+  const { userData } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     fetchData();
@@ -43,8 +43,6 @@ const Navbar: React.FC = () => {
   function fetchData() {
     dispatch(fetchUserData());
   }
-
-  const positionOptions = ["Manager", "Staff", "Intern"];
 
   const handleLogout = () => {
     showToast("You have successfully logged out.", "success");
@@ -72,6 +70,7 @@ const Navbar: React.FC = () => {
   }, [userRole]);
 
   const handlePositionSelect = (option: string) => {
+    
     console.log("## Selected Position:", option);
   };
 
@@ -83,7 +82,7 @@ const Navbar: React.FC = () => {
         </h1>
         <div className="flex items-center space-x-4">
           <Dropdown
-            options={positionOptions}
+            options={menuNarbar}
             onSelect={handlePositionSelect}
             label="Menu"
           />
@@ -116,7 +115,7 @@ const Navbar: React.FC = () => {
             className="flex items-center space-x-2 ml-auto py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
             aria-label="Logout"
           >
-            <span className="text-white">{fullName}</span>
+            <span className="text-white">{userData?.name ?? ""}</span>
             <FaSignOutAlt title="Logout" />
           </Button>
         </div>
@@ -128,7 +127,7 @@ const Navbar: React.FC = () => {
         title="Confirm Logout!"
         onClose={() => setIsDialogOpen(false)}
         onConfirm={handleLogout}
-        message={`Are you sure you want to log out, ${fullName}?`}
+        message={`Are you sure you want to log out, ${userData?.name ?? ""}?`}
       />
     </nav>
   );

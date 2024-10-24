@@ -49,7 +49,7 @@ const Dropdown: React.FC<DropdownProps> = ({ options, onSelect, label }) => {
       onMouseLeave={handleMouseLeave}
     >
       <button
-        className="text-gray-900 px-4 py-2 rounded-md flex justify-between items-center w-full transition duration-150 ease-in-out focus:outline-none"
+        className="text-gray-900 rounded-md flex justify-between items-center w-full transition duration-150 ease-in-out focus:outline-none"
         aria-haspopup="true"
         aria-expanded={isOpen}
       >
@@ -74,7 +74,7 @@ const Dropdown: React.FC<DropdownProps> = ({ options, onSelect, label }) => {
       </button>
       {isOpen && (
         <motion.ul
-          className="absolute right-0 z-10 bg-gray-200 text-gray-900 rounded-md shadow-lg mt-1 w-full"
+          className="absolute right-0 z-10 bg-gray-200 text-gray-900 rounded-md shadow-lg mt-2 w-auto "
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
@@ -84,8 +84,8 @@ const Dropdown: React.FC<DropdownProps> = ({ options, onSelect, label }) => {
             <motion.li
               key={option}
               className={`relative px-4 py-2 cursor-pointer transition-colors duration-150 group ${
-                pathname === option ? "font-semibold" : ""
-              } hover:bg-gray-300`}
+                pathname === option ? "bg-gray-900 text-white" : "text-gray-800"
+              } hover:bg-gray-300 hover:rounded`} // Add hover background color
               onClick={() => handleSelect(option)}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -94,19 +94,14 @@ const Dropdown: React.FC<DropdownProps> = ({ options, onSelect, label }) => {
             >
               <span className="block relative">
                 <span
-                  className={`${
-                    pathname === option
-                      ? "font-semibold underline text-gray-900"
-                      : "text-gray-800"
-                  }`}
+                  className={`text-black ${pathname === option ? "font-semibold" : ""}`}
                 >
                   {option}
                 </span>
+                {/* Optional border effect */}
                 <span
                   className={`absolute left-0 right-0 bottom-0 h-0.5 bg-gray-900 scale-x-0 transition-transform duration-300 ease-in-out ${
-                    pathname === option
-                      ? "scale-x-100" // Show border when active
-                      : "group-hover:scale-x-100" // Show border on hover
+                    pathname === option ? "scale-x-100" : ""
                   }`}
                 ></span>
               </span>
