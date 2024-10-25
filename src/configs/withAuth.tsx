@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { route } from "@/constants/routed";
 import { motion } from "framer-motion";
 import LoadingFullPage from "@/components/centerLoading/LoadingFullPage";
@@ -17,7 +17,7 @@ const variants = {
 };
 
 interface WithAuthProps {
-  allowedRoles?: string[]; // Optional
+  allowedRoles?: string[];
 }
 
 const withAuth = (
@@ -31,14 +31,14 @@ const withAuth = (
 
     useEffect(() => {
       if (!TokenStorage.getToken()) {
-        router.push(route.LOGIN);
+        redirect(route.LOGIN);
       } else {
         if (
           options?.allowedRoles &&
           role &&
           !options.allowedRoles.includes(role)
         ) {
-          router.push(route.FORBIDDEN);
+          redirect(route.FORBIDDEN);
         }
       }
       window.scrollTo(0, 0);

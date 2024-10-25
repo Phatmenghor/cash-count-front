@@ -3,11 +3,12 @@ import { toast, ToastOptions, ToastPosition } from "react-toastify";
 
 const showToast = (
   message: string,
-  type: "success" | "error" | "info" | "warning" = "info"
+  type: "success" | "error" | "info" | "warning" = "info",
+  autoClose: number = 2500 
 ) => {
   // Define options with proper typing for position
   const options: ToastOptions = {
-    autoClose: 5000,
+    autoClose: autoClose,
     closeOnClick: true,
     draggable: true,
     position: "top-right" as ToastPosition,

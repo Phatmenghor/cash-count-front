@@ -39,7 +39,7 @@ const LoginPage: React.FC = () => {
       hasError = true;
     }
 
-    if (hasError) return; // Stop if there are validation errors
+    if (hasError) return;
 
     setLoading(true);
     const response = await LoginService.loginUser({
@@ -148,6 +148,18 @@ const LoginPage: React.FC = () => {
             Login
           </Button>
         </form>
+
+        <div className="mt-4 text-center">
+          <p className="text-sm text-gray-600 ">
+            Don&apos;t have an account?{" "}
+            <a
+              href={`/${route.REGISTER}?name=${encodeURIComponent("New User")}`}
+              className="text-blue-500 hover:text-blue-700 transition-colors underline"
+            >
+              Register
+            </a>
+          </p>
+        </div>
       </div>
     </div>
   );

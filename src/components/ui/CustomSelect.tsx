@@ -1,90 +1,83 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import { FiChevronDown, FiX } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
-import { FiChevronDown, FiX } from "react-icons/fi"; // Arrow down and clear icons
-import FormMessage from "./FormMessage";
-import Input from "./Input";
 
-interface Option {
-  value: string;
-  label: string;
-}
-
-interface CustomSelectProps {
+interface CustomSelectProps<T> {
   id: string;
-  name: string;
-  value: string;
-  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  options: Option[];
+  value: T | null;
+  onChange: (option: T | null) => void;
+  options: T[] | null;
   label: string;
+  getOptionLabel: (option: T) => string;
   errorMessage?: string;
   required?: boolean;
 }
 
-const CustomSelect: React.FC<CustomSelectProps> = ({
+const CustomSelect = <T,>({
   id,
-  name,
   value,
   onChange,
   options,
   label,
+  getOptionLabel,
   errorMessage,
   required = false,
-}) => {
+}: CustomSelectProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const selectRef = useRef<HTMLDivElement | null>(null); // Ref to the select div
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const toggleDropdown = () => {
-    setIsOpen((prev) => !prev);
-    setSearchTerm(""); // Reset search term when dropdown opens
-  };
-
-  const handleOptionClick = (optionValue: string) => {
-    onChange({
-      target: { value: optionValue, name },
-    } as React.ChangeEvent<HTMLSelectElement>);
-    setIsOpen(false);
-    setSearchTerm(""); // Clear search term after selection
-  };
-
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (event.key === "Enter" || event.key === " ") {
-      toggleDropdown();
-    }
-  };
-
-  // Handle clicks outside the dropdown
-  const handleClickOutside = (event: MouseEvent) => {
-    if (
-      selectRef.current &&
-      !selectRef.current.contains(event.target as Node)
-    ) {
-      setIsOpen(false);
-    }
-  };
-
-  // Attach click outside listener
+  // Debounce the search term to reduce the number of filter calls
   useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearchTerm(searchTerm);
+    }, 300);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchTerm]);
+
+  // Close dropdown on clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
     document.addEventListener("mousedown", handleClickOutside);
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  // Filter options based on search term (search by label)
-  const filteredOptions = searchTerm
-    ? options.filter((option) =>
-        option.label.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : options; // Show all options if searchTerm is empty
-
-  // Clear search input
-  const clearSearch = () => {
-    setSearchTerm("");
+  const toggleDropdown = () => {
+    setIsOpen((prev) => !prev);
+    setSearchTerm(""); // Reset search term when dropdown opens
   };
 
+  const handleOptionClick = (option: T) => {
+    onChange(option); // Pass the entire option
+    setIsOpen(false);
+    setSearchTerm(""); // Clear search term after selection
+  };
+
+  // Filter options based on the debounced search term
+  const filteredOptions = debouncedSearchTerm
+    ? options?.filter((option) =>
+        getOptionLabel(option)
+          .toLowerCase()
+          .includes(debouncedSearchTerm.toLowerCase())
+      ) || []
+    : options || [];
+
   return (
-    <div ref={selectRef} className="relative ">
+    <div className="relative" ref={dropdownRef}>
       <label
         htmlFor={id}
         className="block text-sm font-medium text-gray-700 mb-1"
@@ -95,21 +88,22 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
       <div className="relative">
         <div
           className="flex justify-between items-center border border-gray-300 rounded-md px-3 py-1.5 cursor-pointer"
+          onMouseEnter={() => setIsOpen(true)} // Open on hover
+          onMouseLeave={() => {
+            // Close only if the dropdown is not open
+            if (!isOpen) {
+              setIsOpen(false);
+            }
+          }}
           onClick={toggleDropdown}
-          onKeyDown={handleKeyDown}
-          role="button"
-          tabIndex={0}
-          aria-haspopup="true"
-          aria-expanded={isOpen}
-          aria-labelledby={id} // Link label with dropdown
         >
-          <div
-            className={`flex items-center ${
+          <span
+            className={`text-sm whitespace-nowrap overflow-hidden text-ellipsis ${
               !value ? "text-gray-500" : "text-black"
             }`}
           >
-            <span className="text-sm">{value || `Select ${label}`}</span>
-          </div>
+            {value ? getOptionLabel(value) : `Select ${label.toLowerCase()}`}
+          </span>
           <FiChevronDown
             className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
           />
@@ -117,14 +111,16 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1 "
+              className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1"
               initial={{ opacity: 0, y: -10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
+              onMouseEnter={() => setIsOpen(true)} // Keep dropdown open on hover
+              onMouseLeave={() => setIsOpen(false)} // Close on mouse leave
             >
               <div className="flex items-center border-b border-gray-300 p-1">
-                <Input
+                <input
                   type="text"
                   className="flex-grow px-2 py-0.5 border-none focus:ring-transparent"
                   placeholder="Search..."
@@ -133,38 +129,21 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                 />
                 {searchTerm && (
                   <FiX
-                    className="absolute right-2 cursor-pointer text-gray-500" // Positioned to the right
-                    onClick={clearSearch}
+                    className="absolute right-2 cursor-pointer text-gray-500"
+                    onClick={() => setSearchTerm("")}
                     aria-label="Clear search"
                   />
                 )}
               </div>
               <div className="max-h-48 overflow-y-auto">
                 {filteredOptions.length > 0 ? (
-                  filteredOptions.map((option) => (
+                  filteredOptions.map((option, index) => (
                     <div
-                      key={option.value}
-                      onClick={() => handleOptionClick(option.label)}
-                      className={`block py-1 px-2 cursor-pointer hover:bg-gray-100 ${
-                        value === option.value
-                          ? "font-semibold bg-gray-200"
-                          : ""
-                      }`}
-                      role="option"
-                      tabIndex={0}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                          handleOptionClick(option.value);
-                        }
-                      }}
+                      key={index}
+                      onClick={() => handleOptionClick(option)}
+                      className={`block py-1 px-2 cursor-pointer hover:bg-gray-200`}
                     >
-                      <span
-                        className={`text-sm ${
-                          value === option.value ? "font-medium" : "font-normal"
-                        }`}
-                      >
-                        {option.label}
-                      </span>
+                      <span className="text-sm">{getOptionLabel(option)}</span>
                     </div>
                   ))
                 ) : (
@@ -177,7 +156,9 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
           )}
         </AnimatePresence>
       </div>
-      {errorMessage && <FormMessage message={errorMessage} type="error" />}
+      {errorMessage && (
+        <span className="text-red-500 text-sm">{errorMessage}</span>
+      )}
     </div>
   );
 };
