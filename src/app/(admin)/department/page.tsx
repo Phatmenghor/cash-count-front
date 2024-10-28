@@ -17,43 +17,48 @@ import { BranchModel } from "@/redux/models/register/BranchModel";
 import { useRouter } from "next/navigation";
 import showToast from "@/components/toast/useToast";
 import ModalConfirmation from "@/components/modal/ModalConfirmation";
+import { DepartmentService } from "@/redux/service/departmentService";
+import { DepartmentListModel } from "@/redux/models/department/DepartmentListModel";
+import { DepartmentModel } from "@/redux/models/register/DepartmentModel";
+import ModalCreateEditDepartment from "@/components/modal/ModalCreateEditDepartment";
 
-const BranchPage: React.FC = () => {
-  const [branchList, setBranchList] = useState<BranchListModel>({
+const DepartmentPage: React.FC = () => {
+  const [departmentList, setDepartmentList] = useState<DepartmentListModel>({
     data: [],
     pagination: null,
   });
   const [size, setSize] = useState<number>(15);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const headers = ["Number", "Mnemonic", "Branch Code", "City", "Actions"];
-  const listSize = branchList.pagination?.currentPage ?? 15;
+  const headers = ["Number", "Deaprtment", "Branch Code", "Actions"];
+  const listSize = departmentList.pagination?.currentPage ?? 15;
   const [isModalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [currentBranch, setCurrentBranch] = useState<BranchModel | null>(null);
-  const rounter = useRouter();
+  const [currentBranch, setCurrentBranch] = useState<DepartmentModel | null>(
+    null
+  );
 
   useEffect(() => {
     fetchData();
   }, []);
 
   async function fetchData(currentPage = 1, pageSize = size) {
-    const response = await BranchService.getBranch({
+    const response = await DepartmentService.getDepartment({
       pageSize,
       currentPage,
     });
-    setBranchList({
+    setDepartmentList({
       data: response.data,
       pagination: response.pagination,
     });
   }
 
   function onPageChange(value: number) {
-    fetchData(value, branchList.pagination?.pageSize ?? 15);
+    fetchData(value, departmentList.pagination?.pageSize ?? 15);
   }
 
   function handlePageSize(value: number) {
     setSize(value);
-    fetchData(branchList.pagination?.currentPage, value);
+    fetchData(departmentList.pagination?.currentPage, value);
   }
 
   const handleSearch = useCallback(
@@ -73,7 +78,7 @@ const BranchPage: React.FC = () => {
       currentPage: page,
       search,
     });
-    setBranchList({
+    setDepartmentList({
       data: response.data,
       pagination: response.pagination,
     });
@@ -89,75 +94,68 @@ const BranchPage: React.FC = () => {
     setModalOpen(true);
   };
 
-  const handleOpenEditModal = (branch: BranchModel) => {
+  const handleOpenEditModal = (branch: DepartmentModel) => {
     setCurrentBranch(branch);
     setModalOpen(true);
   };
 
   const handleCreateEditBranch = async (data: {
-    branchCode: string;
-    mnemonic: string;
-    city: string;
+    code: string;
+    name: string;
   }) => {
     if (currentBranch) {
       updateBranch({ ...currentBranch, ...data });
     } else {
-      createBranch(data);
+      createDepartment(data);
     }
-
     setModalOpen(false);
   };
 
-  async function createBranch(data: {
-    branchCode: string;
-    mnemonic: string;
-    city: string;
-  }) {
+  async function createDepartment(data: { code: string; name: string }) {
     setLoading(true);
-    const response = await BranchService.createBranch({
-      branchCode: data.branchCode,
-      city: data.city,
-      mnemonic: data.mnemonic,
+    const response = await DepartmentService.createDepartment({
+      name: data.name,
+      code: data.code,
     });
 
     if (response.success) {
-      setBranchList((prevBranchList) => ({
+      setDepartmentList((prevBranchList) => ({
         ...prevBranchList,
         data: [response.data, ...prevBranchList.data],
       }));
-      showToast("Branch created successfully!", "success");
+      showToast("Department created successfully!", "success");
     } else {
-      showToast(response.data, "error");
+      showToast(response.data, "error", 7000);
     }
     setLoading(false);
   }
 
-  async function updateBranch(data: BranchModel) {
+  async function updateBranch(data: DepartmentModel) {
     setLoading(true);
-    const response = await BranchService.updateBranch(data);
+    const response = await DepartmentService.updateDepartment(data);
 
     if (response.success) {
-      setBranchList((prevBranchList) => ({
+      setDepartmentList((prevBranchList) => ({
         ...prevBranchList,
         data: prevBranchList.data.map((branch) =>
           branch.id === data.id ? response.data : branch
         ),
       }));
-      showToast("Branch updated successfully!", "success");
+      showToast("Department updated successfully!", "success");
     } else {
-      showToast("Failed to update branch.", "error", 7000);
+      showToast("Failed to update department.", "error");
     }
     setLoading(false);
   }
 
   return (
     <div className="container mx-auto px-4 pt-4">
-      <h1 className="text-2xl font-bold mb-4">Branch List</h1>
+      <h1 className="text-2xl font-bold mb-4">Department List</h1>
 
       <div className="flex items-center mb-4 justify-between">
         <Input
           type="text"
-          placeholder=" Search Branch ..."
+          placeholder="Search Department ..."
           value={searchTerm}
           onChange={onSearch}
           className="mr-4 py-1"
@@ -167,7 +165,7 @@ const BranchPage: React.FC = () => {
           className="text-white flex items-center py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
         >
           <FiPlus size={18} />
-          <span className="ml-1">Add Branch</span>
+          <span className="ml-1">Add Department</span>
         </Button>
       </div>
 
@@ -186,25 +184,24 @@ const BranchPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {branchList.data.length === 0 ? (
+            {departmentList.data.length === 0 ? (
               <tr>
                 <td colSpan={9} className="hover:bg-white">
-                  <EmptyState message="No branch available." />
+                  <EmptyState message="No department available." />
                 </td>
               </tr>
             ) : (
-              branchList.data.map((branch, index) => {
+              departmentList.data.map((data, index) => {
                 const displayIndex = (listSize - 1) * size + index + 1;
                 return (
-                  <tr key={branch.id} className="hover:bg-gray-200">
+                  <tr key={data.id} className="hover:bg-gray-200">
                     <td>{displayIndex}</td>
-                    <td>{branch.mnemonic}</td>
-                    <td>{branch.branchCode}</td>
-                    <td>{branch.city}</td>
+                    <td>{data.name}</td>
+                    <td>{data.code}</td>
                     <td>
                       <button
                         onClick={() => {
-                          handleOpenEditModal(branch);
+                          handleOpenEditModal(data);
                         }}
                         className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"
                       >
@@ -225,20 +222,20 @@ const BranchPage: React.FC = () => {
           onSelect={handlePageSize}
           label="Select Size"
         />
-        {branchList.data.length > 0 && (
+        {departmentList.data.length > 0 && (
           <Pagination
-            totalPages={branchList.pagination?.totalPages ?? 1}
-            currentPage={branchList.pagination?.currentPage ?? 1}
+            totalPages={departmentList.pagination?.totalPages ?? 1}
+            currentPage={departmentList.pagination?.currentPage ?? 1}
             onPageChange={onPageChange}
           />
         )}
       </div>
 
-      <ModalCreateEditBranch
+      <ModalCreateEditDepartment
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
         onConfirm={handleCreateEditBranch}
-        title={currentBranch ? "Edit Branch" : "Create New Branch"}
+        title={currentBranch ? "Edit Department" : "Create New Department"}
         initialData={currentBranch ? currentBranch : undefined}
         loadingButton={loading}
       />
@@ -246,4 +243,4 @@ const BranchPage: React.FC = () => {
   );
 };
 
-export default withAuth(BranchPage);
+export default withAuth(DepartmentPage);

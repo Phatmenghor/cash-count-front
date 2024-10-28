@@ -41,7 +41,7 @@ const Button: React.FC<ButtonProps> = ({
     >
       {loading ? (
         <>
-          <FiLoader className="animate-spin mr-2 h-5 w-5" /> {/* Loader icon */}
+          <FiLoader className="animate-spin mr-2 h-4 w-4" /> {/* Loader icon */}
           {textLoading}
         </>
       ) : (

@@ -12,6 +12,8 @@ import showToast from "@/components/toast/useToast";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { RegisterService } from "@/redux/service/registerService";
 import { AllDataType, FormDataType } from "./type";
+import { BranchModel } from "@/redux/models/register/BranchModel";
+import { PositionModel } from "@/redux/models/register/PositionModel";
 
 const Register: React.FC = () => {
   const searchParams = useSearchParams();
@@ -139,7 +141,7 @@ const Register: React.FC = () => {
         setLoading(false);
         return;
       }
-      showToast("Failed to send email. Please try again.", "error", 5000);
+      showToast("Failed to send email. Please try again.", "error", 7000);
     } else if (step === 2) {
       const response = await RegisterService.verifyEmail({
         mail: formData.email,
@@ -154,7 +156,7 @@ const Register: React.FC = () => {
       showToast(
         "Verification unsuccessful. Please verify your email and code otp again.",
         "error",
-        5000
+        7000
       );
     } else if (step === 3) {
       const resposne = await RegisterService.registerAccount({
@@ -175,7 +177,7 @@ const Register: React.FC = () => {
         setLoading(false);
         return;
       }
-      showToast(resposne.message, "error", 5000);
+      showToast(resposne.message, "error", 7000);
     }
     setLoading(false);
   };
@@ -205,28 +207,6 @@ const Register: React.FC = () => {
   const togglePasswordVisibility = () => {
     setPasswordVisible(!passwordVisible);
   };
-
-  const departmentOptions = [
-    { value: "hr", label: "Human Resources" },
-    { value: "it", label: "IT" },
-    { value: "finance", label: "Finance" },
-  ];
-
-  const positionOptions = [
-    { value: "manager", label: "Manager" },
-    { value: "staff", label: "Staff" },
-    { value: "intern", label: "Intern" },
-  ];
-
-  const [selectedOption, setSelectedOption] = useState(null);
-  const [error, setError] = useState("");
-
-  const options = [
-    { id: "1", name: "Option 1" },
-    { id: "2", name: "Option 2" },
-    { id: "3", name: "Option 3" },
-    // Add more options as needed
-  ];
 
   const handleChange = (key: keyof typeof formData, option: any) => {
     setFormData((prevData) => ({

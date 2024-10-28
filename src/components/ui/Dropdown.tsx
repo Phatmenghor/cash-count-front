@@ -6,15 +6,9 @@ interface DropdownProps {
   options: string[];
   onSelect: (option: string) => void;
   label: string;
-  isSize?: boolean;
 }
 
-const Dropdown: React.FC<DropdownProps> = ({
-  options,
-  onSelect,
-  label,
-  isSize,
-}) => {
+const Dropdown: React.FC<DropdownProps> = ({ options, onSelect, label }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const pathname = usePathname();
@@ -55,26 +49,20 @@ const Dropdown: React.FC<DropdownProps> = ({
       onMouseLeave={handleMouseLeave}
     >
       <button
-        className={`${
-          isSize ? "border border-gray-800 rounded-md px-3" : ""
-        } rounded-md flex justify-between items-center w-full transition duration-150 ease-in-out focus:outline-none`}
+        className="rounded-md flex justify-between items-center w-full transition duration-150 ease-in-out focus:outline-none"
         aria-haspopup="true"
         aria-expanded={isOpen}
       >
-        <span className={`${isSize ? "text-gray-600" : "text-white"}`}>
-          {selectedOption
-            ? `${isSize ? "Size " : ""}${selectedOption}`
-            : `${isSize ? "Size " : ""}${label}`}
+        <span className="text-white">
+          {selectedOption ? `${selectedOption}` : `${label}`}
         </span>
         <svg
-          className={`${
-            isSize ? "-mr-0.5" : ""
-          } w-4 h-4 ml-1 transform transition-transform duration-200 ${
+          className={` w-4 h-4 ml-1 transform transition-transform duration-200 ${
             isOpen ? "rotate-180" : ""
           }`}
           fill="none"
           viewBox="0 0 24 24"
-          stroke={isSize ? "black" : "white"} // Change color based on selection
+          stroke="white"
         >
           <path
             strokeLinecap="round"
@@ -86,12 +74,11 @@ const Dropdown: React.FC<DropdownProps> = ({
       </button>
       {isOpen && (
         <motion.ul
-          className="absolute right-0 z-10 bg-gray-200 text-gray-900 rounded-md shadow-lg mt-2 w-auto overflow-y-auto"
+          className="absolute right-0 z-10 bg-gray-200 text-gray-900 rounded-md shadow-lg mt-2 w-auto overflow-y-auto h-[50vh]"
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.2 }}
-          style={isSize ? { maxHeight: "120px" } : { maxHeight: "250px" }}
         >
           {options.map((option) => (
             <motion.li

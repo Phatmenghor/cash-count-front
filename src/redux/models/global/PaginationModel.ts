@@ -2,6 +2,6 @@ export interface PaginationModel {
   totalElements: number;
   totalPages: number;
   currentPage: number;
-  pageSize: string;
+  pageSize: number;
   offset: number;
 }

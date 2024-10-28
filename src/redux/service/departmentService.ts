@@ -7,27 +7,26 @@ interface getBranchParams {
   search?: string;
 }
 
-interface createBranchParams {
-  branchCode: string;
-  mnemonic: string;
-  city: string;
+interface createDepartmentParams {
+  code: string;
+  name: string;
 }
 
-interface updateBranchParams {
-  branchCode: string;
-  mnemonic: string;
-  city: string;
+interface updateDepartmentParams {
+  id: string;
+  code: string;
+  name: string;
 }
 
-export class BranchService {
-  static getBranch = async ({
+export class DepartmentService {
+  static getDepartment = async ({
     pageSize = 15,
     currentPage = 1,
     search = "",
   }: getBranchParams) => {
     try {
       const response = await axiosWithAuth.get(
-        `/api/branch?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`
+        `/api/department?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`
       );
       return {
         data: response.data.data,
@@ -38,9 +37,15 @@ export class BranchService {
     }
   };
 
-  static createBranch = async (payload: createBranchParams) => {
+  static createDepartment = async (payload: createDepartmentParams) => {
     try {
-      const response = await axiosWithAuth.post(`/api/branch/store`, payload);
+      console.log("### ===payload", payload);
+      const response = await axiosWithAuth.post(
+        `/api/department/store`,
+        payload
+      );
+      console.log("### ===", response);
+
       return {
         success: true,
         data: response.data.data,
@@ -50,25 +55,27 @@ export class BranchService {
         if (error.response && error.response.status === 403) {
           return {
             success: false,
-            data:
-              "This Branch code is already created. Please try a different one.",
+            data: "This Department name is already created. Please try a different one.",
           };
         }
         return {
           success: false,
-          data: "Failed to create branch. Please try again.",
+          data: "Failed to create department. Please try again.",
         };
       }
       return {
         success: false,
-        message: "An unexpected error occurred. Please check your connection.",
+        data: "An unexpected error occurred. Please check your connection.",
       };
     }
   };
 
-  static updateBranch = async (payload: updateBranchParams) => {
+  static updateDepartment = async (payload: updateDepartmentParams) => {
     try {
-      const response = await axiosWithAuth.post(`/api/branch/update`, payload);
+      const response = await axiosWithAuth.post(
+        `/api/department/update`,
+        payload
+      );
       return {
         success: true,
         data: response.data.data,

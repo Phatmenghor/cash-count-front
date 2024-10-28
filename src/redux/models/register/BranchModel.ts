@@ -1,6 +1,6 @@
 export interface BranchModel {
   id: number;
-  userId: any;
+  userId: number;
   branchCode: string;
   mnemonic: string;
   city: string;
