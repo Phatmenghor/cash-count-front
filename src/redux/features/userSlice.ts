@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import UserService from "../service/userService";
-import { UserProfile } from "../models/userManagement/UserProfile";
+import { UserProfile } from "../models/userManagement/UserProfileModel";
 import { handleError } from "@/constants/handleError";
 
 interface UserState {

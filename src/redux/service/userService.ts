@@ -1,6 +1,6 @@
 import { axiosWithAuth } from "@/utils/api/axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { UserProfile } from "../models/userManagement/UserProfile";
+import { UserProfile } from "../models/userManagement/UserProfileModel";
 
 class UserService {
   static getUserData = createAsyncThunk<

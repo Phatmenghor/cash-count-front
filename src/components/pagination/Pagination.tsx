@@ -14,7 +14,6 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
   const getPageNumbers = () => {
     const pages = [];
-
     const startPage = Math.max(1, currentPage - 1);
     const endPage = Math.min(totalPages, currentPage + 1);
 
@@ -40,23 +39,26 @@ const Pagination: React.FC<PaginationProps> = ({
   };
 
   return (
-    <div className="flex justify-center mt-4 mb-8">
+    <div className="flex justify-center">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="mx-2 px-1.5 bg-blue-500 text-white rounded disabled:opacity-50 text-xs transition-transform duration-200 ease-in-out transform hover:scale-105 hover:bg-blue-600"
+        className={`mx-2 px-3 text-gray-600 border-gray-800 rounded border transition-transform duration-200 ease-in-out transform hover:scale-105 disabled:opacity-40`}
       >
         Previous
       </button>
 
       {getPageNumbers().map((page, index) => (
         <button
+          disabled={page === currentPage}
           key={index}
           onClick={() => typeof page === "number" && onPageChange(page)}
-          className={`mx-0.5 px-1.5 rounded transition-transform duration-200 ease-in-out transform hover:scale-105 hover:bg-blue-400 ${
+          className={`mx-0.5 text-xs border border-gray-400 px-2 rounded transition-transform duration-200 ease-in-out transform ${
+            page !== currentPage && "hover:scale-105 hover:border-blue-600"
+          } ${
             page === currentPage
-              ? "bg-blue-600 text-white"
-              : "bg-gray-300 text-xs"
+              ? "bg-blue-600 text-white border-blue-600"
+              : "text-gray-800"
           }`}
         >
           {page}
@@ -66,7 +68,7 @@ const Pagination: React.FC<PaginationProps> = ({
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className="mx-2 px-1.5 bg-blue-500 text-white rounded disabled:opacity-50 text-xs transition-transform duration-200 ease-in-out transform hover:scale-105 hover:bg-blue-600"
+        className={`ml-2 px-3 text-gray-600 border-gray-800 hover:border-blue-800 rounded border transition-transform duration-200 ease-in-out transform hover:scale-105 disabled:opacity-40`}
       >
         Next
       </button>
