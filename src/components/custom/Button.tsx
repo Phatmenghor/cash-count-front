@@ -35,6 +35,7 @@ const Button: React.FC<ButtonProps> = ({
 
   return (
     <button
+      type="button"
       className={clsx(baseStyles, loadingStyles, scaleStyles, className)} // Combine styles
       disabled={loading} // Disable button when loading
       {...props}
