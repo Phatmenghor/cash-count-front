@@ -2,7 +2,6 @@
 import "react-toastify/dist/ReactToastify.css";
 import "../globals.css";
 import Navbar from "@/components/layout/Navbar";
-import Link from "next/link";
 import MenuSidebar from "@/components/sidebar/MenuSidebar";
 
 export default function RootLayout({
