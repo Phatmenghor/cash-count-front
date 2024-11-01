@@ -1,7 +1,7 @@
 "use client";
 import ModalVerify from "@/components/modal/ModalVerify";
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
+import Button from "@/components/custom/Button";
+import Input from "@/components/custom/Input";
 import withAuth from "@/configs/withAuth";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -126,8 +126,10 @@ const AddCashCountPage = () => {
           onClick={handleVerifyClick}
           disabled={isVerified}
           className={`flex items-center py-1.5 ${
-            isVerified ? "bg-gray-400 cursor-not-allowed hover:bg-gray-400" : "bg-blue-500"
-          }`} 
+            isVerified
+              ? "bg-gray-400 cursor-not-allowed hover:bg-gray-400"
+              : "bg-blue-500"
+          }`}
         >
           <FiCheckCircle
             className={`mr-2 ${isVerified ? "opacity-50" : "animate-spin"}`}

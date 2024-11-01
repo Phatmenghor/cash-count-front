@@ -2,9 +2,9 @@
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import Button from "../../../components/ui/Button";
-import Input from "../../../components/ui/Input";
-import FormMessage from "../../../components/ui/FormMessage";
+import Button from "../../../components/custom/Button";
+import Input from "../../../components/custom/Input";
+import FormMessage from "../../../components/errorHandle/FormMessage";
 import { LoginService } from "@/redux/service/loginService";
 import { route } from "@/constants/routed";
 import withAnimation from "@/configs/withAnimation";

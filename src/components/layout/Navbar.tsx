@@ -4,20 +4,20 @@ import React, { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { FaSignOutAlt } from "react-icons/fa";
 import ModalConfirmation from "../modal/ModalConfirmation";
-import Button from "../ui/Button";
+import Button from "../custom/Button";
 import { useRouter, usePathname } from "next/navigation";
 import { route } from "@/constants/routed";
 import showToast from "../toast/useToast";
 import { clearLocalStorage } from "@/utils/localStorage/auth";
 import { UserRole } from "@/constants/userRole";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
-import Dropdown from "../ui/Dropdown";
+import Dropdown, { MenuOption } from "../custom/Dropdown";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
-import { menuNarbar } from "@/constants/dataListing";
+import { menuNavbar } from "@/constants/dataListing";
 import UserService from "@/redux/service/userService";
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC = React.memo(() => {
   const [userRole, setUserRole] = useState<UserRole | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const pathname = usePathname();
@@ -69,22 +69,27 @@ const Navbar: React.FC = () => {
     return [];
   }, [userRole]);
 
-  const handlePositionSelect = (option: string) => {
-    console.log("## Selected Position:", option);
+  const handlePositionSelect = (option: MenuOption) => {
+    router.push(option.href);
   };
 
   return (
     <nav className="bg-gray-700 text-white fixed top-0 w-full left-0 right-0 z-50 shadow-md px-4 py-2">
       <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-xl font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
-          Cash Count
-        </h1>
+        <div className="flex gap-2">
+          <h1 className="text-xl font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
+            Cash Management
+          </h1>
+        </div>
         <div className="flex items-center space-x-4">
-          <Dropdown
-            options={menuNarbar}
-            onSelect={handlePositionSelect}
-            label="Menu"
-          />
+          {userRole === UserRole.IT_ADMIN_USER && (
+            <Dropdown
+              options={menuNavbar}
+              onSelect={handlePositionSelect}
+              label="Menu"
+            />
+          )}
+
           {navLinks.map(({ href, label }) => (
             <Link
               key={href}
@@ -130,6 +135,8 @@ const Navbar: React.FC = () => {
       />
     </nav>
   );
-};
+});
+
+Navbar.displayName = "Navbar";
 
 export default Navbar;

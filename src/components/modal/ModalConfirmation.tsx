@@ -1,6 +1,6 @@
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Button from "../ui/Button";
+import Button from "../custom/Button";
 
 interface ConfirmationDialogProps {
   isOpen: boolean;

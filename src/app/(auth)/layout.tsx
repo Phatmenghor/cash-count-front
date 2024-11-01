@@ -5,7 +5,6 @@ import "../globals.css";
 import { ToastContainer } from "react-toastify";
 import Footer from "@/components/layout/Footer";
 
-
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -24,12 +23,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <head>
-        <title>Your App Title</title>
-        <meta name="description" content="Description of your app" />
-        <meta charSet="UTF-8" />
-        <link rel="icon" href="/favicon.ico" />
-      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >

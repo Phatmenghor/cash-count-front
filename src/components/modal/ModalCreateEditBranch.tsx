@@ -6,9 +6,9 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import Button from "../ui/Button";
-import Input from "../ui/Input";
-import FormMessage from "../ui/FormMessage";
+import Button from "../custom/Button";
+import Input from "../custom/Input";
+import FormMessage from "../errorHandle/FormMessage";
 import { BranchModel } from "@/redux/models/register/BranchModel";
 
 interface ModalCreateEditBranchProps {

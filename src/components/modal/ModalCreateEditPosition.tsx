@@ -9,18 +9,18 @@ import {
 import Button from "../custom/Button";
 import Input from "../custom/Input";
 import FormMessage from "../errorHandle/FormMessage";
-import { DepartmentModel } from "@/redux/models/register/DepartmentModel";
+import { PositionModel } from "@/redux/models/register/PositionModel";
 
-interface ModalCreateEditDepartmentProps {
+interface ModalCreateEditPositionProps {
   isOpen: boolean;
   onClose: () => void;
-  onConfirm: (data: { code: string; name: string }) => void;
+  onConfirm: (data: { name: string }) => void;
   title: string;
   loadingButton?: boolean;
-  initialData?: DepartmentModel;
+  initialData?: PositionModel;
 }
 
-const ModalCreateEditDepartment: React.FC<ModalCreateEditDepartmentProps> = ({
+const ModalCreateEditPosition: React.FC<ModalCreateEditPositionProps> = ({
   isOpen,
   onClose,
   onConfirm,
@@ -28,14 +28,12 @@ const ModalCreateEditDepartment: React.FC<ModalCreateEditDepartmentProps> = ({
   initialData,
   loadingButton = false,
 }) => {
-  const [departmentCode, setDepartmentCode] = useState("");
-  const [departmentName, setDepartmentName] = useState("");
+  const [positionName, setPositionName] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
     if (initialData) {
-      setDepartmentCode(initialData.code);
-      setDepartmentName(initialData.name);
+      setPositionName(initialData.name);
     } else {
       resetFields();
     }
@@ -44,8 +42,7 @@ const ModalCreateEditDepartment: React.FC<ModalCreateEditDepartmentProps> = ({
   const handleConfirm = () => {
     const newErrors: { [key: string]: string } = {};
 
-    if (!departmentCode) newErrors.branchCode = "Department code is required.";
-    if (!departmentName) newErrors.mnemonic = "Departname name is required.";
+    if (!positionName) newErrors.mnemonic = "Position role is required.";
 
     setErrors(newErrors);
 
@@ -56,13 +53,12 @@ const ModalCreateEditDepartment: React.FC<ModalCreateEditDepartmentProps> = ({
       return;
     }
 
-    onConfirm({ code: departmentCode, name: departmentName });
+    onConfirm({ name: positionName });
     resetFields();
   };
 
   const resetFields = () => {
-    setDepartmentCode("");
-    setDepartmentName("");
+    setPositionName("");
     setErrors({});
   };
 
@@ -91,39 +87,18 @@ const ModalCreateEditDepartment: React.FC<ModalCreateEditDepartmentProps> = ({
               Department name<span className="text-red-500 ml-1">*</span>
             </label>
             <Input
-              id="departmentName"
+              id="positionRole"
               type="text"
-              placeholder="Input department name ..."
-              value={departmentName}
+              placeholder="Input position role ..."
+              value={positionName}
               onChange={(e) => {
-                setDepartmentName(e.target.value);
+                setPositionName(e.target.value);
                 setErrors((prev) => ({ ...prev, mnemonic: "" }));
               }}
               required
             />
             {errors.mnemonic && (
               <FormMessage message={errors.mnemonic} type="error" />
-            )}
-
-            <label
-              htmlFor="departmentCode"
-              className="block text-sm font-medium text-gray-700 mb-1 mt-3"
-            >
-              Department Code<span className="text-red-500 ml-1">*</span>
-            </label>
-            <Input
-              id="departmentCode"
-              type="text"
-              placeholder="Input department code ..."
-              value={departmentCode}
-              onChange={(e) => {
-                setDepartmentCode(e.target.value);
-                setErrors((prev) => ({ ...prev, branchCode: "" }));
-              }}
-              required
-            />
-            {errors.branchCode && (
-              <FormMessage message={errors.branchCode} type="error" />
             )}
           </div>
           <div className="flex justify-end space-x-2 mt-4">
@@ -145,4 +120,4 @@ const ModalCreateEditDepartment: React.FC<ModalCreateEditDepartmentProps> = ({
   );
 };
 
-export default ModalCreateEditDepartment;
+export default ModalCreateEditPosition;

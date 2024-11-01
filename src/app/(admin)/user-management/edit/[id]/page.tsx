@@ -1,12 +1,11 @@
 "use client";
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
+import Button from "@/components/custom/Button";
+import Input from "@/components/custom/Input";
 import withAuth from "@/configs/withAuth";
 import { User, usersData } from "@/constants/data";
 import { useParams } from "next/navigation";
 import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
-
 
 const EditUser = () => {
   const params = useParams<{ id: string }>();

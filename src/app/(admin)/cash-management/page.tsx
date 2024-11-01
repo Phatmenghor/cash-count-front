@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import Button from "@/components/ui/Button";
+import Button from "@/components/custom/Button";
 import ModalConfirmation from "@/components/modal/ModalConfirmation";
-import Input from "@/components/ui/Input";
+import Input from "@/components/custom/Input";
 import { toast } from "react-toastify";
 import { FiEdit, FiTrash2, FiPlus } from "react-icons/fi";
 import { useRouter } from "next/navigation";
@@ -12,12 +12,12 @@ import EmptyState from "@/components/emthyData/EmptyState";
 import { BiFileBlank } from "react-icons/bi";
 import Pagination from "@/components/pagination/Pagination";
 import { Record, recordsData } from "@/constants/data";
-import CenteredLoading from "@/components/centerLoading/CenteredLoading";
+import CenteredLoading from "@/components/loading/CenteredLoading";
 import { CashRecordService } from "@/redux/service/cashRecordService";
 import withAuth from "@/configs/withAuth";
 import { UserRole } from "@/constants/userRole";
 
-const CashRecords = () => {
+const CashManagement = () => {
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [recordToDelete, setRecordToDelete] = useState<Record | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -181,7 +181,7 @@ const CashRecords = () => {
   );
 };
 
-export default withAuth(CashRecords, {
+export default withAuth(CashManagement, {
   allowedRoles: [
     UserRole.AUTHORIZER_USER,
     UserRole.CHECKER_USER,

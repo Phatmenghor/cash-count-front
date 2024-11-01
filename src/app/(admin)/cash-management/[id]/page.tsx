@@ -1,7 +1,7 @@
 "use client";
 import ModalVerify from "@/components/modal/ModalVerify";
-import Button from "@/components/ui/Button";
-import Input from "@/components/ui/Input";
+import Button from "@/components/custom/Button";
+import Input from "@/components/custom/Input";
 import withAuth from "@/configs/withAuth";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
@@ -137,7 +137,7 @@ const EditCashCountPage = () => {
           Verify
         </Button>
       </div>
-      
+
       <div className="overflow-auto">
         {/* Table Header */}
         <table>

@@ -5,22 +5,19 @@ import React from "react";
 // import { UserRole } from "@/constants/userRole";
 import dynamic from "next/dynamic";
 
-// const DepartmentPage = withAuth(
-//   dynamic(() => import("@/page/department/DepartmentPage"), {
+// const PositionPage = withAuth(
+//   dynamic(() => import("@/page/position/PositionPage"), {
 //     ssr: false,
 //   }),
 //   { allowedRoles: [UserRole.AUTHORIZER_USER, UserRole.IT_ADMIN_USER] }
 // );
 
-const DepartmentPage = dynamic(
-  () => import("@/page/department/DepartmentPage"),
-  {
-    ssr: false,
-  }
-);
+const PositionPage = dynamic(() => import("@/page/position/PositionPage"), {
+  ssr: false,
+});
 
 const page = () => {
-  return <DepartmentPage />;
+  return <PositionPage />;
 };
 
 export default page;

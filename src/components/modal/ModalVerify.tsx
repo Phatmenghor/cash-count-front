@@ -1,6 +1,6 @@
 import React from "react";
 import { FiAlertCircle } from "react-icons/fi"; // Import an icon (you can choose any icon)
-import Button from "../ui/Button";
+import Button from "../custom/Button";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface ModalProps {
@@ -32,7 +32,9 @@ const ModalVerify: React.FC<ModalProps> = ({ isOpen, onClose, message }) => {
           >
             <div className="flex items-center mb-3.5 px-6">
               <FiAlertCircle className="text-red-500 w-6 h-6 mr-2" />
-              <h2 id="modal-title" className="text-xl font-bold">Alert</h2>
+              <h2 id="modal-title" className="text-xl font-bold">
+                Alert
+              </h2>
             </div>
             <hr className="my-2 border-gray-300" /> {/* Divider line */}
             <div className="px-6">

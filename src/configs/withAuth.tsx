@@ -1,55 +1,55 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, ComponentType } from "react";
 import { redirect, useRouter } from "next/navigation";
 import { route } from "@/constants/routed";
 import { motion } from "framer-motion";
-import LoadingFullPage from "@/components/centerLoading/LoadingFullPage";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 import TokenStorage from "@/utils/localStorage/tokenStorage";
+import LoadingFullPage from "@/components/loading/LoadingFullPage";
 
 // Animation variants
 const variants = {
-  initial: { opacity: 0, y: 100 }, // Start from below
-  enter: { opacity: 1, y: 0 }, // Move to original position
-  exit: { opacity: 0, y: -100 }, // Exit upwards
+  initial: { opacity: 0, y: 100 },
+  enter: { opacity: 1, y: 0 },
+  exit: { opacity: 0, y: -100 },
 };
 
 interface WithAuthProps {
   allowedRoles?: string[];
 }
 
-const withAuth = (
-  WrappedComponent: React.FC<WithAuthProps>,
+const withAuth = <P extends object>(
+  WrappedComponent: ComponentType<P>,
   options?: WithAuthProps
 ) => {
-  const AuthenticatedComponent: React.FC<WithAuthProps> = (props) => {
+  const AuthenticatedComponent: React.FC<P> = (props) => {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
     const role = UserRoleStorage.getUserRole();
 
     useEffect(() => {
-      if (!TokenStorage.getToken()) {
+      const token = TokenStorage.getToken();
+
+      if (!token) {
         redirect(route.LOGIN);
-      } else {
-        if (
-          options?.allowedRoles &&
-          role &&
-          !options.allowedRoles.includes(role)
-        ) {
-          redirect(route.FORBIDDEN);
-        }
+        return;
       }
-      window.scrollTo(0, 0);
+
+      if (
+        options?.allowedRoles &&
+        role &&
+        !options.allowedRoles.includes(role)
+      ) {
+        redirect(route.FORBIDDEN);
+        return;
+      }
+
       setLoading(false);
+      window.scrollTo(0, 0);
     }, [router, options?.allowedRoles, role]);
 
-    if (
-      !role ||
-      (options?.allowedRoles && !options.allowedRoles.includes(role)) ||
-      loading
-    ) {
+    if (loading) {
       return <LoadingFullPage />;
     }
 
@@ -61,7 +61,7 @@ const withAuth = (
         variants={variants}
         transition={{ duration: 0.5 }}
       >
-        <WrappedComponent {...props} />
+        <WrappedComponent {...(props as P)} />
       </motion.div>
     );
   };

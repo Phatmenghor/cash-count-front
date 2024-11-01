@@ -1,32 +1,30 @@
 import { axiosWithAuth } from "@/utils/api/axios";
 import axios from "axios";
 
-interface getDepartmentParams {
+interface getPositionParams {
   pageSize?: number;
   currentPage?: number;
   search?: string;
 }
 
-interface createDepartmentParams {
-  code: string;
+interface createPositionParams {
   name: string;
 }
 
-interface updateDepartmentParams {
+interface updatePositionParams {
   id: string;
-  code: string;
   name: string;
 }
 
-export class DepartmentService {
-  static getDepartment = async ({
+export class PositionService {
+  static getPosition = async ({
     pageSize = 15,
     currentPage = 1,
     search = "",
-  }: getDepartmentParams) => {
+  }: getPositionParams) => {
     try {
       const response = await axiosWithAuth.get(
-        `/api/department?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`
+        `/api/position?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`
       );
       return {
         data: response.data.data,
@@ -37,12 +35,9 @@ export class DepartmentService {
     }
   };
 
-  static createDepartment = async (payload: createDepartmentParams) => {
+  static createPosition = async (payload: createPositionParams) => {
     try {
-      const response = await axiosWithAuth.post(
-        `/api/department/store`,
-        payload
-      );
+      const response = await axiosWithAuth.post(`/api/position/store`, payload);
       return {
         success: true,
         data: response.data.data,
@@ -52,12 +47,12 @@ export class DepartmentService {
         if (error.response && error.response.status === 403) {
           return {
             success: false,
-            data: "This Department name is already created. Please try a different one.",
+            data: "This Positon is already created. Please try a different one.",
           };
         }
         return {
           success: false,
-          data: "Failed to create department. Please try again.",
+          data: "Failed to create position. Please try again.",
         };
       }
       return {
@@ -67,10 +62,10 @@ export class DepartmentService {
     }
   };
 
-  static updateDepartment = async (payload: updateDepartmentParams) => {
+  static updatePosition = async (payload: updatePositionParams) => {
     try {
       const response = await axiosWithAuth.post(
-        `/api/department/update`,
+        `/api/position/update`,
         payload
       );
       return {

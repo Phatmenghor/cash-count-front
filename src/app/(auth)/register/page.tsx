@@ -2,11 +2,11 @@
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { route } from "@/constants/routed";
-import Input from "@/components/ui/Input";
-import FormMessage from "@/components/ui/FormMessage";
-import Button from "@/components/ui/Button";
+import Input from "@/components/custom/Input";
+import FormMessage from "@/components/errorHandle/FormMessage";
+import Button from "@/components/custom/Button";
 import withAnimation from "@/configs/withAnimation";
-import CustomSelect from "@/components/ui/CustomSelect";
+import CustomSelect from "@/components/custom/CustomSelect";
 import { BiArrowBack } from "react-icons/bi";
 import showToast from "@/components/toast/useToast";
 import { FiEye, FiEyeOff } from "react-icons/fi";

@@ -1,5 +1,5 @@
 "use client";
-import CenteredLoading from "@/components/centerLoading/CenteredLoading";
+import CenteredLoading from "@/components/loading/CenteredLoading";
 import { useEffect, useState } from "react";
 
 const TestPage = () => {
@@ -16,7 +16,7 @@ const TestPage = () => {
   }, []);
 
   if (loading) {
-    return <CenteredLoading className="min-h-screen -mt-16"/>;
+    return <CenteredLoading className="min-h-screen -mt-16" />;
   }
 
   return (
