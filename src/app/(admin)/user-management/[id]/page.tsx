@@ -12,15 +12,15 @@ import dynamic from "next/dynamic";
 //   { allowedRoles: [UserRole.AUTHORIZER_USER, UserRole.IT_ADMIN_USER] }
 // );
 
-const UserManagementPage = dynamic(
-  () => import("@/page/userManagement/UserManagementPage"),
+const EditUserInfoPage = dynamic(
+  () => import("@/page/userManagement/EditUserManagement"),
   {
     ssr: false,
   }
 );
 
-const page = () => {
-  return <UserManagementPage />;
+const page = ({ params }: { params: { id: number } }) => {
+  return <EditUserInfoPage params={params} />;
 };
 
 export default page;

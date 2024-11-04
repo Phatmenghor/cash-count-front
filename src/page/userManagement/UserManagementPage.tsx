@@ -1,116 +1,161 @@
-// components/UserManagement.tsx
+/* eslint-disable react-hooks/exhaustive-deps */
+"use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { FiPlus, FiEdit, FiTrash2 } from "react-icons/fi";
+import { FiEdit, FiLoader } from "react-icons/fi";
+import { LuView } from "react-icons/lu";
 import { AiOutlineUser } from "react-icons/ai";
-import { toast } from "react-toastify";
-import ModalConfirmation from "../../components/modal/ModalConfirmation";
-import { User } from "@/constants/data";
 import Input from "../../components/custom/Input";
-import Button from "../../components/custom/Button";
-import CenteredLoading from "../../components/loading/CenteredLoading";
 import EmptyState from "../../components/emthyData/EmptyState";
 import { Switch } from "../../components/custom/Switch";
 import Pagination from "../../components/pagination/Pagination";
+import UserManagementService from "@/redux/service/userManagementService";
+import DropdownSize from "@/components/custom/DropdownSize";
+import {
+  userManagementListModel,
+  userManagementModel,
+} from "@/redux/models/userManagement/UserManagementModel";
+import { pageSizeData } from "@/constants/dataListing";
+import showToast from "@/components/toast/useToast";
+import { debounce } from "@/utils/function/debounce";
 
 const UserManagement = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [users, setUsers] = useState<User[]>([]);
+
+  const [size, setSize] = useState<number>(15);
+  const [userData, setUserData] = useState<userManagementListModel>({
+    data: [],
+    pagination: null,
+  });
+
+  const [loadingUpdate, setLoadingUpdate] = useState({
+    id: 0,
+    loading: false,
+  });
   const [searchTerm, setSearchTerm] = useState("");
-  const [currentUsers, setCurrentUsers] = useState<User[]>(users);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
-  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
-  const [userToDelete, setUserToDelete] = useState<User | null>(null);
+  const listSize = userData.pagination?.currentPage ?? 15;
 
   useEffect(() => {
-    setLoading(true);
-    // Fetch users from an API or data source
-    // setUsers(fetchedUsers);
-    // Update total pages based on fetched users
-    // setTotalPages(Math.ceil(fetchedUsers.length / usersPerPage));
-    setLoading(false);
+    fetchData();
   }, []);
 
-  const handleDeleteUser = (user: User) => {
-    setUserToDelete(user);
-    setIsDeleteDialogOpen(true);
-  };
+  async function fetchData(currentPage = 1, pageSize = size) {
+    const response = await UserManagementService.getAllUsers({
+      pageSize,
+      currentPage,
+    });
+    setUserData(response);
+  }
 
-  const confirmDelete = () => {
-    if (userToDelete) {
-      setUsers(users.filter((user) => user.id !== userToDelete.id));
-      toast.success(`${userToDelete.fullName} has been deleted!`);
-      setUserToDelete(null);
-      setIsDeleteDialogOpen(false);
+  async function toggleUserStatus(user: userManagementModel) {
+    setLoadingUpdate({
+      id: user.id,
+      loading: true,
+    });
+    const statusUpdate = user.status === 1 ? 0 : 1;
+    const response = await UserManagementService.updateUserStatus({
+      id: user.id,
+      status: statusUpdate,
+    });
+    if (response) {
+      setUserData((prev) => ({
+        ...prev,
+        data: prev.data.map((item: userManagementModel) =>
+          item.id == user.id ? { ...user, ...{ status: statusUpdate } } : item
+        ),
+      }));
+      if (statusUpdate === 0) {
+        showToast(`${user.name} has been deactivated successfully!`, "success");
+      } else if (statusUpdate === 1) {
+        showToast(`${user.name} has been activated successfully!`, "success");
+      }
+    } else {
+      showToast(
+        `Failed to update status for ${user.name}. Please try again.`,
+        "error",
+        7000
+      );
     }
-  };
 
-  const toggleUserStatus = (user: User) => {
-    const updatedUsers = users.map((u) =>
-      u.id === user.id ? { ...u, status: !u.status } : u
-    );
-    setUsers(updatedUsers);
-    const statusMessage = user.status ? "deactivated" : "activated";
-    toast.success(`${user.fullName} has been ${statusMessage}!`);
-  };
+    setLoadingUpdate({
+      id: 0,
+      loading: false,
+    });
+  }
 
-  const handleAddUser = () => {
-    toast.info("Add Record feature coming soon!");
-    // Optionally redirect to the add record page
-    // router.push('/add'); // Update with your add user route
-  };
+  function handlePageSize(value: number) {
+    setSize(value);
+    fetchData(userData.pagination?.currentPage, value);
+  }
+
+  function onPageChange(value: number) {
+    fetchData(value, userData.pagination?.pageSize ?? 15);
+  }
+
+  function onSearch(e: React.ChangeEvent<HTMLInputElement>) {
+    setSearchTerm(e.target.value);
+    handleSearch(e.target.value);
+  }
+
+  const handleSearch = useCallback(
+    debounce(async (query: string) => {
+      if (query && query.length > 0) {
+        fetchSearch({ search: query });
+      } else {
+        fetchData();
+      }
+    }),
+    [size]
+  );
+
+  async function fetchSearch({ page = 1, pageSize = size, search = "" }) {
+    const response = await UserManagementService.getAllUsers({
+      pageSize,
+      currentPage: page,
+      search,
+    });
+    setUserData(response);
+  }
 
   return (
     <div className="container mx-auto">
-      <h1 className="text-2xl font-bold mb-4">User Management</h1>
-
       {/* Search and Add Record Section */}
       <div className="flex items-center mb-4 justify-between">
         <Input
           type="text"
           placeholder="Search by Full Name..."
           value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="mr-4 py-1"
+          onChange={onSearch}
+          className="mr-4 py-1 max-w-md"
+          data-aos="fade-right"
         />
-        <Button
-          onClick={handleAddUser}
-          className="text-white flex items-center py-1"
-        >
-          <FiPlus size={18} />
-          <span className="ml-1">Add Record</span>
-        </Button>
       </div>
 
       {/* User List Table */}
-      <div className="overflow-auto min-h-[50vh] flex-1">
-        <table>
+      <div className="overflow-auto min-h-[70vh]">
+        <table
+          data-aos="fade-up"
+          className="min-w-full border-collapse border border-gray-300"
+        >
           <thead>
             <tr>
               <th>ID</th>
               <th>Full Name</th>
-              <th>Staff ID</th>
-              <th>Username</th>
-              <th>Department</th>
+              <th>Email</th>
+              <th>AD User</th>
               <th>Position</th>
+              <th>Branch</th>
+              <th>Department</th>
               <th>Role</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {loading ? (
+            {userData.data.length === 0 ? (
               <tr>
-                <td colSpan={9} className="text-center py-4">
-                  <CenteredLoading />
-                </td>
-              </tr>
-            ) : currentUsers.length === 0 ? (
-              <tr>
-                <td colSpan={9}>
+                <td colSpan={10}>
                   <EmptyState
                     message="No user available."
                     icon={<AiOutlineUser size={64} />}
@@ -118,72 +163,84 @@ const UserManagement = () => {
                 </td>
               </tr>
             ) : (
-              currentUsers.map((user) => (
-                <tr key={user.id}>
-                  <td>{user.id}</td>
-                  <td>{user.fullName}</td>
-                  <td>{user.staffId}</td>
-                  <td>{user.username}</td>
-                  <td>{user.department}</td>
-                  <td>{user.position}</td>
-                  <td>{user.role}</td>
-                  <td>
-                    <div className="flex-1 flex items-center">
-                      <Switch
-                        checked={user.status}
-                        onChange={() => toggleUserStatus(user)}
-                      />
-                      <span
-                        className={`ml-2 px-2 rounded-full text-[10px] ${
-                          user.status ? "bg-green-500" : "bg-red-500"
-                        } text-white`}
+              userData.data.map((user: userManagementModel, index) => {
+                const displayIndex = (listSize - 1) * size + index + 1;
+                return (
+                  <tr key={user.id}>
+                    <td className="truncate">{displayIndex}</td>
+                    <td className="truncate">{user.name}</td>
+                    <td className="truncate">{user.email}</td>
+                    <td className="truncate">{user.username}</td>
+                    <td className="truncate">{user.position.name}</td>
+                    <td className="truncate">{user.branchMnemonic}</td>
+                    <td className="truncate">{user.department.name}</td>
+                    <td className="truncate">{user.roles[0].name}</td>
+                    <td className="truncate">
+                      <div className="flex-1 flex items-center">
+                        <Switch
+                          disable={loadingUpdate.loading}
+                          checked={user.status === 1}
+                          onChange={() => toggleUserStatus(user)}
+                        />
+                        <span
+                          className={`ml-2 py-[1px] px-2 rounded-full text-[10px] ${
+                            user.status ? "bg-green-500" : "bg-red-500"
+                          } text-white`}
+                        >
+                          {loadingUpdate.loading &&
+                          loadingUpdate.id == user.id ? (
+                            <div className="px-2">
+                              <FiLoader className="animate-spin  h-4 w-4" />
+                            </div>
+                          ) : user.status === 1 ? (
+                            "Active"
+                          ) : (
+                            "Inactive"
+                          )}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="flex items-center truncate">
+                      <button
+                        onClick={() =>
+                          router.push(`/user-management/${user.id}?mode=view`)
+                        }
+                        className="bg-gray-300 text-white px-2 p-1 rounded hover:bg-gray-400 mr-2 flex items-center"
                       >
-                        {user.status ? "Active" : "Inactive"}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="flex items-center">
-                    <button
-                      onClick={() =>
-                        router.push(`/user-management/edit/${user.id}`)
-                      }
-                      className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"
-                    >
-                      <FiEdit size={14} />
-                    </button>
-                    <button
-                      onClick={() => handleDeleteUser(user)}
-                      className="bg-red-500 text-white px-2 p-1 rounded hover:bg-red-600 flex items-center"
-                    >
-                      <FiTrash2 size={14} />
-                    </button>
-                  </td>
-                </tr>
-              ))
+                        <LuView size={14} className="text-white" />
+                      </button>
+                      <button
+                        onClick={() =>
+                          router.push(`/user-management/${user.id}?mode=edit`)
+                        }
+                        className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"
+                      >
+                        <FiEdit size={14} className="text-white" />
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
       </div>
 
-      {/* Pagination Component */}
-      {!loading && (
-        <div className="flex justify-center mt-4">
+      {userData.data.length > 0 && (
+        <div className="flex justify-between mt-8 mb-16">
+          <DropdownSize
+            options={pageSizeData}
+            onSelect={handlePageSize}
+            label="Select Size"
+          />
+
           <Pagination
-            totalPages={totalPages}
-            currentPage={currentPage}
-            onPageChange={setCurrentPage}
+            totalPages={userData.pagination?.totalPages ?? 1}
+            currentPage={userData.pagination?.currentPage ?? 1}
+            onPageChange={onPageChange}
           />
         </div>
       )}
-
-      {/* Confirmation Dialog */}
-      <ModalConfirmation
-        isOpen={isDeleteDialogOpen}
-        title="Confirm Delete!"
-        onClose={() => setIsDeleteDialogOpen(false)}
-        onConfirm={confirmDelete}
-        message={`Are you sure you want to delete ${userToDelete?.fullName}?`}
-      />
     </div>
   );
 };

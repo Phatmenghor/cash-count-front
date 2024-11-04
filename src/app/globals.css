@@ -96,7 +96,7 @@ body {
 }
 
 table {
-  @apply min-w-full bg-white border border-gray-200; /* Apply basic table styles */
+  @apply min-w-full border-collapse bg-white border border-gray-200; /* Apply basic table styles */
 }
 
 thead {
@@ -104,11 +104,11 @@ thead {
 }
 
 th {
-  @apply py-2 px-4 text-sm border text-start whitespace-nowrap overflow-hidden overflow-ellipsis; /* Header cell padding, font size, and border */
+  @apply py-2 px-4 text-sm border text-start overflow-x-auto whitespace-nowrap/* Header cell padding, font size, and border */;
 }
 
 td {
-  @apply border px-4 text-sm py-1.5 text-start whitespace-nowrap overflow-hidden overflow-ellipsis; /* Cell border, padding, and font size */
+  @apply border px-4 text-xs py-1.5 text-start overflow-x-auto whitespace-nowrap; /* Cell border, padding, and font size */
 }
 
 tbody tr:nth-child(even) {
@@ -152,4 +152,20 @@ option {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.truncate {
+  overflow: hidden; /* Hide the overflowing text */
+  text-overflow: ellipsis; /* Show ellipsis (...) when text overflows */
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+  max-width: 200px; /* Set a maximum width to control where the ellipsis appears */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

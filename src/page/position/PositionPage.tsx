@@ -4,13 +4,12 @@ import React, { useCallback, useEffect, useState } from "react";
 import Pagination from "@/components/pagination/Pagination";
 import Button from "@/components/custom/Button";
 import Input from "@/components/custom/Input";
-import { pageSize } from "@/constants/dataListing";
+import { pageSizeData } from "@/constants/dataListing";
 import { FiEdit, FiPlus } from "react-icons/fi";
 import { debounce } from "@/utils/function/debounce";
 import EmptyState from "@/components/emthyData/EmptyState";
 import DropdownSize from "@/components/custom/DropdownSize";
 import showToast from "@/components/toast/useToast";
-import { DepartmentService } from "@/redux/service/departmentService";
 import { PositionListModel } from "@/redux/models/position/PositionListModel";
 import { PositionModel } from "@/redux/models/register/PositionModel";
 import ModalCreateEditPosition from "@/components/modal/ModalCreateEditPosition";
@@ -36,14 +35,11 @@ const PositionPage: React.FC = () => {
   }, []);
 
   async function fetchData(currentPage = 1, pageSize = size) {
-    const response = await DepartmentService.getDepartment({
+    const response = await PositionService.getPosition({
       pageSize,
       currentPage,
     });
-    setPositionList({
-      data: response.data,
-      pagination: response.pagination,
-    });
+    setPositionList(response);
   }
 
   function onPageChange(value: number) {
@@ -72,10 +68,7 @@ const PositionPage: React.FC = () => {
       currentPage: page,
       search,
     });
-    setPositionList({
-      data: response.data,
-      pagination: response.pagination,
-    });
+    setPositionList(response);
   }
 
   function onSearch(e: React.ChangeEvent<HTMLInputElement>) {
@@ -132,34 +125,37 @@ const PositionPage: React.FC = () => {
       }));
       showToast("Position updated successfully!", "success");
     } else {
-      showToast("Failed to update position.", "error");
+      showToast("Failed to update position.", "error", 7000);
     }
     setLoading(false);
   }
 
   return (
-    <div className="container mx-auto px-4 pt-4">
-      <h1 className="text-2xl font-bold mb-4">Position List</h1>
-
+    <div className="container mx-auto px-4">
       <div className="flex items-center mb-4 justify-between">
         <Input
           type="text"
           placeholder="Search position role ..."
           value={searchTerm}
           onChange={onSearch}
-          className="mr-4 py-1"
+          className="mr-4 py-1 max-w-md"
+          data-aos="fade-right"
         />
         <Button
           onClick={handleOpenCreateModal}
           className="text-white flex items-center py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
+          data-aos="fade-left"
         >
           <FiPlus size={18} />
           <span className="ml-1">Add Position</span>
         </Button>
       </div>
 
-      <div className="overflow-x-auto min-h-[50vh]">
-        <table className="min-w-full bg-white border border-gray-200">
+      <div className="overflow-x-auto min-h-[70vh]">
+        <table
+          className="min-w-full bg-white border border-gray-200"
+          data-aos="fade-up"
+        >
           <thead className="bg-gray-100">
             <tr>
               {headers.map((header) => (
@@ -175,7 +171,7 @@ const PositionPage: React.FC = () => {
           <tbody>
             {positionList.data.length === 0 ? (
               <tr>
-                <td colSpan={9} className="hover:bg-white">
+                <td colSpan={3} className="hover:bg-white">
                   <EmptyState message="No department available." />
                 </td>
               </tr>
@@ -206,7 +202,7 @@ const PositionPage: React.FC = () => {
 
       <div className="flex justify-between mt-8 mb-16">
         <DropdownSize
-          options={pageSize}
+          options={pageSizeData}
           onSelect={handlePageSize}
           label="Select Size"
         />

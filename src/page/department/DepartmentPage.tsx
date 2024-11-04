@@ -4,8 +4,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import Pagination from "@/components/pagination/Pagination";
 import Button from "@/components/custom/Button";
 import Input from "@/components/custom/Input";
-import { pageSize } from "@/constants/dataListing";
-import { BranchService } from "@/redux/service/branchService";
+import { pageSizeData } from "@/constants/dataListing";
 import { FiEdit, FiPlus } from "react-icons/fi";
 import { debounce } from "@/utils/function/debounce";
 import EmptyState from "@/components/emthyData/EmptyState";
@@ -39,10 +38,7 @@ const DepartmentPage: React.FC = () => {
       pageSize,
       currentPage,
     });
-    setDepartmentList({
-      data: response.data,
-      pagination: response.pagination,
-    });
+    setDepartmentList(response);
   }
 
   function onPageChange(value: number) {
@@ -66,15 +62,12 @@ const DepartmentPage: React.FC = () => {
   );
 
   async function fetchSearch({ page = 1, pageSize = size, search = "" }) {
-    const response = await BranchService.getBranch({
+    const response = await DepartmentService.getDepartment({
       pageSize,
       currentPage: page,
       search,
     });
-    setDepartmentList({
-      data: response.data,
-      pagination: response.pagination,
-    });
+    setDepartmentList(response);
   }
 
   function onSearch(e: React.ChangeEvent<HTMLInputElement>) {
@@ -143,18 +136,18 @@ const DepartmentPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4">
-      <h1 className="text-2xl font-bold mb-4">Department List</h1>
-
       <div className="flex items-center mb-4 justify-between">
         <Input
           type="text"
           placeholder="Search Department ..."
           value={searchTerm}
           onChange={onSearch}
-          className="mr-4 py-1"
+          className="mr-4 py-1 max-w-md"
+          data-aos="fade-right"
         />
         <Button
           onClick={handleOpenCreateModal}
+          data-aos="fade-left"
           className="text-white flex items-center py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
         >
           <FiPlus size={18} />
@@ -162,8 +155,11 @@ const DepartmentPage: React.FC = () => {
         </Button>
       </div>
 
-      <div className="overflow-x-auto min-h-[50vh]">
-        <table className="min-w-full bg-white border border-gray-200">
+      <div className="overflow-x-auto min-h-[70vh]">
+        <table
+          className="min-w-full bg-white border border-gray-200"
+          data-aos="fade-up"
+        >
           <thead className="bg-gray-100">
             <tr>
               {headers.map((header) => (
@@ -179,7 +175,7 @@ const DepartmentPage: React.FC = () => {
           <tbody>
             {departmentList.data.length === 0 ? (
               <tr>
-                <td colSpan={9} className="hover:bg-white">
+                <td colSpan={4} className="hover:bg-white">
                   <EmptyState message="No department available." />
                 </td>
               </tr>
@@ -211,7 +207,7 @@ const DepartmentPage: React.FC = () => {
 
       <div className="flex justify-between mt-8 mb-16">
         <DropdownSize
-          options={pageSize}
+          options={pageSizeData}
           onSelect={handlePageSize}
           label="Select Size"
         />

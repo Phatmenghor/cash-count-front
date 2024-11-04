@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import UserService from "../service/userService";
+import UserManagementService from "../service/userManagementService";
 import { UserProfile } from "../models/userManagement/UserProfileModel";
 import { handleError } from "@/constants/handleError";
 
@@ -21,18 +21,24 @@ const userSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(UserService.getUserData.pending, (state) => {
+      .addCase(UserManagementService.getUserByToken.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(UserService.getUserData.fulfilled, (state, action) => {
-        state.userData = action.payload;
-        state.loading = false;
-      })
-      .addCase(UserService.getUserData.rejected, (state, action) => {
-        state.error = action.payload || handleError.UNKNOWN;
-        state.loading = false;
-      });
+      .addCase(
+        UserManagementService.getUserByToken.fulfilled,
+        (state, action) => {
+          state.userData = action.payload;
+          state.loading = false;
+        }
+      )
+      .addCase(
+        UserManagementService.getUserByToken.rejected,
+        (state, action) => {
+          state.error = action.payload || handleError.UNKNOWN;
+          state.loading = false;
+        }
+      );
   },
 });
 

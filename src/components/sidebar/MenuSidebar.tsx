@@ -40,6 +40,12 @@ const menuItems = [
         visible: [UserRole.IT_ADMIN_USER],
       },
       {
+        label: "User Request",
+        href: "/user-request",
+        icon: <FaUserCircle />, // Add an icon
+        visible: [UserRole.IT_ADMIN_USER],
+      },
+      {
         label: "Cash Management",
         href: "/cash-management",
         icon: <FaMoneyBillWave />, // Add an icon
@@ -77,20 +83,23 @@ const MenuSidebar = () => {
   }, [pathname]);
 
   return (
-    <div className="bg-gray-700 w-[14%] md:w-[8%] lg:w-[16%] xl:w-[14%] p-4 overflow-y-scroll py-16 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
+    <div
+      data-aos="fade-right"
+      className="bg-gray-700 w-[14%] md:w-[8%] lg:w-[16%] xl:w-[14%] overflow-y-scroll px-4 py-16 scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800"
+    >
       <div className="text-sm text-gray-300">
-        {menuItems.map((section) => (
-          <div className="flex flex-col gap-2" key={section.title}>
+        {menuItems.map((section, index) => (
+          <div className="flex flex-col gap-2" key={index}>
             <span className="hidden lg:block text-white font-light my-4">
               {section.title}
             </span>
-            {section.items.map((item) => {
+            {section.items.map((item, index) => {
               if (item.visible.includes(role)) {
                 const isActive = activeHref === item.href;
                 return (
                   <Link
                     href={item.href}
-                    key={item.label}
+                    key={index}
                     onClick={() => setActiveHref(item.href)}
                     className={`flex items-center justify-center lg:justify-start gap-2 py-2 md:px-2 rounded-md transition-colors ${
                       isActive
@@ -100,7 +109,9 @@ const MenuSidebar = () => {
                   >
                     {/* Render the icon */}
                     <span className="text-xl">{item.icon}</span>
-                    <span className="hidden lg:block overflow-hidden whitespace-nowrap overflow-ellipsis">{item.label}</span>
+                    <span className="hidden lg:block overflow-hidden whitespace-nowrap overflow-ellipsis">
+                      {item.label}
+                    </span>
                   </Link>
                 );
               }

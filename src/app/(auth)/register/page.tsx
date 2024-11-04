@@ -12,8 +12,6 @@ import showToast from "@/components/toast/useToast";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { RegisterService } from "@/redux/service/registerService";
 import { AllDataType, FormDataType } from "./type";
-import { BranchModel } from "@/redux/models/register/BranchModel";
-import { PositionModel } from "@/redux/models/register/PositionModel";
 
 const Register: React.FC = () => {
   const searchParams = useSearchParams();

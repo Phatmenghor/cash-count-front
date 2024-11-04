@@ -21,7 +21,10 @@ const DropdownSize: React.FC<DropdownProps> = ({
   label,
 }) => {
   return (
-    <Select onValueChange={(value) => onSelect(Number(value))}>
+    <Select
+      data-aos="fade-up"
+      onValueChange={(value) => onSelect(Number(value))}
+    >
       <SelectTrigger className="w-auto min-w-[110px]  border border-gray-600 focus:border-gray- active:border-blue-400">
         <SelectValue placeholder={`Select size`} />
       </SelectTrigger>
@@ -29,11 +32,7 @@ const DropdownSize: React.FC<DropdownProps> = ({
         <SelectGroup>
           <SelectLabel>{label}</SelectLabel>
           {options.map((option) => (
-            <SelectItem
-              key={option}
-              value={option.toString()}
-              className=""
-            >
+            <SelectItem key={option} value={option.toString()} className="">
               Size {option}
             </SelectItem>
           ))}

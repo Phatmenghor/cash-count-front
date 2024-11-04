@@ -88,14 +88,7 @@ const CustomSelect = <T,>({
       <div className="relative">
         <div
           className="flex justify-between items-center border border-gray-300 rounded-md px-3 py-1.5 cursor-pointer"
-          onMouseEnter={() => setIsOpen(true)} // Open on hover
-          onMouseLeave={() => {
-            // Close only if the dropdown is not open
-            if (!isOpen) {
-              setIsOpen(false);
-            }
-          }}
-          onClick={toggleDropdown}
+          onClick={toggleDropdown} // Only toggle on click
         >
           <span
             className={`text-sm whitespace-nowrap overflow-hidden text-ellipsis ${
@@ -116,8 +109,6 @@ const CustomSelect = <T,>({
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
-              onMouseEnter={() => setIsOpen(true)} // Keep dropdown open on hover
-              onMouseLeave={() => setIsOpen(false)} // Close on mouse leave
             >
               <div className="flex items-center border-b border-gray-300 p-1">
                 <input

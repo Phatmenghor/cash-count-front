@@ -4,7 +4,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import Pagination from "@/components/pagination/Pagination";
 import Button from "@/components/custom/Button";
 import Input from "@/components/custom/Input";
-import { pageSize } from "@/constants/dataListing";
+import { pageSizeData } from "@/constants/dataListing";
 import { BranchListModel } from "@/redux/models/branch/BranchListModel";
 import { BranchService } from "@/redux/service/branchService";
 import { FiEdit, FiPlus } from "react-icons/fi";
@@ -14,7 +14,6 @@ import DropdownSize from "@/components/custom/DropdownSize";
 import ModalCreateEditBranch from "@/components/modal/ModalCreateEditBranch";
 import { BranchModel } from "@/redux/models/register/BranchModel";
 import showToast from "@/components/toast/useToast";
-import FullPageSkeleton from "@/components/loading/FullPageSkeleton";
 
 const BranchPage: React.FC = () => {
   const [branchList, setBranchList] = useState<BranchListModel>({
@@ -27,7 +26,6 @@ const BranchPage: React.FC = () => {
   const listSize = branchList.pagination?.currentPage ?? 15;
   const [isModalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false); // Set initial loading state to true
-  const [loadingFirst, setLoadingFirst] = useState(true);
   const [currentBranch, setCurrentBranch] = useState<BranchModel | null>(null);
 
   useEffect(() => {
@@ -35,16 +33,11 @@ const BranchPage: React.FC = () => {
   }, []);
 
   async function fetchData(currentPage = 1, pageSize = size) {
-    setLoadingFirst(true);
     const response = await BranchService.getBranch({
       pageSize,
       currentPage,
     });
-    setBranchList({
-      data: response.data,
-      pagination: response.pagination,
-    });
-    setLoadingFirst(false);
+    setBranchList(response);
   }
 
   function onPageChange(value: number) {
@@ -158,9 +151,11 @@ const BranchPage: React.FC = () => {
           placeholder="Search Branch ..."
           value={searchTerm}
           onChange={onSearch}
-          className="mr-4 py-1"
+          className="mr-4 py-1 max-w-md"
+          data-aos="fade-right"
         />
         <Button
+          data-aos="fade-left"
           onClick={handleOpenCreateModal}
           className="text-white flex items-center py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
         >
@@ -170,26 +165,31 @@ const BranchPage: React.FC = () => {
       </div>
 
       <div className="overflow-x-auto min-h-[50vh]">
-        {loadingFirst ? (
-          <FullPageSkeleton />
-        ) : branchList.data.length === 0 ? (
-          <EmptyState message="No branch available." />
-        ) : (
-          <table className="min-w-full bg-white border border-gray-200">
-            <thead className="bg-gray-100">
+        <table
+          className="min-w-full bg-white border border-gray-200"
+          data-aos="fade-up"
+        >
+          <thead className="bg-gray-100">
+            <tr>
+              {headers.map((header) => (
+                <th
+                  key={header}
+                  className="border border-gray-300 px-4 py-2 text-left"
+                >
+                  {header}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {branchList.data.length === 0 ? (
               <tr>
-                {headers.map((header) => (
-                  <th
-                    key={header}
-                    className="border border-gray-300 px-4 py-2 text-left"
-                  >
-                    {header}
-                  </th>
-                ))}
+                <td colSpan={5} className="hover:bg-white">
+                  <EmptyState message="No department available." />
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {branchList.data.map((branch, index) => {
+            ) : (
+              branchList.data.map((branch, index) => {
                 const displayIndex = (listSize - 1) * size + index + 1;
                 return (
                   <tr key={branch.id} className="hover:bg-gray-200">
@@ -209,15 +209,15 @@ const BranchPage: React.FC = () => {
                     </td>
                   </tr>
                 );
-              })}
-            </tbody>
-          </table>
-        )}
+              })
+            )}
+          </tbody>
+        </table>
       </div>
 
       <div className="flex justify-between mt-8 mb-16">
         <DropdownSize
-          options={pageSize}
+          options={pageSizeData}
           onSelect={handlePageSize}
           label="Select Size"
         />

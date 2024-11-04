@@ -4,4 +4,4 @@ export const menuNavbar = [
   { label: "Position", href: "/position" },
 ];
 
-export const pageSize = [5, 10, 15, 20, 50, 100];
+export const pageSizeData = [5, 10, 15, 20, 50, 100];
