@@ -23,7 +23,7 @@ interface registerAccount {
   roleId: number;
   branchId: number;
   departmentId: number;
-  positionId: string;
+  positionId: number;
   otpCode: string;
 }
 

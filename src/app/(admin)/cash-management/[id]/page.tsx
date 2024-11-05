@@ -115,8 +115,6 @@ const EditCashCountPage = () => {
     }
   };
 
-  console.log("## ===isVerified", isVerified);
-
   return (
     <div className="2xl:container mx-auto p-6 bg-white rounded-lg">
       <div className="flex justify-between items-center mb-4">

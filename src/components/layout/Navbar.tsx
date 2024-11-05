@@ -32,7 +32,6 @@ const Navbar: React.FC = React.memo(() => {
   }, [isOpenLogout]);
 
   function fetchData() {
-    console.log("### ====")
     dispatch(UserManagementService.getUserByToken());
   }
 

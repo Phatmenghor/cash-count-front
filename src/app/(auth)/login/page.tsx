@@ -8,7 +8,7 @@ import FormMessage from "../../../components/errorHandle/FormMessage";
 import { LoginService } from "@/redux/service/loginService";
 import { route } from "@/constants/routed";
 import withAnimation from "@/configs/withAnimation";
-import { UserRole } from "@/constants/userRole";
+import { UserRoleEnum } from "@/constants/userRole";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("sokrann.voem");
@@ -43,7 +43,10 @@ const LoginPage: React.FC = () => {
       email: email,
       password: password,
     });
-    if (response === UserRole.IT_ADMIN_USER || UserRole.OPERATION_ADMIN_USER) {
+    if (
+      response === UserRoleEnum.IT_ADMIN_USER ||
+      UserRoleEnum.OPERATION_ADMIN_USER
+    ) {
       router.push(`/${route.USER_MANAGEMENT}`);
     }
   };

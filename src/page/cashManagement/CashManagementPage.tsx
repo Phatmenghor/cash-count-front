@@ -1,5 +1,5 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
+
 import React, { useCallback, useEffect, useState } from "react";
 import Pagination from "@/components/pagination/Pagination";
 import Input from "@/components/custom/Input";
@@ -11,17 +11,20 @@ import showToast from "@/components/toast/useToast";
 import UserManagementService from "@/redux/service/userManagementService";
 import { LuView } from "react-icons/lu";
 import { AiOutlineUser } from "react-icons/ai";
-import {
-  userRequestListModel,
-  UserRequestModel,
-} from "@/redux/models/userManagement/UserRequestModel";
+import { UserRequestModel } from "@/redux/models/userManagement/UserRequestModel";
 import ModalConfirmation from "@/components/modal/ModalConfirmation";
 import { useRouter } from "next/navigation";
 import Button from "@/components/custom/Button";
 import { CashManagementService } from "@/redux/service/cashManagementService";
+import {
+  CashRecordListModel,
+  CashRecordModel,
+} from "@/redux/models/cashManagement/CashRecordModel";
+import { convertDate } from "@/utils/date/convertDate";
+import { CashStatusEnum } from "@/redux/models/cashManagement/StatusEnum";
 
 const CashManagementPage: React.FC = () => {
-  const [cashRecordList, setCashRecordList] = useState<userRequestListModel>({
+  const [cashRecordList, setCashRecordList] = useState<CashRecordListModel>({
     data: [],
     pagination: null,
   });
@@ -38,10 +41,16 @@ const CashManagementPage: React.FC = () => {
   }, []);
 
   async function fetchData(currentPage = 1, pageSize = size) {
-    const response = await CashManagementService.getCashRecordList({
+    let response = await CashManagementService.getCashRecordList({
       pageSize,
       currentPage,
     });
+    if (response.data.length == 0) {
+      response = await CashManagementService.getCashRecordList({
+        pageSize: pageSize,
+        currentPage: 1,
+      });
+    }
     setCashRecordList(response);
   }
 
@@ -66,10 +75,10 @@ const CashManagementPage: React.FC = () => {
   );
 
   async function fetchSearch({ page = 1, pageSize = size, search = "" }) {
-    const response = await UserManagementService.getUserRequest({
+    const response = await CashManagementService.getCashRecordList({
       pageSize,
       currentPage: page,
-      search,
+      srNumber: search,
     });
     setCashRecordList(response);
   }
@@ -127,24 +136,33 @@ const CashManagementPage: React.FC = () => {
     setModalOpen(false);
   }
 
+  function onViewCash(id: number) {
+    router.push(`/cash-management/view-cash-record/${id}`);
+  }
+
   return (
-    <div className="container mx-auto">
+    <div className="mx-1">
       {/* Search and Add Record Section */}
       <div className="flex items-center mb-4 justify-between">
         <Input
           type="text"
-          placeholder="Search by Full Name..."
+          placeholder="Search by Sr number..."
           value={searchTerm}
           onChange={onSearch}
           className="mr-4 py-1 max-w-md"
           data-aos="fade-right"
         />
 
-        <Button className="py-1 mr-1">Add More</Button>
+        <Button
+          onClick={() => router.push("/cash-management/add-cash")}
+          className="py-1 mr-1"
+        >
+          Add Cash
+        </Button>
       </div>
 
       {/* User List Table */}
-      <div className="overflow-auto min-h-[70vh]">
+      <div className="overflow-auto min-h-[60vh]">
         <table
           data-aos="fade-up"
           className="min-w-full border-collapse border border-gray-300"
@@ -152,14 +170,14 @@ const CashManagementPage: React.FC = () => {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Full Name</th>
-              <th>Email</th>
-              <th>AD User</th>
-              <th>Position</th>
+              <th>Sr Number</th>
               <th>Branch</th>
-              <th>Department</th>
-              <th>Role</th>
+              <th>City</th>
               <th>Status</th>
+              <th>Created By</th>
+              <th>Checker By</th>
+              <th>Approve By</th>
+              <th>Created date</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -174,12 +192,40 @@ const CashManagementPage: React.FC = () => {
                 </td>
               </tr>
             ) : (
-              cashRecordList.data.map((user: UserRequestModel, index) => {
+              cashRecordList.data.map((cash: CashRecordModel, index) => {
                 const displayIndex = (listSize - 1) * size + index + 1;
                 return (
-                  <tr key={user.id}>
+                  <tr key={cash.id}>
                     <td className="truncate">{displayIndex}</td>
+                    <td className="truncate">{cash.srNumber}</td>
+                    <td className="truncate">{cash.branch.mnemonic}</td>
+                    <td className="truncate">{cash.branch.city}</td>
+                    <td className="truncate">{cash.status}</td>
+                    <td className="truncate">{cash.createdBy.name}</td>
+                    <td className="truncate">{cash.checkerBy.name}</td>
+                    <td className="truncate">{cash.approvedBy.name}</td>
                     <td className="truncate">
+                      {convertDate(cash.createdDate)}
+                    </td>
+                    <td className="flex items-center truncate">
+                      <button
+                        onClick={() => onViewCash(cash.id)}
+                        className="bg-gray-300 text-white px-2 p-1 rounded hover:bg-gray-400 mr-2 flex items-center"
+                      >
+                        <LuView size={14} className="text-white" />
+                      </button>
+                      {/* <button className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center">
+                        Check
+                      </button> */}
+
+                      {(cash.status == CashStatusEnum.REJECT ||
+                        cash.status == CashStatusEnum.PENDING) && (
+                        <button className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center">
+                          Edit
+                        </button>
+                      )}
+                    </td>
+                    {/* <td className="truncate">
                       {user.firstName + user.lastName}
                     </td>
                     <td className="truncate">{user.email}</td>
@@ -217,7 +263,7 @@ const CashManagementPage: React.FC = () => {
                       >
                         Approve
                       </button>
-                    </td>
+                    </td> */}
                   </tr>
                 );
               })

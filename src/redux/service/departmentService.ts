@@ -13,7 +13,7 @@ interface createDepartmentParams {
 }
 
 interface updateDepartmentParams {
-  id: string;
+  id: number;
   code: string;
   name: string;
 }

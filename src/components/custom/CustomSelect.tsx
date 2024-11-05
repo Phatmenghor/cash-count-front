@@ -11,6 +11,7 @@ interface CustomSelectProps<T> {
   getOptionLabel: (option: T) => string;
   errorMessage?: string;
   required?: boolean;
+  disabled?: boolean;
 }
 
 const CustomSelect = <T,>({
@@ -22,6 +23,7 @@ const CustomSelect = <T,>({
   getOptionLabel,
   errorMessage,
   required = false,
+  disabled = false,
 }: CustomSelectProps<T>) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -57,8 +59,11 @@ const CustomSelect = <T,>({
   }, []);
 
   const toggleDropdown = () => {
+    if (disabled) {
+      return;
+    }
     setIsOpen((prev) => !prev);
-    setSearchTerm(""); // Reset search term when dropdown opens
+    setSearchTerm("");
   };
 
   const handleOptionClick = (option: T) => {
@@ -87,8 +92,8 @@ const CustomSelect = <T,>({
       </label>
       <div className="relative">
         <div
-          className="flex justify-between items-center border border-gray-300 rounded-md px-3 py-1.5 cursor-pointer"
-          onClick={toggleDropdown} // Only toggle on click
+          className="flex justify-between items-center border border-gray-300 rounded-md px-3 py-1 cursor-pointer"
+          onClick={toggleDropdown}
         >
           <span
             className={`text-sm whitespace-nowrap overflow-hidden text-ellipsis ${
@@ -110,7 +115,7 @@ const CustomSelect = <T,>({
               exit={{ opacity: 0, y: -10 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="flex items-center border-b border-gray-300 p-1">
+              <div className="flex items-center border-b border-gray-300 px-1 py-0.5">
                 <input
                   type="text"
                   className="flex-grow px-2 py-0.5 border-none focus:ring-transparent"
@@ -126,7 +131,7 @@ const CustomSelect = <T,>({
                   />
                 )}
               </div>
-              <div className="max-h-48 overflow-y-auto">
+              <div className="max-h-48 overflow-y-auto pb-1">
                 {filteredOptions.length > 0 ? (
                   filteredOptions.map((option, index) => (
                     <div
@@ -138,7 +143,7 @@ const CustomSelect = <T,>({
                     </div>
                   ))
                 ) : (
-                  <span className="block text-sm py-1 px-2 text-gray-500">
+                  <span className="block text-sm py-4 px-2 text-gray-500">
                     No options found
                   </span>
                 )}

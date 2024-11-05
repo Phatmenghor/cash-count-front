@@ -1,7 +1,7 @@
 import { axiosWithAuth } from "@/utils/api/axios";
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import { UserProfile } from "../models/userManagement/UserProfileModel";
-import { UserRole } from "@/constants/userRole";
+import { UserRoleEnum } from "@/constants/userRole";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 
 interface getUserParams {
@@ -32,6 +32,10 @@ interface updateUserInfo {
   positionId: number;
 }
 
+interface getUserByInputterParams {
+  type: UserRoleEnum;
+}
+
 class UserManagementService {
   static getUserByToken = createAsyncThunk<
     UserProfile,
@@ -40,11 +44,8 @@ class UserManagementService {
   >("user/fetchUser", async (_, { rejectWithValue }) => {
     try {
       const response = await axiosWithAuth.get(`/auth/get-user-info-by-token`);
-      console.log("## ==", response);
-
       return response.data.data;
-    } catch (error) {
-      console.log("## ==", error);
+    } catch {
       return rejectWithValue("Failed to fetch user data");
     }
   });
@@ -106,7 +107,7 @@ class UserManagementService {
   }: getUserParams) => {
     try {
       const userRole = UserRoleStorage.getUserRole();
-      if (userRole == UserRole.IT_ADMIN_USER) {
+      if (userRole == UserRoleEnum.IT_ADMIN_USER) {
         const response = await axiosWithAuth.get(
           `/api/admin/get-all-user-authorize?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`
         );
@@ -114,7 +115,7 @@ class UserManagementService {
           data: response.data.data,
           pagination: response.data.pagination,
         };
-      } else if (userRole == UserRole.OPERATION_ADMIN_USER) {
+      } else if (userRole == UserRoleEnum.OPERATION_ADMIN_USER) {
         const response = await axiosWithAuth.get(
           `/api/admin/get-user-normal-for-authorize?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`
         );
@@ -186,6 +187,27 @@ class UserManagementService {
       };
     }
   };
+
+  static getUserListByInputter = async (data: getUserByInputterParams) => {
+    try {
+      const response = await axiosWithAuth.get(
+        `/api/admin/get-user-by-inputter?type=${data.type}`
+      );
+      return response.data.data;
+    } catch {
+      return null;
+    }
+  };
+
+  static fetchAllUser() {
+    return Promise.all([
+      this.getUserListByInputter({ type: UserRoleEnum.AUTHORIZER_USER }),
+      this.getUserListByInputter({ type: UserRoleEnum.CHECKER_USER }),
+    ]).then(([approve, checker]) => ({
+      approve,
+      checker,
+    }));
+  }
 }
 
 export default UserManagementService;

@@ -1,4 +1,4 @@
-import { UserRole } from "@/constants/userRole";
+import { UserRoleEnum } from "@/constants/userRole";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -26,37 +26,37 @@ const menuItems = [
         label: "Department",
         href: "/department",
         icon: <FaUsers />, // Add an icon
-        visible: [UserRole.IT_ADMIN_USER, "teacher", "student", "parent"],
+        visible: [UserRoleEnum.IT_ADMIN_USER, "teacher", "student", "parent"],
       },
       {
         label: "Branch",
         href: "/branch",
         icon: <FaHome />, // Add an icon
-        visible: [UserRole.IT_ADMIN_USER, "teacher", "student", "parent"],
+        visible: [UserRoleEnum.IT_ADMIN_USER, "teacher", "student", "parent"],
       },
       {
         label: "Position",
         href: "/position",
         icon: <FaCog />, // Add an icon
-        visible: [UserRole.IT_ADMIN_USER],
+        visible: [UserRoleEnum.IT_ADMIN_USER],
       },
       {
         label: "User Management",
         href: "/user-management",
         icon: <FaUserCircle />, // Add an icon
-        visible: [UserRole.IT_ADMIN_USER],
+        visible: [UserRoleEnum.IT_ADMIN_USER],
       },
       {
         label: "User Request",
         href: "/user-request",
         icon: <FaUserCircle />, // Add an icon
-        visible: [UserRole.IT_ADMIN_USER],
+        visible: [UserRoleEnum.IT_ADMIN_USER],
       },
       {
         label: "Cash Management",
         href: "/cash-management",
         icon: <FaMoneyBillWave />, // Add an icon
-        visible: [UserRole.IT_ADMIN_USER],
+        visible: [UserRoleEnum.IT_ADMIN_USER],
       },
     ],
   },
@@ -67,19 +67,19 @@ const menuItems = [
         label: "Profile",
         href: "/profile",
         icon: <FaUserCircle />,
-        visible: [UserRole.IT_ADMIN_USER],
+        visible: [UserRoleEnum.IT_ADMIN_USER],
       },
       {
         label: "Logout",
         href: "/logout",
         icon: <FaSignOutAlt />,
-        visible: [UserRole.IT_ADMIN_USER],
+        visible: [UserRoleEnum.IT_ADMIN_USER],
       },
     ],
   },
 ];
 
-const role = UserRole.IT_ADMIN_USER;
+const role = UserRoleEnum.IT_ADMIN_USER;
 
 const MenuSidebar = () => {
   const pathname = usePathname();

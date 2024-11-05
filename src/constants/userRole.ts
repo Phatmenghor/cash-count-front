@@ -1,4 +1,4 @@
-export enum UserRole {
+export enum UserRoleEnum {
   IT_ADMIN_USER = "IT_ADMIN_USER",
   OPERATION_ADMIN_USER = "OPERATION_ADMIN_USER",
   AUTHORIZER_USER = "AUTHORIZER_USER",

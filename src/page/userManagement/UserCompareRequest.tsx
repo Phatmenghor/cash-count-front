@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import Button from "@/components/custom/Button";
 import Input from "@/components/custom/Input";
@@ -15,9 +16,8 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
   }, []);
 
   async function fetchData() {
-    const response = await UserManagementService.getUserByID({ id: 33});
+    const response = await UserManagementService.getUserByID({ id: 33 });
     setUserInfo(response);
-    console.log("## ==", response);
   }
 
   return (

@@ -20,8 +20,32 @@ const axiosWithAuth = axios.create({
   },
 });
 
+// Axios instance with token (authentication required)
+const axiosUploadFile = axios.create({
+  baseURL: keyEnv.BASE_URL,
+  timeout: 400000,
+});
+
 // Adding an interceptor to include the token for requests that require authentication
 axiosWithAuth.interceptors.request.use(
+  (config) => {
+    const token = TokenStorage.getToken();
+
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    } else {
+      console.warn("## No token found");
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Adding an interceptor to include the token for requests that require authentication
+axiosUploadFile.interceptors.request.use(
   (config) => {
     const token = TokenStorage.getToken();
 
@@ -68,4 +92,4 @@ axiosWithAuth.interceptors.request.use(
 //     }
 //   );
 
-export { axiosNoAuth, axiosWithAuth };
+export { axiosNoAuth, axiosWithAuth, axiosUploadFile };

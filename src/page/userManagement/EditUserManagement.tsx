@@ -110,8 +110,6 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
         roleId: formData.role!.id,
       },
     });
-
-    console.log("## ==", response);
   };
 
   const validateForm = () => {

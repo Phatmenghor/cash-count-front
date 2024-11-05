@@ -50,7 +50,6 @@ const Register: React.FC = () => {
 
   async function fetchData() {
     const response = await RegisterService.fetchAllData();
-    console.log("### ===", response);
     setAllData(response);
   }
 
