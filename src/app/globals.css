@@ -161,6 +161,12 @@ option {
   max-width: 200px; /* Set a maximum width to control where the ellipsis appears */
 }
 
+.hide {
+  overflow: hidden; /* Hide the overflowing text */
+  text-overflow: ellipsis; /* Show ellipsis (...) when text overflows */
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
+}
+
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Chrome, Safari, Edge */
 }

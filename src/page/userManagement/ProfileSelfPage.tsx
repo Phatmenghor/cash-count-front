@@ -14,26 +14,30 @@ import { RoleModel } from "@/redux/models/register/RoleModel";
 import { UserProfile } from "@/redux/models/userManagement/UserProfileModel";
 import { RegisterService } from "@/redux/service/registerService";
 import UserManagementService from "@/redux/service/userManagementService";
-import { useSearchParams } from "next/navigation";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 
 interface FormDataType {
   name: string;
+  email: string;
+  otp: string;
   department: DepartmentModel | null;
   position: PositionModel | null;
   role: RoleModel | null;
   branch: BranchModel | null;
 }
 
-const EditUserManagement = ({ params }: { params: { id: number } }) => {
-  const idUser = params.id;
-  const searchParams = useSearchParams();
-  const modeTypeEdit = searchParams.get("mode") === "edit";
+const ProfileSelfPage = () => {
+  const { userData } = useSelector((state: RootState) => state.user);
   const [moveToEdit, setMoveToEdit] = useState(false);
+  const [verifyOTP, setVerifyOTP] = useState(false);
   const [userInfo, setUserInfo] = useState<UserProfile | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [isLoadingEdit, setLoadingEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<FormDataType>({
+    email: "",
+    otp: "",
     name: "",
     department: null,
     position: null,
@@ -46,28 +50,6 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
     positions: null,
     departments: null,
   });
-
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  async function fetchData() {
-    const response = await UserManagementService.getUserByID({
-      id: idUser,
-    });
-    setFormData({
-      name: response.name,
-      branch: response.branch,
-      department: response?.department,
-      position: response?.position,
-      role: response.role,
-    });
-    if (modeTypeEdit) {
-      const response = await RegisterService.fetchAllData();
-      setAllData(response);
-    }
-    setUserInfo(response);
-  }
 
   const handleChange = (key: keyof typeof formData, option: unknown) => {
     setFormData((prevData) => ({
@@ -89,10 +71,22 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
   };
 
   async function onClickEdit() {
-    setMoveToEdit(true);
     setLoadingEdit(true);
+    setMoveToEdit(true);
     const response = await RegisterService.fetchAllData();
     setAllData(response);
+
+    if (userData) {
+      setFormData({
+        otp: "",
+        email: userData.email,
+        name: userData.name,
+        branch: userData.branch,
+        department: userData.department,
+        position: userData.position,
+        role: userData.role,
+      });
+    }
     setLoadingEdit(false);
   }
 
@@ -110,9 +104,11 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
         roleId: formData.role!.id,
       },
     });
-
-    console.log("## ==", response);
   };
+
+  function verifyCodeOTP() {
+    setVerifyOTP(true);
+  }
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -128,13 +124,24 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
 
   return (
     <div className="px-6">
-      <h2 className="text-gray-700 text-3xl font-bold mb-4">
-        {modeTypeEdit || moveToEdit
-          ? "Edit User Information"
-          : "User Information"}
-      </h2>
+      <div className="flex justify-between">
+        <h2 className="text-gray-700 text-3xl font-bold mb-4 hide">
+          {moveToEdit ? "Edit User Profile" : "User Profile"}
+        </h2>
 
-      {modeTypeEdit || moveToEdit ? (
+        {!moveToEdit && (
+          <Button
+            onClick={onClickEdit}
+            className="px-8 h-8"
+            loading={isLoadingEdit}
+            textLoading="Waiting ..."
+          >
+            Edit
+          </Button>
+        )}
+      </div>
+
+      {moveToEdit ? (
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-4 ">
             {/* UserName */}
@@ -194,27 +201,96 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
               errorMessage={errors.role}
               required
             />
+
+            {/* Email */}
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Email <span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                placeholder="Enter your name"
+                onChange={handleInputChange}
+                className="py-1.5"
+              />
+              {errors.name && (
+                <FormMessage message={errors.email} type="error" />
+              )}
+            </div>
+
+            {/* Verify OTP */}
+
+            {verifyOTP && (
+              <div>
+                <label
+                  htmlFor="otp"
+                  className="block text-sm font-medium text-gray-700 mb-1"
+                >
+                  Verify OTP <span className="text-red-500 ml-1">*</span>
+                </label>
+                <Input
+                  type="tel"
+                  id="otp"
+                  name="otp"
+                  value={formData.otp}
+                  placeholder="Enter your otp"
+                  onChange={handleInputChange}
+                  className="py-1.5"
+                />
+                {errors.name && (
+                  <FormMessage message={errors.name} type="error" />
+                )}
+              </div>
+            )}
           </div>
 
-          <div className="mt-8 justify-end flex space-x-4">
-            <Button
-              type="button"
-              variant="cancel"
-              onClick={() => setMoveToEdit(false)}
-              className="py-1 px-4"
-            >
-              Cancel
-            </Button>
-            <Button
-              className="py-1 px-4"
-              type="button"
-              loading={isLoadingEdit}
-              textLoading="Updating ..."
-              onClick={handleSubmit}
-            >
-              Save
-            </Button>
-          </div>
+          {formData.email != userData?.email ? (
+            <div className="mt-8 justify-end flex space-x-4">
+              <Button
+                type="button"
+                variant="cancel"
+                onClick={() => setMoveToEdit(false)}
+                className="py-1 px-4"
+              >
+                Cancel
+              </Button>
+              <Button
+                className="py-1 px-4"
+                type="button"
+                loading={isLoadingEdit}
+                textLoading="Updating ..."
+                onClick={verifyCodeOTP}
+              >
+                Verify OTP
+              </Button>
+            </div>
+          ) : (
+            <div className="mt-8 justify-end flex space-x-4">
+              <Button
+                type="button"
+                variant="cancel"
+                onClick={() => setMoveToEdit(false)}
+                className="py-1 px-4"
+              >
+                Cancel
+              </Button>
+              <Button
+                className="py-1 px-4"
+                type="button"
+                loading={isLoadingEdit}
+                textLoading="Updating ..."
+                onClick={handleSubmit}
+              >
+                Save
+              </Button>
+            </div>
+          )}
         </form>
       ) : (
         // View Information
@@ -229,7 +305,7 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
                 Name<span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userInfo?.name}
+                value={userData?.name}
                 className="py-1.5 w-full"
                 disabled={true}
               />
@@ -244,7 +320,7 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
                 AD Username<span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userInfo?.username}
+                value={userData?.username}
                 className="py-1.5 w-full"
                 disabled={true}
               />
@@ -259,7 +335,7 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
                 Email<span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userInfo?.email}
+                value={userData?.email}
                 className="py-1.5"
                 disabled={true}
               />
@@ -274,7 +350,7 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
                 Position<span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userInfo?.position.name}
+                value={userData?.position.name}
                 className="py-1.5"
                 disabled={true}
               />
@@ -289,7 +365,7 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
                 Department<span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userInfo?.department.name}
+                value={userData?.department.name}
                 className="py-1.5"
                 disabled={true}
               />
@@ -304,22 +380,7 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
                 Branch<span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userInfo?.branch.mnemonic}
-                className="py-1.5"
-                disabled={true}
-              />
-            </div>
-
-            {/* Role */}
-            <div>
-              <label
-                htmlFor="roleName"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Role<span className="text-red-500 ml-1">*</span>
-              </label>
-              <Input
-                value={userInfo?.role.name}
+                value={userData?.branch.mnemonic}
                 className="py-1.5"
                 disabled={true}
               />
@@ -334,7 +395,22 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
                 Mnemonic<span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userInfo?.branch.mnemonic}
+                value={userData?.branch.mnemonic}
+                className="py-1.5"
+                disabled={true}
+              />
+            </div>
+
+            {/* Role */}
+            <div>
+              <label
+                htmlFor="roleName"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Role<span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userData?.role.name}
                 className="py-1.5"
                 disabled={true}
               />
@@ -349,21 +425,11 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
                 City<span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userInfo?.branch.city}
+                value={userData?.branch.city}
                 className="py-1.5"
                 disabled={true}
               />
             </div>
-          </div>
-          <div className="mt-8 justify-end flex">
-            <Button
-              onClick={onClickEdit}
-              className="py-1 px-8"
-              loading={isLoadingEdit}
-              textLoading="Waiting ..."
-            >
-              Edit
-            </Button>
           </div>
         </div>
       )}
@@ -371,4 +437,4 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
   );
 };
 
-export default EditUserManagement;
+export default ProfileSelfPage;

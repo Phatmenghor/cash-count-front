@@ -5,22 +5,22 @@ import React from "react";
 // import { UserRole } from "@/constants/userRole";
 import dynamic from "next/dynamic";
 
-// const PositionPage = withAuth(
-//   dynamic(() => import("@/page/position/PositionPage"), {
+// const UserManagementPage = withAuth(
+//   dynamic(() => import("@/page/userManagement/UserManagementPage"), {
 //     ssr: false,
 //   }),
 //   { allowedRoles: [UserRole.AUTHORIZER_USER, UserRole.IT_ADMIN_USER] }
 // );
 
-const CashManagementPage = dynamic(
-  () => import("@/page/cashManagement/CashManagementPage"),
+const UserRequestCompare = dynamic(
+  () => import("@/page/userManagement/UserCompareRequest"),
   {
     ssr: false,
   }
 );
 
-const page = () => {
-  return <CashManagementPage />;
+const page = ({ params }: { params: { id: number } }) => {
+  return <UserRequestCompare params={params} />;
 };
 
 export default page;

@@ -1,13 +1,17 @@
 export interface UserProfile {
-  roleId: number;
+  role: Role;
   name: string;
-  roleName: string;
   id: number;
   position: Position;
   department: Department;
   branch: Branch;
   email: string;
   username: string;
+}
+
+interface Role {
+  id: number;
+  name: string;
 }
 
 interface Position {

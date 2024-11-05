@@ -11,26 +11,41 @@ import { clearLocalStorage } from "@/utils/localStorage/auth";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import UserManagementService from "@/redux/service/userManagementService";
+import { setCloseModalLogout } from "@/redux/features/userSlice";
 
 const Navbar: React.FC = React.memo(() => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch<AppDispatch>();
-  const { userData } = useSelector((state: RootState) => state.user);
+  const { userData, isOpenLogout } = useSelector(
+    (state: RootState) => state.user
+  );
 
   useEffect(() => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    if (isOpenLogout) {
+      setIsDialogOpen(true);
+    }
+  }, [isOpenLogout]);
+
   function fetchData() {
+    console.log("### ====")
     dispatch(UserManagementService.getUserByToken());
   }
 
-  const handleLogout = () => {
-    showToast("You have successfully logged out.", "success");
-    clearLocalStorage();
+  function onCloseModal() {
+    dispatch(setCloseModalLogout());
     setIsDialogOpen(false);
+  }
+
+  const handleLogout = () => {
+    clearLocalStorage();
     router.push(`/${route.LOGIN}`);
+    showToast("You have successfully logged out.", "success");
+    onCloseModal();
   };
 
   return (
@@ -58,7 +73,7 @@ const Navbar: React.FC = React.memo(() => {
         <ModalConfirmation
           isOpen={isDialogOpen}
           title="Confirm Logout!"
-          onClose={() => setIsDialogOpen(false)}
+          onClose={onCloseModal}
           onConfirm={handleLogout}
           message={`Are you sure you want to log out, ${userData?.name ?? ""}?`}
         />

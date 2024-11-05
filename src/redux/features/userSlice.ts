@@ -7,18 +7,27 @@ interface UserState {
   userData: UserProfile | null;
   loading: boolean;
   error: string | null;
+  isOpenLogout: boolean;
 }
 
 const initialState: UserState = {
   userData: null,
   loading: false,
   error: null,
+  isOpenLogout: false,
 };
 
 const userSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    setOpenModalLogout: (state) => {
+      state.isOpenLogout = true;
+    },
+    setCloseModalLogout: (state) => {
+      state.isOpenLogout = false;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(UserManagementService.getUserByToken.pending, (state) => {
@@ -42,5 +51,5 @@ const userSlice = createSlice({
   },
 });
 
-export const {} = userSlice.actions;
+export const { setOpenModalLogout, setCloseModalLogout } = userSlice.actions;
 export default userSlice.reducer;

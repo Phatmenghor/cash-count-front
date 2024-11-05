@@ -17,9 +17,11 @@ import {
 } from "@/redux/models/userManagement/UserRequestModel";
 import ModalConfirmation from "@/components/modal/ModalConfirmation";
 import { useRouter } from "next/navigation";
+import Button from "@/components/custom/Button";
+import { CashManagementService } from "@/redux/service/cashManagementService";
 
-const UserRequestPage: React.FC = () => {
-  const [userRequestList, setUserRequestList] = useState<userRequestListModel>({
+const CashManagementPage: React.FC = () => {
+  const [cashRecordList, setCashRecordList] = useState<userRequestListModel>({
     data: [],
     pagination: null,
   });
@@ -28,7 +30,7 @@ const UserRequestPage: React.FC = () => {
   const [modalReject, setModalReject] = useState(false);
   const [size, setSize] = useState<number>(15);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const listSize = userRequestList.pagination?.currentPage ?? 15;
+  const listSize = cashRecordList.pagination?.currentPage ?? 15;
   const [dataUser, setDataUser] = useState<UserRequestModel | null>(null);
 
   useEffect(() => {
@@ -36,20 +38,20 @@ const UserRequestPage: React.FC = () => {
   }, []);
 
   async function fetchData(currentPage = 1, pageSize = size) {
-    const response = await UserManagementService.getUserRequest({
+    const response = await CashManagementService.getCashRecordList({
       pageSize,
       currentPage,
     });
-    setUserRequestList(response);
+    setCashRecordList(response);
   }
 
   function onPageChange(value: number) {
-    fetchData(value, userRequestList.pagination?.pageSize ?? 15);
+    fetchData(value, cashRecordList.pagination?.pageSize ?? 15);
   }
 
   function handlePageSize(value: number) {
     setSize(value);
-    fetchData(userRequestList.pagination?.currentPage, value);
+    fetchData(cashRecordList.pagination?.currentPage, value);
   }
 
   const handleSearch = useCallback(
@@ -69,7 +71,7 @@ const UserRequestPage: React.FC = () => {
       currentPage: page,
       search,
     });
-    setUserRequestList(response);
+    setCashRecordList(response);
   }
 
   function onSearch(e: React.ChangeEvent<HTMLInputElement>) {
@@ -92,11 +94,11 @@ const UserRequestPage: React.FC = () => {
       id: dataUser!.id,
     });
     if (response.success) {
-      setUserRequestList((prevList) => ({
+      setCashRecordList((prevList) => ({
         ...prevList,
         data: prevList.data.filter((request) => request.id !== dataUser?.id),
       }));
-      if (userRequestList.data.length === 1) {
+      if (cashRecordList.data.length === 1) {
         fetchData();
       }
       showToast(response.message, "success");
@@ -111,11 +113,11 @@ const UserRequestPage: React.FC = () => {
       id: dataUser!.id,
     });
     if (response.success) {
-      setUserRequestList((prevList) => ({
+      setCashRecordList((prevList) => ({
         ...prevList,
         data: prevList.data.filter((request) => request.id !== dataUser?.id),
       }));
-      if (userRequestList.data.length === 1) {
+      if (cashRecordList.data.length === 1) {
         fetchData();
       }
       showToast(response.message, "success");
@@ -137,6 +139,8 @@ const UserRequestPage: React.FC = () => {
           className="mr-4 py-1 max-w-md"
           data-aos="fade-right"
         />
+
+        <Button className="py-1 mr-1">Add More</Button>
       </div>
 
       {/* User List Table */}
@@ -160,7 +164,7 @@ const UserRequestPage: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {userRequestList.data.length === 0 ? (
+            {cashRecordList.data.length === 0 ? (
               <tr>
                 <td colSpan={10}>
                   <EmptyState
@@ -170,7 +174,7 @@ const UserRequestPage: React.FC = () => {
                 </td>
               </tr>
             ) : (
-              userRequestList.data.map((user: UserRequestModel, index) => {
+              cashRecordList.data.map((user: UserRequestModel, index) => {
                 const displayIndex = (listSize - 1) * size + index + 1;
                 return (
                   <tr key={user.id}>
@@ -222,7 +226,7 @@ const UserRequestPage: React.FC = () => {
         </table>
       </div>
 
-      {userRequestList.data.length > 0 && (
+      {cashRecordList.data.length > 0 && (
         <div className="flex justify-between mt-8 mb-16">
           <DropdownSize
             options={pageSizeData}
@@ -231,8 +235,8 @@ const UserRequestPage: React.FC = () => {
           />
 
           <Pagination
-            totalPages={userRequestList.pagination?.totalPages ?? 1}
-            currentPage={userRequestList.pagination?.currentPage ?? 1}
+            totalPages={cashRecordList.pagination?.totalPages ?? 1}
+            currentPage={cashRecordList.pagination?.currentPage ?? 1}
             onPageChange={onPageChange}
           />
         </div>
@@ -259,4 +263,4 @@ const UserRequestPage: React.FC = () => {
   );
 };
 
-export default UserRequestPage;
+export default CashManagementPage;

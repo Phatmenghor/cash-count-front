@@ -28,8 +28,8 @@ interface updateUserInfo {
   name: string;
   roleId: number;
   branchId: number;
-  departmentId: string;
-  positionId: string;
+  departmentId: number;
+  positionId: number;
 }
 
 class UserManagementService {
@@ -40,8 +40,11 @@ class UserManagementService {
   >("user/fetchUser", async (_, { rejectWithValue }) => {
     try {
       const response = await axiosWithAuth.get(`/auth/get-user-info-by-token`);
+      console.log("## ==", response);
+
       return response.data.data;
-    } catch {
+    } catch (error) {
+      console.log("## ==", error);
       return rejectWithValue("Failed to fetch user data");
     }
   });
@@ -86,11 +89,10 @@ class UserManagementService {
 
   static updateUserById = async (param: updateUserByIdParams) => {
     try {
-      const res = await axiosWithAuth.post(
+      await axiosWithAuth.post(
         `/auth/update-user-info/${param.id}`,
         param.info
       );
-
       return true;
     } catch {
       return false;
@@ -166,6 +168,21 @@ class UserManagementService {
       return {
         success: false,
         message: "Failed to approve user. Please try again.",
+      };
+    }
+  };
+
+  static rejectRequestUser = async ({ id }: getUserByIdParams) => {
+    try {
+      await axiosWithAuth.get(`/api/admin/reject-user/${id}`);
+      return {
+        success: true,
+        message: "The user has been rejected successfully!",
+      };
+    } catch {
+      return {
+        success: false,
+        message: "Failed to rejected user. Please try again.",
       };
     }
   };

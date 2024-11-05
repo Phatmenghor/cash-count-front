@@ -1,6 +1,6 @@
 import { UserRole } from "@/constants/userRole";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
 import {
   FaUsers,
@@ -10,6 +10,13 @@ import {
   FaUserCircle,
   FaSignOutAlt,
 } from "react-icons/fa"; // Import the icons you want to use
+import ModalConfirmation from "../modal/ModalConfirmation";
+import { clearLocalStorage } from "@/utils/localStorage/auth";
+import { route } from "@/constants/routed";
+import showToast from "../toast/useToast";
+import { RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { setOpenModalLogout } from "@/redux/features/userSlice";
 
 const menuItems = [
   {
@@ -77,10 +84,18 @@ const role = UserRole.IT_ADMIN_USER;
 const MenuSidebar = () => {
   const pathname = usePathname();
   const [activeHref, setActiveHref] = useState(pathname);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     setActiveHref(pathname);
   }, [pathname]);
+
+  function onNavigation(item: string) {
+    if (item == "/logout") {
+      dispatch(setOpenModalLogout());
+    }
+    setActiveHref(item);
+  }
 
   return (
     <div
@@ -98,9 +113,9 @@ const MenuSidebar = () => {
                 const isActive = activeHref === item.href;
                 return (
                   <Link
-                    href={item.href}
+                    href={item.href == "/logout" ? "" : item.href}
                     key={index}
-                    onClick={() => setActiveHref(item.href)}
+                    onClick={() => onNavigation(item.href)}
                     className={`flex items-center justify-center lg:justify-start gap-2 py-2 md:px-2 rounded-md transition-colors ${
                       isActive
                         ? "text-white font-semibold bg-blue-500 shadow-md" // Active background blue-500

@@ -7,6 +7,18 @@ import Navbar from "@/components/layout/Navbar";
 import MenuSidebar from "@/components/sidebar/MenuSidebar";
 import { useEffect } from "react";
 import AOS from "aos";
+import localFont from "next/font/local";
+
+const geistSans = localFont({
+  src: "../fonts/GeistVF.woff",
+  variable: "--font-geist-sans",
+  weight: "100 900",
+});
+const geistMono = localFont({
+  src: "../fonts/GeistMonoVF.woff",
+  variable: "--font-geist-mono",
+  weight: "100 900",
+});
 
 export default function RootLayout({
   children,
@@ -24,12 +36,18 @@ export default function RootLayout({
   }, []);
 
   return (
-    <div className="flex h-screen container">
-      <MenuSidebar />
-      <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA]  overflow-y-scroll flex flex-col py-16">
-        <Navbar />
-        {children}
-      </div>
-    </div>
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <div className="flex h-screen container">
+          <MenuSidebar />
+          <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] overflow-y-scroll flex flex-col py-16">
+            <Navbar />
+            {children}
+          </div>
+        </div>
+      </body>
+    </html>
   );
 }

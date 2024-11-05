@@ -4,7 +4,7 @@ import "./globals.css";
 import "react-toastify/dist/ReactToastify.css";
 import ReduxProvider from "./ReduxProvider";
 import { ToastContainer } from "react-toastify";
-// import { ToastContainer } from 'react-toastify';
+import { useEffect, useState } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -22,6 +22,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null; // Prevent hydration until mounted
+  }
   return (
     <html lang="en">
       <body

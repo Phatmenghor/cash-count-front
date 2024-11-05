@@ -11,7 +11,6 @@ import withAnimation from "@/configs/withAnimation";
 import { UserRole } from "@/constants/userRole";
 
 const LoginPage: React.FC = () => {
-  // const [email, setEmail] = useState("phat.menghor");
   const [email, setEmail] = useState("sokrann.voem");
   const [password, setPassword] = useState("123456789");
   const [usernameError, setUsernameError] = useState<string | null>(null);
@@ -22,8 +21,6 @@ const LoginPage: React.FC = () => {
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Reset error messages
     setUsernameError(null);
     setPasswordError(null);
 

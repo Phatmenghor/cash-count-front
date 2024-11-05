@@ -1,5 +1,5 @@
 export interface DepartmentModel {
-  id: string;
+  id: number;
   code: string;
   name: string;
 }
