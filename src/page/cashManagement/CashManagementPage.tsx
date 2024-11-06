@@ -88,16 +88,6 @@ const CashManagementPage: React.FC = () => {
     handleSearch(e.target.value);
   }
 
-  const handleOpenModalApprove = (user: UserRequestModel) => {
-    setDataUser(user);
-    setModalOpen(true);
-  };
-
-  const handleOpenModalReject = (user: UserRequestModel) => {
-    setDataUser(user);
-    setModalOpen(true);
-  };
-
   async function handleApprove() {
     const response = await UserManagementService.approveRequestUser({
       id: dataUser!.id,
@@ -139,6 +129,8 @@ const CashManagementPage: React.FC = () => {
   function onViewCash(id: number) {
     router.push(`/cash-management/view-cash-record/${id}`);
   }
+
+  return null;
 
   return (
     <div className="mx-1">
