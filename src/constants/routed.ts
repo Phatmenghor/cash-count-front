@@ -1,5 +1,5 @@
 const route = {
-  LOGIN: "login",
+  LOGIN: "login-user",
   USER_MANAGEMENT: "user-management",
   REGISTER: "register",
   EDIT: "edit",

@@ -21,6 +21,8 @@ import { CashStatusEnum } from "@/redux/models/cashManagement/StatusEnum";
 import { AddRecordParamModel } from "@/redux/models/cashManagement/AddRecordParamModel";
 import showToast from "@/components/toast/useToast";
 import { CashRecordDetailModel } from "@/redux/models/cashManagement/CashRecordDetailModel";
+import { CashInSystemModel } from "@/redux/models/cashManagement/CashInSystemModel";
+import { FaFilePdf } from "react-icons/fa";
 
 type Currency = "USD" | "KHR" | "THB";
 
@@ -51,6 +53,9 @@ const page = ({ params }: { params: { id: number } }) => {
   const [verifyCash, setVerifyCash] = useState<VerifyCashModel | null>(null);
   const [cashRecordDetail, setCashRecordDetail] =
     useState<CashRecordDetailModel | null>(null);
+  const [cashInSystem, setCashInSystem] = useState<CashInSystemModel | null>(
+    null
+  );
   const [file, setFile] = useState<File | null>(null);
   const [remark, setRemark] = useState("");
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -62,9 +67,6 @@ const page = ({ params }: { params: { id: number } }) => {
     approve: null,
     checker: null,
   });
-  const { userData } = useSelector((state: RootState) => state.user);
-
-  console.log("### ==idCashRecord", idCashRecord);
 
   useEffect(() => {
     fetchData();
@@ -74,7 +76,13 @@ const page = ({ params }: { params: { id: number } }) => {
     const response = await CashManagementService.getCashRecordById({
       id: idCashRecord,
     });
-    setCashRecordDetail(response);
+    if (response.success) {
+      const responseSystem = await CashManagementService.getCashInSystemById({
+        id: response.data.cashInSystem.id,
+      });
+      setCashInSystem(responseSystem);
+    }
+    setCashRecordDetail(response.data);
   }
 
   // Handle input changes
@@ -114,120 +122,20 @@ const page = ({ params }: { params: { id: number } }) => {
     setVerifyCash(resposne);
   };
 
-  const handleSaveClick = async () => {
-    if (!isVerified) {
-      setIsModalOpen(true); // Open modal if not verified
+  const handleViewFile = async () => {
+    const resposne = await CashManagementService.getViewPDFById({
+      id: cashRecordDetail!.referenceFile.id,
+    });
+
+    if (resposne) {
+      window.open(resposne, "_blank");
     } else {
-      const resPDF = await uploadPdf();
-
-      if (!validateForm()) {
-        return;
-      }
-
-      const cashCountData: AddRecordParamModel = {
-        checkerBy: { id: formData.checker!.id },
-        approvedBy: { id: formData.approve!.id },
-        referenceFile: resPDF,
-        cashInSystem: { id: verifyCash!.id },
-        remarkFromCreate: remark.length > 0 ? remark : null,
-        status: CashStatusEnum.PENDING,
-        vaultAccount: {
-          usdBalance: cashOnHand.vault.USD,
-          khrBalance: cashOnHand.vault.KHR,
-          thbBalance: cashOnHand.vault.THB,
-        },
-        nostroAccount: {
-          usdBalance: cashOnHand.nostro.USD,
-          khrBalance: cashOnHand.nostro.KHR,
-          thbBalance: cashOnHand.nostro.THB,
-        },
-      };
-
-      const response = await CashManagementService.createCashRecord(
-        cashCountData
-      );
-
-      if (response.success) {
-        showToast(response.message, "success");
-        router.back();
-      } else {
-        showToast(response.message, "error", 6000);
-      }
-
-      console.log("### ==cashCountData", cashCountData);
+      showToast("Can't view this document, Please try again later", "error");
     }
   };
-
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-    const { approve, checker } = formData;
-
-    if (!approve || !approve.id) {
-      newErrors.approve = "Approve by is required.";
-    }
-    if (!checker || !checker.id) {
-      newErrors.checker = "Checker by is required.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  async function uploadPdf() {
-    if (file) {
-      const data: SubmissionData = {
-        file,
-      };
-      const resposne = await CashManagementService.uploadFileRecord(data);
-      if (resposne.success) {
-        return {
-          id: resposne.data.id,
-        };
-      } else {
-        return null;
-      }
-    } else {
-      return null;
-    }
-  }
-
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.files) {
-      const file = event.target.files[0];
-      setFile(file);
-    }
-  };
-
-  const handleChange = (key: keyof typeof formData, option: any) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [key]: option,
-    }));
-    setErrors((prevErrors) => ({ ...prevErrors, [key]: "" }));
-  };
-
-  console.log("### ==response", cashRecordDetail);
 
   return (
-    <div className="mx-1 min-h-screen">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-gray-700 text-2xl font-bold hide">
-          View CashRecord
-        </h2>
-        <Button
-          onClick={handleVerifyClick}
-          disabled={isVerified}
-          className={`flex items-center py-0.5 ${
-            isVerified
-              ? "bg-gray-400 cursor-not-allowed hover:bg-gray-400"
-              : "bg-blue-500"
-          }`}
-        >
-          Edit
-        </Button>
-      </div>
+    <div className="mx-1">
       <div className="overflow-auto">
         {/* Table Header */}
         <table>
@@ -235,7 +143,7 @@ const page = ({ params }: { params: { id: number } }) => {
             <tr>
               <th rowSpan={2}>Description</th>
               <th colSpan={3} className="text-center">
-                Vault
+                Vault Account
               </th>
               <th colSpan={3} className="text-center">
                 Nostro Account
@@ -254,192 +162,156 @@ const page = ({ params }: { params: { id: number } }) => {
             {/* Cash On Hand (Editable) */}
             <tr>
               <td>{"Cash on hand"}</td>
-              <td>{cashRecordDetail?.vaultAccount.usdBalance}</td>
-              <td>{cashRecordDetail?.vaultAccount.khrBalance}</td>
-              <td>{cashRecordDetail?.vaultAccount.thbBalance}</td>
-              <td>{cashRecordDetail?.nostroAccount.usdBalance}</td>
-              <td>{cashRecordDetail?.nostroAccount.khrBalance}</td>
-              <td>{cashRecordDetail?.nostroAccount.thbBalance}</td>
+              <td>
+                {cashRecordDetail?.cashInHandVaultAccount.usdBalance.toFixed(2)}
+              </td>
+              <td>
+                {cashRecordDetail?.cashInHandVaultAccount.khrBalance.toFixed(2)}
+              </td>
+              <td>
+                {cashRecordDetail?.cashInHandVaultAccount.thbBalance.toFixed(2)}
+              </td>
+              <td>
+                {cashRecordDetail?.cashInHandNostroAccount.usdBalance.toFixed(
+                  2
+                )}
+              </td>
+              <td>
+                {cashRecordDetail?.cashInHandNostroAccount.khrBalance.toFixed(
+                  2
+                )}
+              </td>
+              <td>
+                {cashRecordDetail?.cashInHandNostroAccount.thbBalance.toFixed(
+                  2
+                )}
+              </td>
             </tr>
 
             <tr>
               {/* vault account */}
               <td>{"Cash In System"}</td>
-              <td>
-                {isVerified
-                  ? verifyCash?.vaultAccount.usdBalance.toFixed(2)
-                  : "0.00"}
-              </td>
-              <td>
-                {isVerified
-                  ? verifyCash?.vaultAccount.khrBalance.toFixed(2)
-                  : "0.00"}
-              </td>
-              <td>
-                {isVerified
-                  ? verifyCash?.vaultAccount.thbBalance.toFixed(2)
-                  : "0.00"}
-              </td>
+              <td>{cashInSystem?.vaultAccount.usdBalance.toFixed(2)}</td>
+              <td>{cashInSystem?.vaultAccount.khrBalance.toFixed(2)}</td>
+              <td>{cashInSystem?.vaultAccount.thbBalance.toFixed(2)}</td>
 
-              {/* nostro */}
-              <td>
-                {isVerified
-                  ? verifyCash?.nostroAccount.usdBalance.toFixed(2)
-                  : "0.00"}
-              </td>
-              <td>
-                {isVerified
-                  ? verifyCash?.nostroAccount.khrBalance.toFixed(2)
-                  : "0.00"}
-              </td>
-              <td>
-                {isVerified
-                  ? verifyCash?.nostroAccount.thbBalance.toFixed(2)
-                  : "0.00"}
-              </td>
+              {/* nostro account*/}
+              <td>{cashInSystem?.nostroAccount.usdBalance.toFixed(2)}</td>
+              <td>{cashInSystem?.nostroAccount.khrBalance.toFixed(2)}</td>
+              <td>{cashInSystem?.nostroAccount.thbBalance.toFixed(2)}</td>
             </tr>
 
             <tr>
               <td>{"Cash Result"}</td>
-              <td>
-                {isVerified
-                  ? (
-                      cashOnHand.vault.USD -
-                      (verifyCash?.vaultAccount.usdBalance || 0)
-                    ).toFixed(2)
-                  : "0.00"}
-              </td>
-              <td>
-                {isVerified
-                  ? (
-                      cashOnHand.vault.KHR -
-                      (verifyCash?.vaultAccount.khrBalance || 0)
-                    ).toFixed(2)
-                  : "0.00"}
-              </td>
-              <td>
-                {isVerified
-                  ? (
-                      cashOnHand.vault.THB -
-                      (verifyCash?.vaultAccount.thbBalance || 0)
-                    ).toFixed(2)
-                  : "0.00"}
-              </td>
-              <td>
-                {isVerified
-                  ? (
-                      cashOnHand.nostro.USD -
-                      (verifyCash?.nostroAccount.usdBalance || 0)
-                    ).toFixed(2)
-                  : "0.00"}
-              </td>
-              <td>
-                {isVerified
-                  ? (
-                      cashOnHand.nostro.KHR -
-                      (verifyCash?.nostroAccount.khrBalance || 0)
-                    ).toFixed(2)
-                  : "0.00"}
-              </td>
-              <td>
-                {isVerified
-                  ? (
-                      cashOnHand.nostro.THB -
-                      (verifyCash?.nostroAccount.thbBalance || 0)
-                    ).toFixed(2)
-                  : "0.00"}
-              </td>
+              <td>{cashRecordDetail?.vaultAccount.usdBalance.toFixed(2)}</td>
+              <td>{cashRecordDetail?.vaultAccount.khrBalance.toFixed(2)}</td>
+              <td>{cashRecordDetail?.vaultAccount.thbBalance.toFixed(2)}</td>
+              <td>{cashRecordDetail?.nostroAccount.usdBalance.toFixed(2)}</td>
+              <td>{cashRecordDetail?.nostroAccount.khrBalance.toFixed(2)}</td>
+              <td>{cashRecordDetail?.nostroAccount.thbBalance.toFixed(2)}</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      {/* Remarks and file upload sections */}
-      <div className="mt-8 flex flex-col sm:flex-row sm:items-start">
+      <div className="flex mt-6">
+        {/* Remarks and file upload sections */}
         <div className="max-w-2xl flex-1 mb-2 sm:mr-2">
-          <label className="block mb-1 text-sm">
-            Remark <span className="text-red-500 ml-1">*</span>
+          <label className="block text-xs font-medium text-gray-700 mb-1 line1">
+            Remark From Created<span className="text-red-500 ml-1">*</span>
           </label>
-          <textarea
-            className="border rounded px-2 py-1.5 w-full resize-none text-xs"
-            rows={1}
-            placeholder="Enter your remark here..."
-            style={{ maxHeight: "100px", overflowY: "auto" }}
-            value={remark}
-            onInput={(e) => {
-              const value = e.currentTarget.value;
-              setRemark(value);
-              e.currentTarget.style.height = "auto"; // Reset height to auto
-              e.currentTarget.style.height = `${Math.min(
-                e.currentTarget.scrollHeight,
-                100
-              )}px`; // Resize up to maxHeight
-            }}
-          ></textarea>
+          <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
+            {cashRecordDetail?.remarkFromCreate || "No remark provided"}
+          </div>
         </div>
 
-        {/* Upload PDF File */}
-        <div className="flex-1 sm:ml-4">
-          <label className="block mb-1 text-sm">
-            Reference File <span className="text-red-500 ml-1">*</span>
+        {/* Display Reference File with PDF Icon */}
+        <div className="max-w-2xl flex-1 sm:ml-4 mb-2">
+          <label className="block text-xs font-medium text-gray-700 mb-1 line1">
+            Reference File<span className="text-red-500 ml-1">*</span>
           </label>
-          <Input
-            type="file"
-            className="rounded px-1 w-full max-w-full py-1 text-xs"
-            accept="application/pdf"
-            onChange={handleFileUpload}
-          />
+          <div className="border rounded  py-1 px-2 w-full text-xs bg-gray-100 text-gray-700 flex items-center">
+            <div className="flex flex-1 items-center space-x-2">
+              <FaFilePdf className="text-red-600" size={21} />
+              <span>
+                {cashRecordDetail?.referenceFile
+                  ? cashRecordDetail?.referenceFile.fileName
+                  : "No file uploaded"}
+              </span>
+            </div>
+            {cashRecordDetail?.referenceFile && (
+              <div
+                className="ml-2 px-3 text-xs text-blue-700 underline cursor-pointer"
+                onClick={handleViewFile}
+              >
+                View File
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Approvals section */}
+      <div className="flex mt-2">
+        {/* Remarks and file upload sections */}
+        <div className="max-w-2xl flex-1 mb-2 sm:mr-2">
+          <label className="block text-xs font-medium text-gray-700 mb-1 line1">
+            Remark From Checker<span className="text-red-500 ml-1">*</span>
+          </label>
+          <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
+            {cashRecordDetail?.remarkFromChecker || "No remark from checker"}
+          </div>
+        </div>
+
+        {/* Display Reference File with PDF Icon */}
+        <div className="max-w-2xl flex-1 sm:ml-4 mb-2">
+          <label className="block text-xs font-medium text-gray-700 mb-1 line1">
+            Remark From Authorizer<span className="text-red-500 ml-1">*</span>
+          </label>
+          <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
+            {cashRecordDetail?.remarkFromAuthorizer ||
+              "No remark from authorizer"}
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-3 gap-4 mt-2">
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1 ">
-            Approve by<span className="text-red-500 ml-1">*</span>
+          <label className="block text-xs font-medium text-gray-700 mb-1 ">
+            Authorizer By<span className="text-red-500 ml-1">*</span>
           </label>
-          <Input
-            value={cashRecordDetail?.approvedBy.name}
-            className="py-1 w-full"
-            disabled={true}
-          />
+          <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
+            {cashRecordDetail?.approvedBy.name}
+          </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1 ">
-            Checker by<span className="text-red-500 ml-1">*</span>
+          <label className="block text-xs font-medium text-gray-700 mb-1 ">
+            Checker By<span className="text-red-500 ml-1">*</span>
           </label>
-          <Input
-            value={cashRecordDetail?.checkerBy.name}
-            className="py-1 w-full"
-            disabled={true}
-          />
+          <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
+            {cashRecordDetail?.checkerBy.name}
+          </div>
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1 ">
-            Creator by<span className="text-red-500 ml-1">*</span>
+          <label className="block text-xs font-medium text-gray-700 mb-1 ">
+            Created By<span className="text-red-500 ml-1">*</span>
           </label>
-          <Input
-            value={cashRecordDetail?.createdBy.name}
-            className="py-1 w-full"
-            disabled={true}
-          />
+          <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
+            {cashRecordDetail?.createdBy.name}
+          </div>
         </div>
       </div>
       {/* Save and Cancel Buttons */}
-      <div className="flex justify-end space-x-2 mt-6">
+      <div className="flex justify-end mt-6">
         <Button
           onClick={() => {
             router.back();
           }}
           variant="cancel"
-          className="py-1"
+          className="py-0.5"
         >
-          Cancel
-        </Button>
-        <Button onClick={handleSaveClick} className="py-1">
-          Save
+          Back
         </Button>
       </div>
       {/* Modal for alert */}
@@ -452,4 +324,4 @@ const page = ({ params }: { params: { id: number } }) => {
   );
 };
 
-export default withAuth(page);
+export default page;

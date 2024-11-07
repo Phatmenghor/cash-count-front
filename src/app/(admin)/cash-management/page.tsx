@@ -21,6 +21,8 @@ import {
 import { convertDate } from "@/utils/date/convertDate";
 import { CashStatusEnum } from "@/redux/models/cashManagement/StatusEnum";
 import dynamic from "next/dynamic";
+import { UserRoleEnum } from "@/constants/userRole";
+import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 const ModalConfirmation = dynamic(
   () => import("@/components/modal/ModalConfirmation")
 );
@@ -135,8 +137,18 @@ const CashManagementPage: React.FC = () => {
     router.push(`/cash-management/view-cash-record/${id}`);
   }
 
+  function onEditCash(id: number) {
+    router.prefetch(`/cash-management/${id}`);
+    router.push(`/cash-management/${id}`);
+  }
+
+  function onCheckCash(id: number) {
+    router.prefetch(`/cash-management/check/${id}`);
+    router.push(`/cash-management/check/${id}`);
+  }
+
   return (
-    <div className="mx-1">
+    <div className="px-4">
       {/* Search and Add Record Section */}
       <div className="flex items-center mb-4 justify-between">
         <Input
@@ -151,13 +163,14 @@ const CashManagementPage: React.FC = () => {
         <Button
           onClick={() => router.push("/cash-management/add-cash")}
           className="py-1 mr-1"
+          data-aos="fade-left"
         >
           Add Cash
         </Button>
       </div>
 
       {/* User List Table */}
-      <div className="overflow-auto min-h-[60vh]">
+      <div className="overflow-auto min-h-[50vh]">
         <table
           data-aos="fade-up"
           className="min-w-full border-collapse border border-gray-300"
@@ -179,11 +192,8 @@ const CashManagementPage: React.FC = () => {
           <tbody>
             {cashRecordList.data.length === 0 ? (
               <tr>
-                <td colSpan={10}>
-                  <EmptyState
-                    message="No user available."
-                    icon={<AiOutlineUser size={64} />}
-                  />
+                <td colSpan={10} className="hover:bg-white">
+                  <EmptyState message="No cash available." />
                 </td>
               </tr>
             ) : (
@@ -202,63 +212,47 @@ const CashManagementPage: React.FC = () => {
                     <td className="truncate">
                       {convertDate(cash.createdDate)}
                     </td>
-                    <td className="flex items-center truncate">
+                    <td className="flex items-center truncate space-x-2">
                       <button
                         onClick={() => onViewCash(cash.id)}
                         className="bg-gray-300 text-white px-2 p-1 rounded hover:bg-gray-400 mr-2 flex items-center"
                       >
                         <LuView size={14} className="text-white" />
                       </button>
-                      {/* <button className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center">
-                        Check
-                      </button> */}
+                      {cash.status == CashStatusEnum.PROCESSING &&
+                        UserRoleStorage.getUserRole() ==
+                          UserRoleEnum.AUTHORIZER_USER && (
+                          <button
+                            // onClick={}
+                            className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 flex items-center"
+                          >
+                            Check
+                          </button>
+                        )}
+
+                      {cash.status == CashStatusEnum.PENDING &&
+                        UserRoleStorage.getUserRole() ==
+                          UserRoleEnum.CHECKER_USER && (
+                          <button
+                            onClick={() => onCheckCash(cash.id)}
+                            className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 flex items-center"
+                          >
+                            Check
+                          </button>
+                        )}
 
                       {(cash.status == CashStatusEnum.REJECT ||
-                        cash.status == CashStatusEnum.PENDING) && (
-                        <button className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center">
-                          Edit
-                        </button>
-                      )}
+                        cash.status == CashStatusEnum.PENDING) &&
+                        UserRoleStorage.getUserRole() ==
+                          UserRoleEnum.INPUTTER_USER && (
+                          <button
+                            onClick={() => onEditCash(cash.id)}
+                            className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"
+                          >
+                            Edit
+                          </button>
+                        )}
                     </td>
-                    {/* <td className="truncate">
-                      {user.firstName + user.lastName}
-                    </td>
-                    <td className="truncate">{user.email}</td>
-                    <td className="truncate">{user.username}</td>
-                    <td className="truncate">{user.position.name}</td>
-                    <td className="truncate">{user.branch.mnemonic}</td>
-                    <td className="truncate">{user.department.name}</td>
-                    <td className="truncate">{user.role.name}</td>
-                    <td className="truncate">
-                      <span
-                        className={`ml-2 py-1.5 px-2 rounded text-[10px] ${
-                          user.status ? "bg-green-500" : "bg-red-500"
-                        } text-white`}
-                      >
-                        {user.status ? "Active" : "Inactive"}
-                      </span>
-                    </td>
-
-                    <td className="flex items-center truncate">
-                      <button
-                        onClick={() => router.push(`/user-request/${user.id}`)}
-                        className="bg-gray-300 text-white px-2 p-1 rounded hover:bg-gray-400 mr-2 flex items-center"
-                      >
-                        <LuView size={14} className="text-white" />
-                      </button>
-                      <button
-                        onClick={() => handleOpenModalApprove(user)}
-                        className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"
-                      >
-                        Reject
-                      </button>
-                      <button
-                        onClick={() => handleOpenModalApprove(user)}
-                        className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"
-                      >
-                        Approve
-                      </button>
-                    </td> */}
                   </tr>
                 );
               })

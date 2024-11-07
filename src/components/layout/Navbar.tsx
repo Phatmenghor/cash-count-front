@@ -1,22 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-"use client";
-import React, { useEffect, useState } from "react";
-import { FaSignOutAlt } from "react-icons/fa";
-import ModalConfirmation from "../modal/ModalConfirmation";
-import Button from "../custom/Button";
-import { useRouter } from "next/navigation";
-import { route } from "@/constants/routed";
-import showToast from "../toast/useToast";
-import { clearLocalStorage } from "@/utils/localStorage/auth";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/redux/store";
 import UserManagementService from "@/redux/service/userManagementService";
+import { AppDispatch, RootState } from "@/redux/store";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import ModalConfirmation from "../modal/ModalConfirmation";
 import { setCloseModalLogout } from "@/redux/features/userSlice";
+import { clearLocalStorage } from "@/utils/localStorage/auth";
+import { route } from "@/constants/routed";
+import { useRouter } from "next/navigation";
+import showToast from "../toast/useToast";
+import Link from "next/link";
 
-const Navbar: React.FC = React.memo(() => {
+const Navbar = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const router = useRouter();
-  const dispatch = useDispatch<AppDispatch>();
   const { userData, isOpenLogout } = useSelector(
     (state: RootState) => state.user
   );
@@ -47,40 +46,55 @@ const Navbar: React.FC = React.memo(() => {
     onCloseModal();
   };
 
+  function onClickNotification() {}
+
   return (
-    <nav className="top-0 w-full left-0 right-0 z-50 fixed">
-      <div className="bg-gray-700 container text-white   shadow-md px-4 py-2">
-        <div className=" mx-auto flex justify-between items-center">
-          <div className="flex gap-2">
-            <h1 className="text-xl font-bold whitespace-nowrap overflow-hidden overflow-ellipsis">
-              Cash Management
-            </h1>
-          </div>
-          <div className="flex items-center">
-            <Button
-              onClick={() => setIsDialogOpen(true)}
-              className="flex items-center space-x-2 ml-auto py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
-              aria-label="Logout"
-            >
-              <span className="text-white">{userData?.name ?? ""}</span>
-              <FaSignOutAlt title="Logout" />
-            </Button>
+    <div className="flex items-center justify-end p-4 ">
+      {/* SEARCH BAR */}
+      <div className="flex items-center gap-6 justify-end w-full">
+        <div
+          onClick={onClickNotification}
+          className="bg-gray-50 rounded-full w-7 h-7 flex items-center justify-center cursor-pointer shadow relative"
+        >
+          <Image
+            src="/img/announcement.png"
+            alt="Notifications"
+            width={20}
+            height={20}
+          />
+          <div className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center bg-purple-400 text-white rounded-full text-xs shadow-sm">
+            2
           </div>
         </div>
-
-        {/* Confirmation Dialog */}
-        <ModalConfirmation
-          isOpen={isDialogOpen}
-          title="Confirm Logout!"
-          onClose={onCloseModal}
-          onConfirm={handleLogout}
-          message={`Are you sure you want to log out, ${userData?.name ?? ""}?`}
-        />
+        <div className="flex flex-col text-gray-700">
+          <span className="text-xs leading-3 font-medium">
+            {userData?.name}
+          </span>
+          <span className="text-[10px] text-gray-500 text-right">
+            {userData?.role.name}
+          </span>
+        </div>
+        <Link href="/profile" prefetch={true}>
+          <Image
+            src="/img/avatar.png"
+            alt="User avatar"
+            width={36}
+            height={36}
+            className="rounded-full border border-gray-200 shadow-sm"
+          />
+        </Link>
       </div>
-    </nav>
-  );
-});
 
-Navbar.displayName = "Navbar";
+      {/* Confirmation Dialog */}
+      <ModalConfirmation
+        isOpen={isDialogOpen}
+        title="Confirm Logout!"
+        onClose={onCloseModal}
+        onConfirm={handleLogout}
+        message={`Are you sure you want to log out, ${userData?.name ?? ""}?`}
+      />
+    </div>
+  );
+};
 
 export default Navbar;

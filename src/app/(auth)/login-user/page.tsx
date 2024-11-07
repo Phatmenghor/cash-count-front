@@ -7,7 +7,6 @@ import Input from "../../../components/custom/Input";
 import FormMessage from "../../../components/errorHandle/FormMessage";
 import { LoginService } from "@/redux/service/loginService";
 import { route } from "@/constants/routed";
-import withAnimation from "@/configs/withAnimation";
 import { UserRoleEnum } from "@/constants/userRole";
 
 const LoginPage: React.FC = () => {
@@ -165,4 +164,4 @@ const LoginPage: React.FC = () => {
   );
 };
 
-export default withAnimation(LoginPage);
+export default LoginPage;

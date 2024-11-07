@@ -138,7 +138,7 @@ const Register: React.FC = () => {
         setLoading(false);
         return;
       }
-      showToast("Failed to send email. Please try again.", "error", 7000);
+      showToast("Failed to send email. Please try again.", "error");
     } else if (step === 2) {
       const response = await RegisterService.verifyEmail({
         mail: formData.email,
@@ -152,8 +152,7 @@ const Register: React.FC = () => {
       }
       showToast(
         "Verification unsuccessful. Please verify your email and code otp again.",
-        "error",
-        7000
+        "error"
       );
     } else if (step === 3) {
       const resposne = await RegisterService.registerAccount({
@@ -174,7 +173,7 @@ const Register: React.FC = () => {
         setLoading(false);
         return;
       }
-      showToast(resposne.message, "error", 7000);
+      showToast(resposne.message, "error");
     }
     setLoading(false);
   };

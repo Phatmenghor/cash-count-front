@@ -88,6 +88,23 @@ class UserManagementService {
     }
   };
 
+  static getUserRequestByID = async ({ id }: getUserByIdParams) => {
+    try {
+      const response = await axiosWithAuth.get(
+        `/api/admin/get-user-authorize-info/${id}`
+      );
+
+      return {
+        success: true,
+        data: response.data.data,
+      };
+    } catch {
+      return {
+        success: false,
+      };
+    }
+  };
+
   static updateUserById = async (param: updateUserByIdParams) => {
     try {
       await axiosWithAuth.post(

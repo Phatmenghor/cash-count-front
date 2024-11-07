@@ -26,6 +26,15 @@ const axiosUploadFile = axios.create({
   timeout: 400000,
 });
 
+const axiosViewPDF = axios.create({
+  baseURL: keyEnv.BASE_URL,
+  timeout: 400000,
+  responseType: "blob",
+  headers: {
+    "Content-Type": "application/pdf",
+  },
+});
+
 // Adding an interceptor to include the token for requests that require authentication
 axiosWithAuth.interceptors.request.use(
   (config) => {
@@ -46,6 +55,24 @@ axiosWithAuth.interceptors.request.use(
 
 // Adding an interceptor to include the token for requests that require authentication
 axiosUploadFile.interceptors.request.use(
+  (config) => {
+    const token = TokenStorage.getToken();
+
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
+    } else {
+      console.warn("## No token found");
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
+// Adding an interceptor to include the token for requests that require authentication
+axiosViewPDF.interceptors.request.use(
   (config) => {
     const token = TokenStorage.getToken();
 
@@ -92,4 +119,4 @@ axiosUploadFile.interceptors.request.use(
 //     }
 //   );
 
-export { axiosNoAuth, axiosWithAuth, axiosUploadFile };
+export { axiosNoAuth, axiosWithAuth, axiosUploadFile, axiosViewPDF };

@@ -138,7 +138,7 @@ const BranchPage: React.FC = () => {
       }));
       showToast("Branch updated successfully!", "success");
     } else {
-      showToast("Failed to update branch.", "error", 7000);
+      showToast("Failed to update branch.", "error");
     }
     setLoading(false);
   }

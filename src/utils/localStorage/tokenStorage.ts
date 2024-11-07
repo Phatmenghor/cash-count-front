@@ -25,6 +25,11 @@ class TokenStorage {
   }
 
   public static getToken(): string | null {
+    if (typeof window === "undefined") {
+      // If window is undefined, we're on the server, so return null
+      return null;
+    }
+
     const tokenData = localStorage.getItem(keyStorage.TOKEN_KEY);
     if (tokenData) {
       const { token, expiry } = JSON.parse(tokenData);

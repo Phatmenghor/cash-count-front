@@ -73,8 +73,7 @@ const UserManagement = () => {
     } else {
       showToast(
         `Failed to update status for ${user.name}. Please try again.`,
-        "error",
-        7000
+        "error"
       );
     }
 

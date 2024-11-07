@@ -125,7 +125,7 @@ const ProfileSelfPage = () => {
   return (
     <div className="px-6">
       <div className="flex justify-between">
-        <h2 className="text-gray-700 text-3xl font-bold mb-4 hide">
+        <h2 className="text-gray-700 mb-4 hide">
           {moveToEdit ? "Edit User Profile" : "User Profile"}
         </h2>
 

@@ -5,9 +5,10 @@ import "aos/dist/aos.css";
 import "react-toastify/dist/ReactToastify.css";
 import Navbar from "@/components/layout/Navbar";
 import MenuSidebar from "@/components/sidebar/MenuSidebar";
-import { useEffect } from "react";
-import AOS from "aos";
 import localFont from "next/font/local";
+import { useEffect } from "react";
+import Aos from "aos";
+import NavbarSearch from "@/components/layout/Navbar";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -26,12 +27,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   useEffect(() => {
-    AOS.init({
-      duration: 1000, // Animation duration in milliseconds
-      easing: "ease-in-out", // Easing function for the animation
-      once: false, // Whether animation should happen only once (scroll down)
-      mirror: false, // Whether elements should animate out while scrolling past them
-      anchorPlacement: "top-bottom", // Defines which position of the element should be used as the anchor
+    Aos.init({
+      duration: 1000,
+      once: true,
+      easing: "ease-out",
     });
   }, []);
 
@@ -42,8 +41,8 @@ export default function RootLayout({
       >
         <div className="flex h-screen container">
           <MenuSidebar />
-          <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] overflow-y-scroll flex flex-col py-16">
-            <Navbar />
+          <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] overflow-y-scroll flex flex-col pb-16">
+            <NavbarSearch />
             {children}
           </div>
         </div>

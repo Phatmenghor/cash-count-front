@@ -1,6 +1,11 @@
-import { axiosUploadFile, axiosWithAuth } from "@/utils/api/axios";
+import {
+  axiosUploadFile,
+  axiosViewPDF,
+  axiosWithAuth,
+} from "@/utils/api/axios";
 import axios from "axios";
 import { AddRecordParamModel } from "../models/cashManagement/AddRecordParamModel";
+import { UpdateRecordModel } from "../models/cashManagement/UpdateRecordParam";
 
 interface geCashListParams {
   pageSize?: number;
@@ -60,6 +65,22 @@ export class CashManagementService {
     }
   };
 
+  static updateFileRecord = async (data: SubmissionData) => {
+    try {
+      const formData = new FormData();
+      formData.append("file", data.file);
+      const response = await axiosUploadFile.put(`/api/files`, formData);
+      return {
+        success: true,
+        data: response.data.data,
+      };
+    } catch (error) {
+      return {
+        success: false,
+      };
+    }
+  };
+
   static createCashRecord = async (data: AddRecordParamModel) => {
     try {
       await axiosWithAuth.post(`/api/cash-counts`, data);
@@ -76,10 +97,56 @@ export class CashManagementService {
     }
   };
 
+  static updateCashRecord = async (id: number, data: UpdateRecordModel) => {
+    try {
+      await axiosWithAuth.put(`/api/cash-counts/${id}`, data);
+      return {
+        success: true,
+        message: "Cash record updated successfully!",
+      };
+    } catch (error) {
+      console.log("### ==", error);
+      return {
+        success: false,
+        message: "Failed to update cash record. Please try again.",
+      };
+    }
+  };
+
   static getCashRecordById = async (data: getCashRecordParam) => {
     try {
       const response = await axiosWithAuth.get(`/api/cash-counts/${data.id}`);
+      return {
+        success: true,
+        data: response.data.data,
+      };
+    } catch {
+      return {
+        success: false,
+        data: null,
+      };
+    }
+  };
+
+  static getCashInSystemById = async (data: getCashRecordParam) => {
+    try {
+      const response = await axiosWithAuth.get(
+        `/api/cash-in-system/${data.id}`
+      );
       return response.data.data;
+    } catch {
+      return null;
+    }
+  };
+
+  static getViewPDFById = async (data: getCashRecordParam) => {
+    try {
+      const response = await axiosViewPDF.get(`/api/files/view/${data.id}`);
+
+      console.log("## ==response.data", response);
+      const url = URL.createObjectURL(response.data);
+      console.log("### ====HAHA", url);
+      return url;
     } catch {
       return null;
     }

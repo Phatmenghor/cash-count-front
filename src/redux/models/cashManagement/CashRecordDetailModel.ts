@@ -4,6 +4,8 @@ export interface CashRecordDetailModel {
   status: string;
   vaultAccount: VaultAccount;
   nostroAccount: NostroAccount;
+  cashInHandVaultAccount: VaultAccount;
+  cashInHandNostroAccount: NostroAccount;
   createdDate: string;
   updatedDate: string;
   referenceFile: ReferenceFile;

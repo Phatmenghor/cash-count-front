@@ -108,7 +108,7 @@ const PositionPage: React.FC = () => {
       }));
       showToast("Position created successfully!", "success");
     } else {
-      showToast(response.data, "error", 7000);
+      showToast(response.data, "error");
     }
     setLoading(false);
   }
@@ -125,7 +125,7 @@ const PositionPage: React.FC = () => {
       }));
       showToast("Position updated successfully!", "success");
     } else {
-      showToast("Failed to update position.", "error", 7000);
+      showToast("Failed to update position.", "error");
     }
     setLoading(false);
   }

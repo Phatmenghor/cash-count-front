@@ -165,6 +165,15 @@ option {
   overflow: hidden; /* Hide the overflowing text */
   text-overflow: ellipsis; /* Show ellipsis (...) when text overflows */
   white-space: nowrap; /* Prevent text from wrapping to the next line */
+  font-size: 22px;
+  line-height: 32px;
+  font-weight: bold;
+}
+
+.line1 {
+  overflow: hidden; /* Hide the overflowing text */
+  text-overflow: ellipsis; /* Show ellipsis (...) when text overflows */
+  white-space: nowrap; /* Prevent text from wrapping to the next line */
 }
 
 .scrollbar-hide::-webkit-scrollbar {

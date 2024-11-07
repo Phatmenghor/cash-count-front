@@ -1,10 +1,12 @@
-export interface AddRecordParamModel {
+export interface UpdateRecordModel {
   checkerBy: CheckerBy;
   approvedBy: ApprovedBy;
+  createdBy: CreatedBy;
   referenceFile?: ReferenceFile | null;
   cashInSystem: CashInSystem;
   status: string;
   remarkFromCreate?: string | null;
+  branch: Branch;
   vaultAccount: VaultAccount;
   nostroAccount: NostroAccount;
   cashInHandVaultAccount: VaultAccount;
@@ -12,6 +14,10 @@ export interface AddRecordParamModel {
 }
 
 interface CheckerBy {
+  id: number;
+}
+
+interface CreatedBy {
   id: number;
 }
 
@@ -37,4 +43,8 @@ interface NostroAccount {
   usdBalance: number;
   khrBalance: number;
   thbBalance: number;
+}
+
+interface Branch {
+  id: number;
 }

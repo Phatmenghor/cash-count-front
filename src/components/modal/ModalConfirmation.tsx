@@ -8,6 +8,9 @@ interface ConfirmationDialogProps {
   onConfirm: () => void;
   message: string;
   title: string; // Title prop for the dialog
+  textLoading?: string;
+  loading?: boolean;
+  isNotCancel?: boolean;
 }
 
 const ModalConfirmation: React.FC<ConfirmationDialogProps> = ({
@@ -16,6 +19,9 @@ const ModalConfirmation: React.FC<ConfirmationDialogProps> = ({
   onConfirm,
   message,
   title,
+  textLoading = "",
+  loading = false,
+  isNotCancel = false,
 }) => {
   return (
     <AnimatePresence>
@@ -52,8 +58,12 @@ const ModalConfirmation: React.FC<ConfirmationDialogProps> = ({
                   Cancel
                 </Button>
                 <Button
+                  textLoading={textLoading}
+                  loading={loading}
                   onClick={onConfirm}
-                  className="px-4 py-1 bg-red-600 text-white rounded hover:bg-red-700 transition"
+                  className={`px-4 py-1 ${
+                    isNotCancel ? "" : "bg-red-600 hover:bg-red-700 "
+                  }`}
                 >
                   Confirm
                 </Button>

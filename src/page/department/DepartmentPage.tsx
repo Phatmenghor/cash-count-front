@@ -111,7 +111,7 @@ const DepartmentPage: React.FC = () => {
       }));
       showToast("Department created successfully!", "success");
     } else {
-      showToast(response.data, "error", 7000);
+      showToast(response.data, "error");
     }
     setLoading(false);
   }

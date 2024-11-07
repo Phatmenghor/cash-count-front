@@ -3,7 +3,7 @@ import React from "react";
 import Link from "next/link";
 import { route } from "@/constants/routed";
 
-const ForbiddenPage = () => {
+const UnauthorizedPage = () => {
   return (
     <div className="flex items-center justify-center h-screen bg-gray-100">
       <div className="text-center">
@@ -32,4 +32,4 @@ const ForbiddenPage = () => {
   );
 };
 
-export default ForbiddenPage;
+export default UnauthorizedPage;

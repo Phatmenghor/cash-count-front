@@ -3,9 +3,11 @@ import { toast, ToastOptions, ToastPosition } from "react-toastify";
 
 const showToast = (
   message: string,
-  type: "success" | "error" | "info" | "warning" = "info",
-  autoClose: number = 2500
+  type: "success" | "error" | "info" | "warning" = "info"
 ) => {
+  // Set autoClose based on type
+  const autoClose = type === "error" ? 6000 : 2500;
+
   // Define options with proper typing for position
   const options: ToastOptions = {
     autoClose: autoClose,
