@@ -1,4 +1,4 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import UserManagementService from "../service/userManagementService";
 import { UserProfile } from "../models/userManagement/UserProfileModel";
 import { handleError } from "@/constants/handleError";
@@ -27,6 +27,11 @@ const userSlice = createSlice({
     setCloseModalLogout: (state) => {
       state.isOpenLogout = false;
     },
+    setUpdateUserData: (state, action: PayloadAction<Partial<UserProfile>>) => {
+      if (state.userData) {
+        state.userData = { ...state.userData, ...action.payload };
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -51,5 +56,6 @@ const userSlice = createSlice({
   },
 });
 
-export const { setOpenModalLogout, setCloseModalLogout } = userSlice.actions;
+export const { setOpenModalLogout, setCloseModalLogout, setUpdateUserData } =
+  userSlice.actions;
 export default userSlice.reducer;

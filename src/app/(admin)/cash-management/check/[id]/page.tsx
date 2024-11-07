@@ -1,78 +1,36 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import ModalVerify from "@/components/modal/ModalVerify";
 import Button from "@/components/custom/Button";
-import Input from "@/components/custom/Input";
-import withAuth from "@/configs/withAuth";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { FiCheckCircle } from "react-icons/fi";
-import { VerifyCashModel } from "@/redux/models/cashManagement/VerifyCashModel";
-import {
-  CashManagementService,
-  SubmissionData,
-} from "@/redux/service/cashManagementService";
-import CustomSelect from "@/components/custom/CustomSelect";
-import { UserListByInputterModel } from "@/redux/models/userManagement/UserListByInputterModel";
-import UserManagementService from "@/redux/service/userManagementService";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { FileResponseModel } from "@/redux/models/cashManagement/FileResponseModel";
+import { CashManagementService } from "@/redux/service/cashManagementService";
 import { CashStatusEnum } from "@/redux/models/cashManagement/StatusEnum";
-import { AddRecordParamModel } from "@/redux/models/cashManagement/AddRecordParamModel";
 import showToast from "@/components/toast/useToast";
 import LoadingFullPage from "@/components/loading/LoadingFullPage";
 import { CashInSystemModel } from "@/redux/models/cashManagement/CashInSystemModel";
 import { CashRecordDetailModel } from "@/redux/models/cashManagement/CashRecordDetailModel";
-import { FaCloudUploadAlt, FaEye } from "react-icons/fa";
+import { FaFilePdf } from "react-icons/fa";
 import { UpdateRecordModel } from "@/redux/models/cashManagement/UpdateRecordParam";
-import { MdOutlineClear } from "react-icons/md";
-
-type Currency = "USD" | "KHR" | "THB";
-
-interface CashRow {
-  vault: Record<Currency, number>;
-  nostro: Record<Currency, number>;
-}
-
-interface AllUserType {
-  approve: UserListByInputterModel[] | null;
-  checker: UserListByInputterModel[] | null;
-}
-
-interface FormDataType {
-  approve: Partial<UserListByInputterModel> | null;
-  checker: Partial<UserListByInputterModel> | null;
-}
+import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
+import { UserRoleEnum } from "@/constants/userRole";
+import ModalConfirmation from "@/components/modal/ModalConfirmation";
 
 const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
   const idCashRecord = params.id;
-  const [cashOnHand, setCashOnHand] = useState<CashRow>({
-    vault: { USD: 0, KHR: 0, THB: 0 },
-    nostro: { USD: 0, KHR: 0, THB: 0 },
-  });
-  const [isVerified, setIsVerified] = useState(false);
+  const rolesUser = UserRoleStorage.getUserRole();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [verifyCash, setVerifyCash] = useState<VerifyCashModel | null>(null);
   const [cashInSystem, setCashInSystem] = useState<CashInSystemModel | null>(
     null
   );
-  const [fileName, setFileName] = useState("No file chosen");
   const [cashRecordDetail, setCashRecordDetail] =
     useState<CashRecordDetailModel | null>(null);
-  const [file, setFile] = useState<File | null>(null);
-  const [remark, setRemark] = useState("");
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [allData, setAllData] = useState<AllUserType>({
-    approve: null,
-    checker: null,
-  });
-  const [formData, setFormData] = useState<FormDataType>({
-    approve: null,
-    checker: null,
-  });
-  const { userData } = useSelector((state: RootState) => state.user);
+  const [remarkFromChecker, setRemarkFromChecker] = useState("");
+  const [remarkFromAuthorizer, setRemarkFromAuthorizer] = useState("");
+  const [modalApprove, setModalApprove] = useState(false);
+  const [modalReject, setModalReject] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -87,104 +45,45 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
       const responseSystem = await CashManagementService.getCashInSystemById({
         id: item.cashInSystem.id,
       });
-      setCashOnHand({
-        vault: {
-          KHR: item.cashInHandVaultAccount.usdBalance,
-          USD: item.cashInHandVaultAccount.khrBalance,
-          THB: item.cashInHandVaultAccount.thbBalance,
-        },
-        nostro: {
-          KHR: item.cashInHandNostroAccount.usdBalance,
-          USD: item.cashInHandNostroAccount.khrBalance,
-          THB: item.cashInHandNostroAccount.thbBalance,
-        },
-      });
-      setFormData({
-        approve: item.approvedBy,
-        checker: item.checkerBy,
-      });
-      if (item.referenceFile) {
-        setFileName(item.referenceFile.fileName);
-      }
-      setRemark(item.remarkFromCreate);
       setCashInSystem(responseSystem);
+      setRemarkFromAuthorizer(item.remarkFromAuthorizer || "");
+      setRemarkFromChecker(item.remarkFromChecker || "");
     }
-
     setCashRecordDetail(responseRecord.data);
-    const response = await UserManagementService.fetchAllUser();
-    setAllData(response);
   }
 
-  // Handle input changes
-  const handleCashOnHandChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    type: "vault" | "nostro",
-    currency: Currency
-  ) => {
-    const value = e.target.value;
-
-    // Regular expression to allow valid decimal input (e.g., 0.75, 1.2412)
-    const isValidMoneyInput = /^(0(\.\d{0,2})?|[1-9]\d*(\.\d{0,2})?)?$/.test(
-      value
-    );
-    if (!isValidMoneyInput) {
-      return;
+  function checkStatus(isApprove: boolean) {
+    if (!isApprove) {
+      return CashStatusEnum.REJECT;
+    } else if (rolesUser == UserRoleEnum.CHECKER_USER) {
+      return CashStatusEnum.PROCESSING;
+    } else if (rolesUser == UserRoleEnum.AUTHORIZER_USER) {
+      return CashStatusEnum.APPROVED;
+    } else {
+      return CashStatusEnum.PENDING;
     }
-    // If the input is valid, parse it; otherwise, keep it as an empty string
-    const numericValue = isValidMoneyInput ? value : "";
-    setCashOnHand((prev) => {
-      const newState = {
-        ...prev,
-        [type]: { ...prev[type], [currency]: numericValue },
-      };
-      return newState;
-    });
-  };
+  }
 
-  const handleSaveClick = async () => {
-    if (!validateForm()) {
-      return;
-    }
+  const handleSaveClick = async ({ isApprove = false }) => {
     setLoading(true);
-    const resPDF = await uploadPdf();
 
     const cashCountData: UpdateRecordModel = {
-      checkerBy: { id: formData.checker?.id || 0 },
-      approvedBy: { id: formData.approve?.id || 0 },
-      createdBy: { id: cashRecordDetail!.createdBy.id },
-      referenceFile:
-        fileName == "No file chosen"
-          ? null
-          : {
-              id: resPDF ? resPDF : cashRecordDetail!.referenceFile.id,
-            },
+      createdBy: cashRecordDetail!.createdBy,
+      checkerBy: cashRecordDetail!.checkerBy,
+      approvedBy: cashRecordDetail!.approvedBy,
+      referenceFile: cashRecordDetail?.referenceFile,
       cashInSystem: { id: cashInSystem!.id },
-      remarkFromCreate: remark ? remark : null,
-      status: CashStatusEnum.PENDING,
+      remarkFromCreate: cashRecordDetail?.remarkFromCreate,
+      status: checkStatus(isApprove),
       branch: { id: cashRecordDetail!.branch.id },
-      vaultAccount: {
-        usdBalance: cashRecordDetail!.vaultAccount.usdBalance,
-        khrBalance: cashRecordDetail!.vaultAccount.khrBalance,
-        thbBalance: cashRecordDetail!.vaultAccount.thbBalance,
-      },
-      nostroAccount: {
-        usdBalance: cashRecordDetail!.nostroAccount.usdBalance,
-        khrBalance: cashRecordDetail!.nostroAccount.khrBalance,
-        thbBalance: cashRecordDetail!.nostroAccount.thbBalance,
-      },
-      cashInHandVaultAccount: {
-        usdBalance: cashOnHand.nostro.USD,
-        khrBalance: cashOnHand.nostro.KHR,
-        thbBalance: cashOnHand.nostro.THB,
-      },
-      cashInHandNostroAccount: {
-        usdBalance: cashOnHand.vault.USD,
-        khrBalance: cashOnHand.vault.KHR,
-        thbBalance: cashOnHand.vault.THB,
-      },
+      vaultAccount: cashRecordDetail!.vaultAccount,
+      nostroAccount: cashRecordDetail!.nostroAccount,
+      cashInHandVaultAccount: cashRecordDetail!.cashInHandVaultAccount,
+      cashInHandNostroAccount: cashRecordDetail!.cashInHandNostroAccount,
+      remarkFromChecker: remarkFromChecker ? remarkFromChecker : null,
+      remarkFromAuthorizer: remarkFromAuthorizer ? remarkFromAuthorizer : null,
     };
 
-    console.log("### ===", cashCountData);
     const response = await CashManagementService.updateCashRecord(
       cashRecordDetail!.id,
       cashCountData
@@ -198,62 +97,30 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
     setLoading(false);
   };
 
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
-    const { approve, checker } = formData;
+  const handleViewFile = async () => {
+    const resposne = await CashManagementService.getViewPDFById({
+      id: cashRecordDetail!.referenceFile.id,
+    });
 
-    if (!approve || !approve.id) {
-      newErrors.approve = "Approve by is required.";
+    if (resposne) {
+      window.open(resposne, "_blank");
+    } else {
+      showToast("Can't view this document, Please try again later", "error");
     }
-    if (!checker || !checker.id) {
-      newErrors.checker = "Checker by is required.";
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
   };
 
-  async function uploadPdf() {
-    if (file) {
-      console.log("## ===ahhah upload new");
-      const data: SubmissionData = {
-        file,
-      };
-      const resposne = await CashManagementService.uploadFileRecord(data);
-      if (resposne.success) {
-        return resposne.data.id;
-      } else {
-        return null;
-      }
-    }
-    return null;
+  async function handleReject() {
+    handleSaveClick({ isApprove: false });
+    setModalReject(false);
   }
 
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.files) {
-      const file = event.target.files[0];
-      setFile(file);
-      setFileName(file.name);
-    }
-  };
-
-  const handleChange = (key: keyof typeof formData, option: any) => {
-    setFormData((prevData) => ({
-      ...prevData,
-      [key]: option,
-    }));
-    setErrors((prevErrors) => ({ ...prevErrors, [key]: "" }));
-  };
-
-  function clearPdf() {
-    setFile(null);
-    setFileName("No file chosen");
+  async function handleApprove() {
+    handleSaveClick({ isApprove: true });
+    setModalApprove(false);
   }
 
   return (
-    <div className="mx-1 min-h-screen">
+    <div className="px-4">
       <div className="overflow-auto">
         {/* Table Header */}
         <table>
@@ -332,21 +199,59 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
         </table>
       </div>
 
-      {/* Remarks and file upload sections */}
-      <div className="mt-8 flex flex-col sm:flex-row sm:items-start">
-        <div className="max-w-2xl flex-1 mb-2 sm:mr-2">
-          <label className="block mb-1 text-sm">
-            Remark <span className="text-red-500 ml-1">*</span>
+      {/* From Checker and Approved */}
+      <div className="flex mt-6 gap-8 w-full justify-between ">
+        {/* Remarks and file upload sections */}
+        <div className="max-w-[45%] flex-1">
+          <label className="block text-xs font-medium text-gray-700 mb-1 line1">
+            Remark From Created<span className="text-red-500 ml-1">*</span>
+          </label>
+          <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
+            {cashRecordDetail?.remarkFromCreate || "No remark provided"}
+          </div>
+        </div>
+
+        {/* Display Reference File with PDF Icon */}
+        <div className="max-w-[45%] flex-1">
+          <label className="block text-xs font-medium text-gray-700 mb-1 line1">
+            Reference File<span className="text-red-500 ml-1">*</span>
+          </label>
+          <div className="border rounded  py-1 px-2 w-full text-xs bg-gray-100 text-gray-700 flex items-center">
+            <div className="flex flex-1 items-center space-x-2">
+              <FaFilePdf className="text-red-600" size={21} />
+              <span>
+                {cashRecordDetail?.referenceFile
+                  ? cashRecordDetail?.referenceFile.fileName
+                  : "No file uploaded"}
+              </span>
+            </div>
+            {cashRecordDetail?.referenceFile && (
+              <div
+                className="ml-2 px-3 text-xs text-blue-700 underline cursor-pointer"
+                onClick={handleViewFile}
+              >
+                View File
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="flex flex-1 mt-4 gap-8 w-full justify-between">
+        <div className="max-w-[45%] flex-1">
+          <label className="block text-xs font-medium text-gray-700 mb-1 line1">
+            Remark From Checker<span className="text-red-500 ml-1">*</span>
           </label>
           <textarea
-            className="border rounded px-2 py-1.5 w-full resize-none text-xs bg-gray-50 border-gray-300"
+            disabled={cashRecordDetail?.status != CashStatusEnum.PENDING}
+            className="border border-gray-300 rounded px-2 py-1.5 w-full resize-none text-xs disabled:bg-gray-100 disabled:text-gray-700"
             rows={1}
             placeholder="Enter your remark here..."
             style={{ maxHeight: "100px", overflowY: "auto" }}
-            value={remark}
+            value={remarkFromChecker}
             onInput={(e) => {
               const value = e.currentTarget.value;
-              setRemark(value);
+              setRemarkFromChecker(value);
               e.currentTarget.style.height = "auto"; // Reset height to auto
               e.currentTarget.style.height = `${Math.min(
                 e.currentTarget.scrollHeight,
@@ -356,107 +261,80 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
           ></textarea>
         </div>
 
-        <div className="relative flex-1">
-          <label className="block mb-1 text-sm">
-            Remark <span className="text-red-500 ml-1">*</span>
-          </label>
-
-          <input
-            type="file"
-            accept="application/pdf"
-            id="fileInput"
-            className="hidden"
-            onChange={handleFileUpload}
-          />
-
-          {/* Container for file input and view more button */}
-          <div className="flex justify-between items-center bg-gray-50 rounded px-2 py-1 border  ">
-            {/* File upload label */}
-            <label
-              htmlFor="fileInput"
-              className="flex items-center text-sm space-x-2 cursor-pointer"
-            >
-              <FaCloudUploadAlt className="text-xl text-gray-700" />
-              <span className="text-gray-700">{fileName}</span>
+        {rolesUser == UserRoleEnum.AUTHORIZER_USER && (
+          <div className="max-w-[45%] flex-1">
+            <label className="block text-xs font-medium text-gray-700 mb-1 line1">
+              Remark From Authorizer<span className="text-red-500 ml-1">*</span>
             </label>
+            <textarea
+              disabled={cashRecordDetail?.status != CashStatusEnum.PROCESSING}
+              className="border border-gray-300 rounded px-2 py-1.5 w-full resize-none text-xs disabled:bg-gray-100 disabled:text-gray-700"
+              rows={1}
+              placeholder="Enter your remark here..."
+              style={{ maxHeight: "100px", overflowY: "auto" }}
+              value={remarkFromAuthorizer}
+              onInput={(e) => {
+                const value = e.currentTarget.value;
+                setRemarkFromAuthorizer(value);
+                e.currentTarget.style.height = "auto";
+                e.currentTarget.style.height = `${Math.min(
+                  e.currentTarget.scrollHeight,
+                  100
+                )}px`; // Resize up to maxHeight
+              }}
+            ></textarea>
+          </div>
+        )}
+      </div>
 
-            {/* View More button on the right side */}
+      <div className="grid grid-cols-3 gap-4 mt-4">
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1 ">
+            Authorizer By<span className="text-red-500 ml-1">*</span>
+          </label>
+          <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
+            {cashRecordDetail?.approvedBy.name}
+          </div>
+        </div>
 
-            {fileName != "No file chosen" && (
-              <div className="flex space-x-2">
-                <button
-                  type="button"
-                  onClick={clearPdf}
-                  className="flex items-center text-sm underline hover:text-blue-600 text-blue-500 hover:underline"
-                >
-                  <MdOutlineClear className="text-lg" />
-                </button>
-                <button
-                  type="button"
-                  // onClick={togglePreview}
-                  className="flex items-center text-sm underline hover:text-blue-600 text-blue-500 hover:underline"
-                >
-                  <FaEye className="text-lg" />
-                </button>
-              </div>
-            )}
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1 ">
+            Checker By<span className="text-red-500 ml-1">*</span>
+          </label>
+          <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
+            {cashRecordDetail?.checkerBy.name}
+          </div>
+        </div>
+
+        <div>
+          <label className="block text-xs font-medium text-gray-700 mb-1 ">
+            Created By<span className="text-red-500 ml-1">*</span>
+          </label>
+          <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
+            {cashRecordDetail?.createdBy.name}
           </div>
         </div>
       </div>
 
-      {/* Approvals section */}
-      <div className="grid grid-cols-3 gap-4 mt-2">
-        {/* Approve By */}
-        <CustomSelect
-          id="approveBy"
-          value={formData.approve}
-          onChange={(option) => handleChange("approve", option)}
-          options={allData.approve}
-          label="Approve By"
-          getOptionLabel={(option) => option.name || ""}
-          errorMessage={errors.approve}
-          required
-        />
-
-        {/* Checker by */}
-        <CustomSelect
-          id="checkerBy"
-          value={formData.checker}
-          onChange={(option) => handleChange("checker", option)}
-          options={allData.checker}
-          label="Checker By"
-          getOptionLabel={(option) => option.name || ""}
-          errorMessage={errors.checker}
-          required
-        />
-
-        <div>
-          <label
-            htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-1 "
-          >
-            Creator by<span className="text-red-500 ml-1">*</span>
-          </label>
-          <Input
-            value={userData?.name}
-            className="py-1 w-full "
-            disabled={true}
-          />
-        </div>
-      </div>
       {/* Save and Cancel Buttons */}
       <div className="flex justify-end space-x-2 mt-6">
+        <Button
+          onClick={() => setModalReject(true)}
+          className="py-0.5 bg-red-500 hover:bg-red-600"
+        >
+          Reject
+        </Button>
         <Button
           onClick={() => {
             router.back();
           }}
           variant="cancel"
-          className="py-1"
+          className="py-0.5"
         >
           Cancel
         </Button>
-        <Button onClick={handleSaveClick} className="py-1">
-          Save
+        <Button onClick={() => setModalApprove(true)} className="py-0.5">
+          Approve
         </Button>
       </div>
       {/* Modal for alert */}
@@ -465,7 +343,29 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
         onClose={() => setIsModalOpen(false)}
         message="Please click 'Verify' before saving."
       />
-      <LoadingFullPage loading={loading} text="Adding record, please wait..." />
+      <LoadingFullPage
+        loading={loading}
+        text="Updating record, please wait..."
+      />
+
+      {/* Confirmation approve */}
+      <ModalConfirmation
+        isOpen={modalApprove}
+        title="Confirm Approve!"
+        onClose={() => setModalApprove(false)}
+        onConfirm={handleApprove}
+        message={`Are you sure you want to approve?`}
+        isNotCancel={true}
+      />
+
+      {/* Confirmation Reject */}
+      <ModalConfirmation
+        isOpen={modalReject}
+        title="Confirm Reject!"
+        onClose={() => setModalReject(false)}
+        onConfirm={handleReject}
+        message={`Are you sure you want to reject?`}
+      />
     </div>
   );
 };

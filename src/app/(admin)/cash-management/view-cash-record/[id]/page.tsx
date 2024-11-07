@@ -116,12 +116,6 @@ const page = ({ params }: { params: { id: number } }) => {
     });
   };
 
-  const handleVerifyClick = async () => {
-    setIsVerified(true);
-    const resposne = await CashManagementService.getVerifyRecord();
-    setVerifyCash(resposne);
-  };
-
   const handleViewFile = async () => {
     const resposne = await CashManagementService.getViewPDFById({
       id: cashRecordDetail!.referenceFile.id,
@@ -135,7 +129,7 @@ const page = ({ params }: { params: { id: number } }) => {
   };
 
   return (
-    <div className="mx-1">
+    <div className="px-4">
       <div className="overflow-auto">
         {/* Table Header */}
         <table>

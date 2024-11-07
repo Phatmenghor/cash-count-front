@@ -14,6 +14,11 @@ interface verifyEmailModel {
   code: string;
 }
 
+interface updateEmail {
+  email: string;
+  otpCode: string;
+}
+
 interface registerAccount {
   firstName: string;
   lastName: string;
@@ -107,6 +112,34 @@ export class RegisterService {
       return true;
     } catch {
       return false;
+    }
+  };
+
+  static updatedEmail = async (id: number, payload: updateEmail) => {
+    try {
+      await axiosNoAuth.post(`auth/update-user-mail/${id}`, payload);
+      return {
+        success: true,
+        message: "Updated successful!",
+      };
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response && error.response.status === 403) {
+          return {
+            success: false,
+            message:
+              "This email is already registered. Please try a different one.",
+          };
+        }
+        return {
+          success: false,
+          message: "Registration failed. Please try again.",
+        };
+      }
+      return {
+        success: false,
+        message: "An unexpected error occurred. Please check your connection.",
+      };
     }
   };
 

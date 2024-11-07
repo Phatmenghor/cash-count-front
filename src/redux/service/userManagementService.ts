@@ -19,12 +19,7 @@ interface getUserByIdParams {
   id: number;
 }
 
-interface updateUserByIdParams {
-  id: number;
-  info: updateUserInfo;
-}
-
-interface updateUserInfo {
+export interface updateUserInfo {
   name: string;
   roleId: number;
   branchId: number;
@@ -105,12 +100,9 @@ class UserManagementService {
     }
   };
 
-  static updateUserById = async (param: updateUserByIdParams) => {
+  static updateUserById = async (id: number, profileData: updateUserInfo) => {
     try {
-      await axiosWithAuth.post(
-        `/auth/update-user-info/${param.id}`,
-        param.info
-      );
+      await axiosWithAuth.post(`/auth/update-user-info/${id}`, profileData);
       return true;
     } catch {
       return false;

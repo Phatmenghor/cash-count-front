@@ -131,7 +131,7 @@ const Register: React.FC = () => {
       });
       if (response) {
         showToast(
-          `Email sent to ${formData.email}. Please check inbox.`,
+          `OTP sent to ${formData.email}. Please check inbox.`,
           "success"
         );
         setStep(2);

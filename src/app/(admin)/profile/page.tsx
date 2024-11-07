@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { AllDataType } from "@/app/(auth)/register/type";
 import Button from "@/components/custom/Button";
 import CustomSelect from "@/components/custom/CustomSelect";
@@ -11,12 +11,15 @@ import { BranchModel } from "@/redux/models/register/BranchModel";
 import { DepartmentModel } from "@/redux/models/register/DepartmentModel";
 import { PositionModel } from "@/redux/models/register/PositionModel";
 import { RoleModel } from "@/redux/models/register/RoleModel";
-import { UserProfile } from "@/redux/models/userManagement/UserProfileModel";
 import { RegisterService } from "@/redux/service/registerService";
-import UserManagementService from "@/redux/service/userManagementService";
-import { RootState } from "@/redux/store";
-import { useSelector } from "react-redux";
+import UserManagementService, {
+  updateUserInfo,
+} from "@/redux/service/userManagementService";
+import { AppDispatch, RootState } from "@/redux/store";
+import { useDispatch, useSelector } from "react-redux";
 import LoadingFullPage from "@/components/loading/LoadingFullPage";
+import showToast from "@/components/toast/useToast";
+import ModalConfirmation from "@/components/modal/ModalConfirmation";
 
 interface FormDataType {
   name: string;
@@ -32,10 +35,9 @@ const ProfileSelfPage = () => {
   const { userData } = useSelector((state: RootState) => state.user);
   const [moveToEdit, setMoveToEdit] = useState(false);
   const [verifyOTP, setVerifyOTP] = useState(false);
-  const [userInfo, setUserInfo] = useState<UserProfile | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isLoadingEdit, setLoadingEdit] = useState(false);
   const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch<AppDispatch>();
   const [formData, setFormData] = useState<FormDataType>({
     email: "",
     otp: "",
@@ -72,7 +74,7 @@ const ProfileSelfPage = () => {
   };
 
   async function onClickEdit() {
-    setLoadingEdit(true);
+    setLoading(true);
     setMoveToEdit(true);
     const response = await RegisterService.fetchAllData();
     setAllData(response);
@@ -88,27 +90,81 @@ const ProfileSelfPage = () => {
         role: userData.role,
       });
     }
-    setLoadingEdit(false);
+    setLoading(false);
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm() || loading) return;
     setLoading(true);
-    const response = await UserManagementService.updateUserById({
-      id: userInfo!.id,
-      info: {
-        name: formData.name,
-        branchId: formData.branch!.id,
-        departmentId: formData.department!.id,
-        positionId: formData.position!.id,
-        roleId: formData.role!.id,
-      },
-    });
+
+    if (verifyOTP) {
+      const responseVerifyOTP = await RegisterService.verifyEmail({
+        mail: formData.email,
+        code: formData.otp,
+      });
+      if (responseVerifyOTP) {
+        const responseChangeEmail = await RegisterService.updatedEmail(
+          userData!.id,
+          { email: formData.email, otpCode: formData.otp }
+        );
+        if (!responseChangeEmail.success) {
+          const newErrors: { [key: string]: string } = {};
+          newErrors.role = "This email is already registered.";
+          setErrors(newErrors)
+          showToast(responseChangeEmail.message, "error");
+          setLoading(false)
+          return;
+        }
+      } else {
+        showToast(
+          "Verification unsuccessful. Please verify your email and code otp again.",
+          "error"
+        );
+      }
+    }
+
+    const profileData: updateUserInfo = {
+      name: formData.name,
+      roleId: formData.role!.id,
+      branchId: formData.branch!.id,
+      departmentId: formData.department!.id,
+      positionId: formData.position!.id,
+    };
+
+    const response = await UserManagementService.updateUserById(
+      userData!.id,
+      profileData
+    );
+    if (response) {
+      dispatch(UserManagementService.getUserByToken());
+      setMoveToEdit(false);
+      showToast(
+        "Your update has been successfully submitted. Please wait for admin approval.",
+        "warning"
+      );
+    } else {
+      showToast("Failed to profile. Please try again", "error");
+    }
+    setLoading(false);
   };
 
-  function verifyCodeOTP() {
-    setVerifyOTP(true);
+  async function verifyCodeOTP() {
+    setLoading(true);
+    const resposne = await RegisterService.submidEmail({
+      mail: formData.email,
+    });
+
+    if (resposne) {
+      setVerifyOTP(true);
+      showToast(
+        `OTP sent to ${formData.email}. Please check inbox.`,
+        "success"
+      );
+    } else {
+      showToast("Failed to send email. Please try again.", "error");
+    }
+    setLoading(false);
   }
 
   const validateForm = () => {
@@ -125,13 +181,13 @@ const ProfileSelfPage = () => {
 
   return (
     <div className="px-6">
-      <div className="flex justify-between">
-        <h2 className="text-gray-700 mb-4 hide">
+      <div className="flex justify-between items-center mb-4">
+        <h2 className="text-gray-700 hide">
           {moveToEdit ? "Edit User Profile" : "User Profile"}
         </h2>
 
         {!moveToEdit && (
-          <Button onClick={onClickEdit} className="px-8 h-8">
+          <Button onClick={onClickEdit} className="py-0.5">
             Edit
           </Button>
         )}
@@ -152,7 +208,7 @@ const ProfileSelfPage = () => {
                 value={formData.name}
                 placeholder="Enter your name"
                 onChange={handleInputChange}
-                className="py-1.5"
+                className="py-1"
               />
               {errors.name && (
                 <FormMessage message={errors.name} type="error" />
@@ -210,7 +266,7 @@ const ProfileSelfPage = () => {
                 value={formData.email}
                 placeholder="Enter your name"
                 onChange={handleInputChange}
-                className="py-1.5"
+                className="py-1"
               />
               {errors.name && (
                 <FormMessage message={errors.email} type="error" />
@@ -234,7 +290,7 @@ const ProfileSelfPage = () => {
                   value={formData.otp}
                   placeholder="Enter your otp"
                   onChange={handleInputChange}
-                  className="py-1.5"
+                  className="py-1"
                 />
                 {errors.name && (
                   <FormMessage message={errors.name} type="error" />
@@ -243,18 +299,18 @@ const ProfileSelfPage = () => {
             )}
           </div>
 
-          {formData.email != userData?.email ? (
+          {formData.email != userData?.email && !verifyOTP ? (
             <div className="mt-8 justify-end flex space-x-4">
               <Button
                 type="button"
                 variant="cancel"
                 onClick={() => setMoveToEdit(false)}
-                className="py-1 px-4"
+                className="py-0.5 px-2"
               >
                 Cancel
               </Button>
               <Button
-                className="py-1 px-4"
+                className="py-0.5 px-2"
                 type="button"
                 onClick={verifyCodeOTP}
               >
@@ -267,16 +323,16 @@ const ProfileSelfPage = () => {
                 type="button"
                 variant="cancel"
                 onClick={() => setMoveToEdit(false)}
-                className="py-1 px-4"
+                className="py-0.5 px-2"
               >
                 Cancel
               </Button>
               <Button
-                className="py-1 px-4"
+                className="py-0.5 px-2"
                 type="button"
                 onClick={handleSubmit}
               >
-                Save
+                Update
               </Button>
             </div>
           )}
@@ -295,7 +351,7 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.name}
-                className="py-1.5 w-full"
+                className="py-1 w-full"
                 disabled={true}
               />
             </div>
@@ -310,7 +366,7 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.username}
-                className="py-1.5 w-full"
+                className="py-1 w-full"
                 disabled={true}
               />
             </div>
@@ -323,11 +379,7 @@ const ProfileSelfPage = () => {
               >
                 Email<span className="text-red-500 ml-1">*</span>
               </label>
-              <Input
-                value={userData?.email}
-                className="py-1.5"
-                disabled={true}
-              />
+              <Input value={userData?.email} className="py-1" disabled={true} />
             </div>
 
             {/* Position */}
@@ -340,7 +392,7 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.position.name}
-                className="py-1.5"
+                className="py-1"
                 disabled={true}
               />
             </div>
@@ -355,7 +407,7 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.department.name}
-                className="py-1.5"
+                className="py-1"
                 disabled={true}
               />
             </div>
@@ -370,7 +422,7 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.branch.mnemonic}
-                className="py-1.5"
+                className="py-1"
                 disabled={true}
               />
             </div>
@@ -385,7 +437,7 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.branch.mnemonic}
-                className="py-1.5"
+                className="py-1"
                 disabled={true}
               />
             </div>
@@ -400,7 +452,7 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.role.name}
-                className="py-1.5"
+                className="py-1"
                 disabled={true}
               />
             </div>
@@ -415,7 +467,7 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.branch.city}
-                className="py-1.5"
+                className="py-1"
                 disabled={true}
               />
             </div>
@@ -423,7 +475,7 @@ const ProfileSelfPage = () => {
         </div>
       )}
 
-      <LoadingFullPage loading={isLoadingEdit} />
+      <LoadingFullPage loading={loading} />
     </div>
   );
 };

@@ -58,7 +58,7 @@ export class CashManagementService {
         success: true,
         data: response.data.data,
       };
-    } catch (error) {
+    } catch {
       return {
         success: false,
       };
@@ -74,7 +74,7 @@ export class CashManagementService {
         success: true,
         data: response.data.data,
       };
-    } catch (error) {
+    } catch {
       return {
         success: false,
       };
@@ -99,13 +99,14 @@ export class CashManagementService {
 
   static updateCashRecord = async (id: number, data: UpdateRecordModel) => {
     try {
-      await axiosWithAuth.put(`/api/cash-counts/${id}`, data);
+      const res = await axiosWithAuth.put(`/api/cash-counts/${id}`, data);
+      console.log("### ==res", res);
+      console.log("### ==res", data);
       return {
         success: true,
         message: "Cash record updated successfully!",
       };
-    } catch (error) {
-      console.log("### ==", error);
+    } catch {
       return {
         success: false,
         message: "Failed to update cash record. Please try again.",

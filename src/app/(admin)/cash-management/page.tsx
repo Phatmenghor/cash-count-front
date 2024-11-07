@@ -23,6 +23,7 @@ import { CashStatusEnum } from "@/redux/models/cashManagement/StatusEnum";
 import dynamic from "next/dynamic";
 import { UserRoleEnum } from "@/constants/userRole";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
+import { getStatusColor } from "@/utils/function/checkColorStatus";
 const ModalConfirmation = dynamic(
   () => import("@/components/modal/ModalConfirmation")
 );
@@ -160,13 +161,15 @@ const CashManagementPage: React.FC = () => {
           data-aos="fade-right"
         />
 
-        <Button
-          onClick={() => router.push("/cash-management/add-cash")}
-          className="py-1 mr-1"
-          data-aos="fade-left"
-        >
-          Add Cash
-        </Button>
+        {UserRoleStorage.getUserRole() == UserRoleEnum.INPUTTER_USER && (
+          <Button
+            onClick={() => router.push("/cash-management/add-cash")}
+            className="py-1 mr-1"
+            data-aos="fade-left"
+          >
+            Add Cash
+          </Button>
+        )}
       </div>
 
       {/* User List Table */}
@@ -204,8 +207,10 @@ const CashManagementPage: React.FC = () => {
                     <td className="truncate">{displayIndex}</td>
                     <td className="truncate">{cash.srNumber}</td>
                     <td className="truncate">{cash.branch.mnemonic}</td>
-                    <td className="truncate">{cash.branch.city}</td>
-                    <td className="truncate">{cash.status}</td>
+                    <td className="truncate">{cash. branch.city}</td>
+                    <td className={`truncate ${getStatusColor(cash.status as CashStatusEnum)}`}>
+                      {cash.status}
+                    </td>
                     <td className="truncate">{cash.createdBy.name}</td>
                     <td className="truncate">{cash.checkerBy.name}</td>
                     <td className="truncate">{cash.approvedBy.name}</td>
@@ -223,7 +228,7 @@ const CashManagementPage: React.FC = () => {
                         UserRoleStorage.getUserRole() ==
                           UserRoleEnum.AUTHORIZER_USER && (
                           <button
-                            // onClick={}
+                            onClick={() => onCheckCash(cash.id)}
                             className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 flex items-center"
                           >
                             Check

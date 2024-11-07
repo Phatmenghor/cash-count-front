@@ -11,6 +11,8 @@ export interface UpdateRecordModel {
   nostroAccount: NostroAccount;
   cashInHandVaultAccount: VaultAccount;
   cashInHandNostroAccount: NostroAccount;
+  remarkFromAuthorizer?: string | null;
+  remarkFromChecker?: string | null;
 }
 
 interface CheckerBy {

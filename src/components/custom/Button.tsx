@@ -23,7 +23,7 @@ const Button: React.FC<ButtonProps> = ({
   const variantStyles =
     variant === "submit"
       ? "bg-blue-500 text-white hover:bg-blue-600"
-      : "bg-gray-300 text-gray-700 hover:bg-gray-400";
+      : "bg-gray-400 text-white hover:bg-gray-500";
 
   // Conditional loading styles
   const loadingStyles = loading
