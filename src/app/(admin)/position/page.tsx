@@ -14,6 +14,7 @@ import { PositionListModel } from "@/redux/models/position/PositionListModel";
 import { PositionModel } from "@/redux/models/register/PositionModel";
 import ModalCreateEditPosition from "@/components/modal/ModalCreateEditPosition";
 import { PositionService } from "@/redux/service/positionService";
+import { ToastContainer } from "react-toastify";
 
 const PositionPage: React.FC = () => {
   const [positionList, setPositionList] = useState<PositionListModel>({
@@ -147,7 +148,6 @@ const PositionPage: React.FC = () => {
           data-aos="fade-left"
         >
           <FiPlus size={18} />
-          <span className="ml-1">Add Position</span>
         </Button>
       </div>
 
@@ -219,6 +219,7 @@ const PositionPage: React.FC = () => {
         initialData={currentPosition ? currentPosition : undefined}
         loadingButton={loading}
       />
+      <ToastContainer />
     </div>
   );
 };

@@ -8,6 +8,7 @@ import FormMessage from "../../../components/errorHandle/FormMessage";
 import { LoginService } from "@/redux/service/loginService";
 import { route } from "@/constants/routed";
 import { UserRoleEnum } from "@/constants/userRole";
+import { ToastContainer } from "react-toastify";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("sokrann.voem");
@@ -43,10 +44,12 @@ const LoginPage: React.FC = () => {
       password: password,
     });
     if (
-      response === UserRoleEnum.IT_ADMIN_USER ||
-      UserRoleEnum.OPERATION_ADMIN_USER
+      response == UserRoleEnum.IT_ADMIN_USER ||
+      response == UserRoleEnum.OPERATION_ADMIN_USER
     ) {
       router.push(`/${route.USER_MANAGEMENT}`);
+    } else {
+      router.push("/user-management");
     }
   };
 
@@ -74,8 +77,15 @@ const LoginPage: React.FC = () => {
     }
   };
 
+  function ontoRegister() {
+    router.push(`/${route.REGISTER}?name=${encodeURIComponent("New User")}`);
+  }
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+    <div
+      data-aos="fade-up"
+      className="flex items-center justify-center min-h-screen bg-gray-100"
+    >
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg transition-transform duration-300 hover:scale-x-105">
         <h1 className="text-3xl font-bold text-center mb-1">Welcome Back!</h1>
         <h2 className="text-lg text-center text-gray-600 mb-6">
@@ -148,18 +158,20 @@ const LoginPage: React.FC = () => {
           </Button>
         </form>
 
-        <div className="mt-4 text-center">
-          <p className="text-sm text-gray-600 ">
-            Don&apos;t have an account?{" "}
-            <a
-              href={`/${route.REGISTER}?name=${encodeURIComponent("New User")}`}
-              className="text-blue-500 hover:text-blue-700 transition-colors underline"
+        <div className="mt-4 flex justify-center">
+          <p className="text-sm text-gray-600 flex">
+            Don&apos;t have an account?
+            <div
+              onClick={ontoRegister}
+              className="text-blue-500 ml-1 cursor-pointer hover:text-blue-700 transition-colors underline"
             >
               Register
-            </a>
+            </div>
           </p>
         </div>
       </div>
+
+      <ToastContainer />
     </div>
   );
 };

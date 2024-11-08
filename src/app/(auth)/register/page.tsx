@@ -5,13 +5,13 @@ import { route } from "@/constants/routed";
 import Input from "@/components/custom/Input";
 import FormMessage from "@/components/errorHandle/FormMessage";
 import Button from "@/components/custom/Button";
-import withAnimation from "@/configs/withAnimation";
 import CustomSelect from "@/components/custom/CustomSelect";
 import { BiArrowBack } from "react-icons/bi";
 import showToast from "@/components/toast/useToast";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { RegisterService } from "@/redux/service/registerService";
 import { AllDataType, FormDataType } from "./type";
+import { ToastContainer } from "react-toastify";
 
 const Register: React.FC = () => {
   const searchParams = useSearchParams();
@@ -56,8 +56,8 @@ const Register: React.FC = () => {
   const clearData = () => {
     setStep(1);
     setFormData({
-      email: "phatmenghor19@gmail.com",
-      otp: "1739",
+      email: "",
+      otp: "",
       usernameAD: "",
       firstName: "",
       lastName: "",
@@ -150,6 +150,9 @@ const Register: React.FC = () => {
         setLoading(false);
         return;
       }
+      const newErrors: { [key: string]: string } = {};
+      newErrors.otp = "Invalid OTP. Please check and try again.";
+      setErrors(newErrors);
       showToast(
         "Verification unsuccessful. Please verify your email and code otp again.",
         "error"
@@ -213,7 +216,10 @@ const Register: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50">
+    <div
+      data-aos="fade-up"
+      className="flex flex-col items-center justify-center min-h-screen bg-gray-50"
+    >
       <div className="max-w-lg w-full bg-white p-8 rounded-lg shadow-xl border border-gray-200 transition-transform duration-300 hover:scale-x-105 relative">
         {step > 1 && (
           <button
@@ -235,10 +241,10 @@ const Register: React.FC = () => {
         )}
         <form onSubmit={handleSubmit}>
           {(step === 1 || step === 2) && (
-            <div className="mb-4">
+            <div className="mb-4" data-aos="fade-up">
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-xs font-medium text-gray-700 mb-1"
               >
                 Email<span className="text-red-500 ml-1">*</span>
               </label>
@@ -259,10 +265,10 @@ const Register: React.FC = () => {
           )}
 
           {step === 2 && (
-            <div className="mb-4">
+            <div className="mb-4" data-aos="fade-up">
               <label
                 htmlFor="otp"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-xs font-medium text-gray-700 mb-1"
               >
                 Enter OTP<span className="text-red-500 ml-1">*</span>
               </label>
@@ -282,12 +288,15 @@ const Register: React.FC = () => {
           )}
 
           {step === 3 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+            <div
+              data-aos="fade-up"
+              className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6"
+            >
               {/* Email */}
               <div>
                 <label
                   htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-xs font-medium text-gray-700 mb-1"
                 >
                   Email<span className="text-red-500 ml-1">*</span>
                 </label>
@@ -298,7 +307,7 @@ const Register: React.FC = () => {
                   value={formData.email}
                   placeholder="Enter your email"
                   onChange={handleInputChange}
-                  className="py-1.5"
+                  className="py-1"
                   disabled
                 />
                 {errors.email && (
@@ -322,7 +331,7 @@ const Register: React.FC = () => {
               <div>
                 <label
                   htmlFor="usernameAD"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-xs font-medium text-gray-700 mb-1"
                 >
                   AD Username<span className="text-red-500 ml-1">*</span>
                 </label>
@@ -333,7 +342,7 @@ const Register: React.FC = () => {
                   value={formData.usernameAD}
                   placeholder="Enter AD username"
                   onChange={handleInputChange}
-                  className="py-1.5"
+                  className="py-1"
                 />
                 {errors.usernameAD && (
                   <FormMessage message={errors.usernameAD} type="error" />
@@ -344,7 +353,7 @@ const Register: React.FC = () => {
               <div>
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-xs font-medium text-gray-700 mb-1"
                 >
                   Password<span className="text-red-500 ml-1">*</span>
                 </label>
@@ -356,7 +365,7 @@ const Register: React.FC = () => {
                     value={formData.password}
                     placeholder="Enter your password"
                     onChange={handleInputChange}
-                    className="py-1.5"
+                    className="py-1"
                   />
                   <button
                     type="button"
@@ -375,7 +384,7 @@ const Register: React.FC = () => {
               <div>
                 <label
                   htmlFor="firstName"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-xs font-medium text-gray-700 mb-1"
                 >
                   First Name<span className="text-red-500 ml-1">*</span>
                 </label>
@@ -386,7 +395,7 @@ const Register: React.FC = () => {
                   value={formData.firstName}
                   placeholder="Enter your first name"
                   onChange={handleInputChange}
-                  className="py-1.5"
+                  className="py-1"
                 />
                 {errors.firstName && (
                   <FormMessage message={errors.firstName} type="error" />
@@ -397,7 +406,7 @@ const Register: React.FC = () => {
               <div>
                 <label
                   htmlFor="lastName"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-xs font-medium text-gray-700 mb-1"
                 >
                   Last Name<span className="text-red-500 ml-1">*</span>
                 </label>
@@ -408,7 +417,7 @@ const Register: React.FC = () => {
                   value={formData.lastName}
                   placeholder="Enter your last name"
                   onChange={handleInputChange}
-                  className="py-1.5"
+                  className="py-1"
                 />
                 {errors.lastName && (
                   <FormMessage message={errors.lastName} type="error" />
@@ -470,20 +479,20 @@ const Register: React.FC = () => {
           </Button>
         </form>
 
-        <div className="mt-4 text-center">
-          <p className="text-sm text-gray-600 ">
-            Have an account?{" "}
-            <a
-              href={`/${route.LOGIN}`}
-              className="text-blue-500 hover:text-blue-700 transition-colors underline"
-            >
-              Login
-            </a>
-          </p>
+        <div className="mt-4 text-center flex justify-center space-x-2">
+          <p className="text-sm text-gray-600 flex">Have an account?</p>
+          <div
+            onClick={() => router.push(`/${route.LOGIN}`)}
+            className="text-blue-500 hover:text-blue-700 text-sm transition-colors underline"
+          >
+            Login
+          </div>
         </div>
       </div>
+
+      <ToastContainer />
     </div>
   );
 };
 
-export default withAnimation(Register);
+export default Register;

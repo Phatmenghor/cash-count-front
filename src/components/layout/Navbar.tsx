@@ -41,7 +41,7 @@ const Navbar = () => {
 
   const handleLogout = () => {
     clearLocalStorage();
-    router.push(`/${route.LOGIN}`);
+    router.replace(`/${route.LOGIN}`);
     showToast("You have successfully logged out.", "success");
     onCloseModal();
   };

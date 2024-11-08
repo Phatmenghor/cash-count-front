@@ -12,13 +12,15 @@ import {
   userManagementListModel,
   userManagementModel,
 } from "@/redux/models/userManagement/UserManagementModel";
-import { pageSizeData } from "@/constants/dataListing";
+import { pageSizeData, userStatus } from "@/constants/dataListing";
 import showToast from "@/components/toast/useToast";
 import { debounce } from "@/utils/function/debounce";
 import Input from "@/components/custom/Input";
 import EmptyState from "@/components/emthyData/EmptyState";
 import { Switch } from "@/components/custom/Switch";
 import Pagination from "@/components/pagination/Pagination";
+import FilterUser from "@/components/custom/FilterUser";
+import { ToastContainer } from "react-toastify";
 
 const UserManagement = () => {
   const router = useRouter();
@@ -88,6 +90,21 @@ const UserManagement = () => {
     fetchData(userData.pagination?.currentPage, value);
   }
 
+  async function handleFilterStatus(status: number) {
+    if (status == 2) {
+      fetchData();
+      return;
+    }
+    const response = await UserManagementService.getAllByBodyUsers({
+      pageSize: size,
+      currentPage: 1,
+      status: status,
+      search: searchTerm,
+    });
+
+    setUserData(response);
+  }
+
   function onPageChange(value: number) {
     fetchData(value, userData.pagination?.pageSize ?? 15);
   }
@@ -123,11 +140,16 @@ const UserManagement = () => {
       <div className="flex items-center mb-4 justify-between">
         <Input
           type="text"
-          placeholder="Search by Full Name..."
+          placeholder="Search user ..."
           value={searchTerm}
           onChange={onSearch}
           className="mr-4 py-1 max-w-md"
           data-aos="fade-right"
+        />
+        <FilterUser
+          options={userStatus}
+          onSelect={handleFilterStatus}
+          label="Select User"
         />
       </div>
 
@@ -240,6 +262,7 @@ const UserManagement = () => {
           />
         </div>
       )}
+      <ToastContainer />
     </div>
   );
 };

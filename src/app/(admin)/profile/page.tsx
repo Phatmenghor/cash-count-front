@@ -20,6 +20,7 @@ import { useDispatch, useSelector } from "react-redux";
 import LoadingFullPage from "@/components/loading/LoadingFullPage";
 import showToast from "@/components/toast/useToast";
 import ModalConfirmation from "@/components/modal/ModalConfirmation";
+import { ToastContainer } from "react-toastify";
 
 interface FormDataType {
   name: string;
@@ -111,9 +112,9 @@ const ProfileSelfPage = () => {
         if (!responseChangeEmail.success) {
           const newErrors: { [key: string]: string } = {};
           newErrors.role = "This email is already registered.";
-          setErrors(newErrors)
+          setErrors(newErrors);
           showToast(responseChangeEmail.message, "error");
-          setLoading(false)
+          setLoading(false);
           return;
         }
       } else {
@@ -137,7 +138,6 @@ const ProfileSelfPage = () => {
       profileData
     );
     if (response) {
-      dispatch(UserManagementService.getUserByToken());
       setMoveToEdit(false);
       showToast(
         "Your update has been successfully submitted. Please wait for admin approval.",
@@ -182,23 +182,30 @@ const ProfileSelfPage = () => {
   return (
     <div className="px-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-gray-700 hide">
-          {moveToEdit ? "Edit User Profile" : "User Profile"}
-        </h2>
+        {moveToEdit && (
+          <h2 data-aos="fade-right" className="text-gray-700 hide">
+            Update User Profile
+          </h2>
+        )}
+        {!moveToEdit && (
+          <h2 data-aos="fade-right" className="text-gray-700 hide">
+            User Profile
+          </h2>
+        )}
 
         {!moveToEdit && (
-          <Button onClick={onClickEdit} className="py-0.5">
+          <Button data-aos="fade-left" onClick={onClickEdit} className="py-0.5">
             Edit
           </Button>
         )}
       </div>
 
-      {moveToEdit ? (
-        <form onSubmit={handleSubmit}>
+      {moveToEdit && (
+        <form data-aos="fade-up" onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-x-8 gap-y-4">
             {/* UserName */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs font-medium text-gray-700 mb-1">
                 Name <span className="text-red-500 ml-1">*</span>
               </label>
               <Input
@@ -255,7 +262,7 @@ const ProfileSelfPage = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-xs font-medium text-gray-700 mb-1"
               >
                 Email <span className="text-red-500 ml-1">*</span>
               </label>
@@ -279,7 +286,7 @@ const ProfileSelfPage = () => {
               <div>
                 <label
                   htmlFor="otp"
-                  className="block text-sm font-medium text-gray-700 mb-1"
+                  className="block text-xs font-medium text-gray-700 mb-1"
                 >
                   Verify OTP <span className="text-red-500 ml-1">*</span>
                 </label>
@@ -305,15 +312,11 @@ const ProfileSelfPage = () => {
                 type="button"
                 variant="cancel"
                 onClick={() => setMoveToEdit(false)}
-                className="py-0.5 px-2"
+                className="py-1"
               >
                 Cancel
               </Button>
-              <Button
-                className="py-0.5 px-2"
-                type="button"
-                onClick={verifyCodeOTP}
-              >
+              <Button className="py-1" type="button" onClick={verifyCodeOTP}>
                 Verify OTP
               </Button>
             </div>
@@ -323,23 +326,20 @@ const ProfileSelfPage = () => {
                 type="button"
                 variant="cancel"
                 onClick={() => setMoveToEdit(false)}
-                className="py-0.5 px-2"
+                className="py-1"
               >
                 Cancel
               </Button>
-              <Button
-                className="py-0.5 px-2"
-                type="button"
-                onClick={handleSubmit}
-              >
+              <Button className="py-1" type="button" onClick={handleSubmit}>
                 Update
               </Button>
             </div>
           )}
         </form>
-      ) : (
-        // View Information
-        <div>
+      )}
+
+      {!moveToEdit && (
+        <div data-aos="fade-up">
           <div className="grid grid-cols-2  gap-x-8 gap-y-4">
             {/* UserName */}
             <div>
@@ -351,7 +351,7 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.name}
-                className="py-1 w-full"
+                className="py-1.5 w-full"
                 disabled={true}
               />
             </div>
@@ -366,7 +366,7 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.username}
-                className="py-1 w-full"
+                className="py-1.5 w-full"
                 disabled={true}
               />
             </div>
@@ -379,7 +379,11 @@ const ProfileSelfPage = () => {
               >
                 Email<span className="text-red-500 ml-1">*</span>
               </label>
-              <Input value={userData?.email} className="py-1" disabled={true} />
+              <Input
+                value={userData?.email}
+                className="py-1.5"
+                disabled={true}
+              />
             </div>
 
             {/* Position */}
@@ -392,7 +396,7 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.position.name}
-                className="py-1"
+                className="py-1.5"
                 disabled={true}
               />
             </div>
@@ -407,7 +411,7 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.department.name}
-                className="py-1"
+                className="py-1.5"
                 disabled={true}
               />
             </div>
@@ -422,7 +426,7 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.branch.mnemonic}
-                className="py-1"
+                className="py-1.5"
                 disabled={true}
               />
             </div>
@@ -437,7 +441,7 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.branch.mnemonic}
-                className="py-1"
+                className="py-1.5"
                 disabled={true}
               />
             </div>
@@ -452,7 +456,7 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.role.name}
-                className="py-1"
+                className="py-1.5"
                 disabled={true}
               />
             </div>
@@ -467,15 +471,15 @@ const ProfileSelfPage = () => {
               </label>
               <Input
                 value={userData?.branch.city}
-                className="py-1"
+                className="py-1.5"
                 disabled={true}
               />
             </div>
           </div>
         </div>
       )}
-
       <LoadingFullPage loading={loading} />
+      <ToastContainer />
     </div>
   );
 };

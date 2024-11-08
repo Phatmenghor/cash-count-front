@@ -3,12 +3,12 @@
 import "../globals.css";
 import "aos/dist/aos.css";
 import "react-toastify/dist/ReactToastify.css";
-import Navbar from "@/components/layout/Navbar";
 import MenuSidebar from "@/components/sidebar/MenuSidebar";
 import localFont from "next/font/local";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Aos from "aos";
-import NavbarSearch from "@/components/layout/Navbar";
+import Navbar from "@/components/layout/Navbar";
+import { ToastContainer } from "react-toastify";
 
 const geistSans = localFont({
   src: "../fonts/GeistVF.woff",
@@ -42,7 +42,7 @@ export default function RootLayout({
         <div className="flex h-screen container">
           <MenuSidebar />
           <div className="w-[86%] md:w-[92%] lg:w-[84%] xl:w-[86%] bg-[#F7F8FA] overflow-y-scroll flex flex-col pb-16">
-            <NavbarSearch />
+            <Navbar />
             {children}
           </div>
         </div>

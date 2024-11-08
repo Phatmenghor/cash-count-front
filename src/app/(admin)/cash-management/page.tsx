@@ -3,7 +3,7 @@
 
 import React, { useCallback, useEffect, useState } from "react";
 import Input from "@/components/custom/Input";
-import { pageSizeData } from "@/constants/dataListing";
+import { pageSizeData, statusCashData } from "@/constants/dataListing";
 import { debounce } from "@/utils/function/debounce";
 import EmptyState from "@/components/emthyData/EmptyState";
 import showToast from "@/components/toast/useToast";
@@ -24,6 +24,9 @@ import dynamic from "next/dynamic";
 import { UserRoleEnum } from "@/constants/userRole";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 import { getStatusColor } from "@/utils/function/checkColorStatus";
+import { FiPlus } from "react-icons/fi";
+import FilterStatusCash from "@/components/custom/FilterStatusCash";
+import { ToastContainer } from "react-toastify";
 const ModalConfirmation = dynamic(
   () => import("@/components/modal/ModalConfirmation")
 );
@@ -40,17 +43,25 @@ const CashManagementPage: React.FC = () => {
   const [modalReject, setModalReject] = useState(false);
   const [size, setSize] = useState<number>(15);
   const [searchTerm, setSearchTerm] = useState<string>("");
+  const [statusFilter, setStatusFilter] = useState<string>("");
   const listSize = cashRecordList.pagination?.currentPage ?? 15;
   const [dataUser, setDataUser] = useState<UserRequestModel | null>(null);
 
   useEffect(() => {
-    fetchData();
+    fetchData({});
   }, []);
 
-  async function fetchData(currentPage = 1, pageSize = size) {
+  async function fetchData({
+    currentPage = 1,
+    pageSize = size,
+    srNumber = "",
+    status = "",
+  }) {
     let response = await CashManagementService.getCashRecordList({
       pageSize,
       currentPage,
+      srNumber,
+      status,
     });
     if (response.data.length == 0) {
       response = await CashManagementService.getCashRecordList({
@@ -61,32 +72,74 @@ const CashManagementPage: React.FC = () => {
     setCashRecordList(response);
   }
 
+  async function fetchDataByStatus({
+    currentPage = 1,
+    pageSize = size,
+    srNumber = "",
+    status = "",
+  }) {
+    let response = await CashManagementService.getCashRecordList({
+      pageSize,
+      currentPage,
+      srNumber,
+      status,
+    });
+    setCashRecordList(response);
+  }
+
   function onPageChange(value: number) {
-    fetchData(value, cashRecordList.pagination?.pageSize ?? 15);
+    fetchData({
+      currentPage: value,
+      pageSize: cashRecordList.pagination?.pageSize ?? 15,
+    });
   }
 
   function handlePageSize(value: number) {
     setSize(value);
-    fetchData(cashRecordList.pagination?.currentPage, value);
+    fetchData({
+      currentPage: cashRecordList.pagination?.currentPage,
+      pageSize: value,
+    });
+  }
+
+  function handleFilterStatus(status: string) {
+    if (status == CashStatusEnum.ALL) {
+      setStatusFilter("");
+      fetchDataByStatus({});
+      return;
+    }
+    setStatusFilter(status);
+    fetchDataByStatus({
+      currentPage: cashRecordList.pagination?.currentPage,
+      status: status,
+      srNumber: searchTerm,
+    });
   }
 
   const handleSearch = useCallback(
     debounce(async (query: string) => {
       if (query && query.length > 0) {
-        fetchSearch({ search: query });
+        fetchDataByStatus({ srNumber: query, status: statusFilter });
       } else {
-        fetchData();
+        fetchData({});
       }
     }),
     [size]
   );
 
-  async function fetchSearch({ page = 1, pageSize = size, search = "" }) {
+  async function fetchSearch({
+    page = 1,
+    pageSize = size,
+    searchSrNumber = "",
+    status = statusFilter,
+  }) {
     const response = await CashManagementService.getCashRecordList({
       pageSize,
       currentPage: page,
-      srNumber: search,
+      srNumber: searchSrNumber,
+      status: status,
     });
+
     setCashRecordList(response);
   }
 
@@ -105,7 +158,7 @@ const CashManagementPage: React.FC = () => {
         data: prevList.data.filter((request) => request.id !== dataUser?.id),
       }));
       if (cashRecordList.data.length === 1) {
-        fetchData();
+        fetchData({});
       }
       showToast(response.message, "success");
     } else {
@@ -124,7 +177,7 @@ const CashManagementPage: React.FC = () => {
         data: prevList.data.filter((request) => request.id !== dataUser?.id),
       }));
       if (cashRecordList.data.length === 1) {
-        fetchData();
+        fetchData({});
       }
       showToast(response.message, "success");
     } else {
@@ -162,13 +215,20 @@ const CashManagementPage: React.FC = () => {
         />
 
         {UserRoleStorage.getUserRole() == UserRoleEnum.INPUTTER_USER && (
-          <Button
-            onClick={() => router.push("/cash-management/add-cash")}
-            className="py-1 mr-1"
-            data-aos="fade-left"
-          >
-            Add Cash
-          </Button>
+          <div className="flex space-x-2">
+            <FilterStatusCash
+              options={statusCashData}
+              onSelect={handleFilterStatus}
+              label="Select Status"
+            />
+            <Button
+              data-aos="fade-left"
+              onClick={() => router.push("/cash-management/add-cash")}
+              className="text-white flex items-center py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
+            >
+              <FiPlus size={18} />
+            </Button>
+          </div>
         )}
       </div>
 
@@ -195,7 +255,7 @@ const CashManagementPage: React.FC = () => {
           <tbody>
             {cashRecordList.data.length === 0 ? (
               <tr>
-                <td colSpan={10} className="hover:bg-white">
+                <td colSpan={9} className="hover:bg-white">
                   <EmptyState message="No cash available." />
                 </td>
               </tr>
@@ -207,8 +267,12 @@ const CashManagementPage: React.FC = () => {
                     <td className="truncate">{displayIndex}</td>
                     <td className="truncate">{cash.srNumber}</td>
                     <td className="truncate">{cash.branch.mnemonic}</td>
-                    <td className="truncate">{cash. branch.city}</td>
-                    <td className={`truncate ${getStatusColor(cash.status as CashStatusEnum)}`}>
+                    <td className="truncate">{cash.branch.city}</td>
+                    <td
+                      className={`truncate ${getStatusColor(
+                        cash.status as CashStatusEnum
+                      )}`}
+                    >
                       {cash.status}
                     </td>
                     <td className="truncate">{cash.createdBy.name}</td>
@@ -299,6 +363,7 @@ const CashManagementPage: React.FC = () => {
         onConfirm={handleReject}
         message={`Are you sure you want to reject?`}
       />
+      <ToastContainer />
     </div>
   );
 };

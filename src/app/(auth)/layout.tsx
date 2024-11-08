@@ -1,31 +1,28 @@
 "use client";
 import "react-toastify/dist/ReactToastify.css";
-import localFont from "next/font/local";
 import "../globals.css";
-import { ToastContainer } from "react-toastify";
+import "aos/dist/aos.css";
 import Footer from "@/components/layout/Footer";
-
-const geistSans = localFont({
-  src: "../fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "../fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+import { useEffect, useState } from "react";
+import Aos from "aos";
+import { ToastContainer } from "react-toastify";
 
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  useEffect(() => {
+    Aos.init({
+      duration: 1000,
+      once: true,
+      easing: "ease-out",
+    });
+  }, []);
+
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
-      >
+      <body className={`antialiased min-h-screen flex flex-col`}>
         <main className="flex-grow">{children}</main>
         <Footer />
       </body>

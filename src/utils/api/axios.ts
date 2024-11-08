@@ -1,6 +1,7 @@
 import keyEnv from "@/constants/env";
 import axios from "axios";
 import TokenStorage from "../localStorage/tokenStorage";
+import { useRouter } from "next/navigation";
 
 // Base Axios instance (no token required)
 const axiosNoAuth = axios.create({
@@ -43,6 +44,8 @@ axiosWithAuth.interceptors.request.use(
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     } else {
+      const router = useRouter();
+      router.push("/login");
       console.warn("## No token found");
     }
 
@@ -89,34 +92,36 @@ axiosViewPDF.interceptors.request.use(
   }
 );
 
-// axiosWithAuth.interceptors.response.use(
-//     (response) => {
-//       return response;
-//     },
-//     (error) => {
-// const { response } = error;
-// if (response) {
-//   switch (response.status) {
-//     case 401:
-//       console.error('Unauthorized, logging out...');
-//       // Perform logout logic here
-//       break;
-//     case 403:
-//       console.error('Forbidden: You do not have permission to access this resource.');
-//       break;
-//     case 404:
-//       console.error('Resource not found: ', response.config.url);
-//       break;
-//     // Handle other status codes as needed
-//     default:
-//       console.error('An unexpected error occurred: ', response.data);
-//       break;
-//   }
-// } else {
-//   console.error('Network error: ', error.message);
-// }
-//       return Promise.reject(error);
-//     }
-//   );
+axiosWithAuth.interceptors.response.use(
+  (response) => {
+    console.log(
+      "%c@@ Success: %cEndpoint hit successfully! %cURL: " +
+        response.config.url +
+        " %cStatus: " +
+        response.status,
+      "color: green; font-size: 16px; font-weight: bold;", // Success color
+      "color: green; font-size: 16px;", // Success message
+      "color: blue; font-size: 14px;", // URL color
+      "color: yellow; font-size: 14px;" // Status code color
+    );
+    return response;
+  },
+  (error) => {
+    const { response } = error;
+    if (response) {
+      console.log(
+        "%c@@ Error: %cAn error occurred while hitting the endpoint! %cURL: " +
+          response.config.url +
+          " %cStatus: " +
+          response.status,
+        "color: red; font-size: 16px; font-weight: bold;", // Error color
+        "color: red; font-size: 16px;", // Error message
+        "color: blue; font-size: 14px;", // URL color
+        "color: yellow; font-size: 14px;" // Status code color
+      );
+    }
+    return Promise.reject(error);
+  }
+);
 
 export { axiosNoAuth, axiosWithAuth, axiosUploadFile, axiosViewPDF };

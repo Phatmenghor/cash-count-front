@@ -2,10 +2,8 @@
 import ModalVerify from "@/components/modal/ModalVerify";
 import Button from "@/components/custom/Button";
 import Input from "@/components/custom/Input";
-import withAuth from "@/configs/withAuth";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { FiCheckCircle } from "react-icons/fi";
 import { VerifyCashModel } from "@/redux/models/cashManagement/VerifyCashModel";
 import {
   CashManagementService,
@@ -16,9 +14,7 @@ import { UserListByInputterModel } from "@/redux/models/userManagement/UserListB
 import UserManagementService from "@/redux/service/userManagementService";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { FileResponseModel } from "@/redux/models/cashManagement/FileResponseModel";
 import { CashStatusEnum } from "@/redux/models/cashManagement/StatusEnum";
-import { AddRecordParamModel } from "@/redux/models/cashManagement/AddRecordParamModel";
 import showToast from "@/components/toast/useToast";
 import LoadingFullPage from "@/components/loading/LoadingFullPage";
 import { CashInSystemModel } from "@/redux/models/cashManagement/CashInSystemModel";
@@ -197,7 +193,6 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
       },
     };
 
-    console.log("### ===", cashCountData);
     const response = await CashManagementService.updateCashRecord(
       cashRecordDetail!.id,
       cashCountData
@@ -228,7 +223,6 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
 
   async function uploadPdf() {
     if (file) {
-      console.log("## ===ahhah upload new");
       const data: SubmissionData = {
         file,
       };
@@ -266,7 +260,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
   }
 
   return (
-    <div className="mx-1 min-h-screen">
+    <div className="px-4">
       <div className="overflow-auto">
         {/* Table Header */}
         <table>
@@ -376,9 +370,9 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
       </div>
 
       {/* Remarks and file upload sections */}
-      <div className="mt-8 flex flex-col sm:flex-row sm:items-start">
-        <div className="max-w-2xl flex-1 mb-2 sm:mr-2">
-          <label className="block mb-1 text-sm">
+      <div className="flex flex-1 mt-4 gap-8 w-full justify-between">
+        <div className="max-w-[45%] flex-1">
+          <label className="block mb-1 text-xs">
             Remark <span className="text-red-500 ml-1">*</span>
           </label>
           <textarea
@@ -399,8 +393,8 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
           ></textarea>
         </div>
 
-        <div className="relative flex-1">
-          <label className="block mb-1 text-sm">
+        <div className="max-w-[45%] flex-1">
+          <label className="block mb-1 text-xs">
             Remark <span className="text-red-500 ml-1">*</span>
           </label>
 
@@ -417,31 +411,25 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
             {/* File upload label */}
             <label
               htmlFor="fileInput"
-              className="flex items-center text-sm space-x-2 cursor-pointer"
+              className="flex items-center text-xs space-x-2 cursor-pointer"
             >
               <FaCloudUploadAlt className="text-xl text-gray-700" />
               <span className="text-gray-700">{fileName}</span>
             </label>
 
             {/* View More button on the right side */}
-            <div className="flex space-x-2">
-              {fileName != "No file chosen" && (
+
+            {fileName != "No file chosen" && (
+              <div className="flex space-x-2">
                 <button
                   type="button"
                   onClick={clearPdf}
-                  className="flex items-center text-sm underline hover:text-blue-600 text-blue-500 hover:underline"
+                  className="flex items-center text-xs underline hover:text-gray-600 text-gray-500 hover:underline"
                 >
                   <MdOutlineClear className="text-lg" />
                 </button>
-              )}
-              <button
-                type="button"
-                // onClick={togglePreview}
-                className="flex items-center text-sm underline hover:text-blue-600 text-blue-500 hover:underline"
-              >
-                <FaEye className="text-lg" />
-              </button>
-            </div>
+              </div>
+            )}
           </div>
         </div>
       </div>

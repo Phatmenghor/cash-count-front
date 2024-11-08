@@ -21,11 +21,8 @@ const DropdownSize: React.FC<DropdownProps> = ({
   label,
 }) => {
   return (
-    <Select
-      data-aos="fade-up"
-      onValueChange={(value) => onSelect(Number(value))}
-    >
-      <SelectTrigger className="w-auto min-w-[110px]  border border-gray-600 focus:border-gray- active:border-blue-400">
+    <Select onValueChange={(value) => onSelect(Number(value))}>
+      <SelectTrigger className="w-auto min-w-[110px]  border border-gray-300  active:border-blue-400">
         <SelectValue placeholder={`Select size`} />
       </SelectTrigger>
       <SelectContent className="max-h-40 overflow-y-auto ">

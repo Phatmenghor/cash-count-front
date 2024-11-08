@@ -218,7 +218,7 @@ const AddCashManagementPage = () => {
   };
 
   return (
-    <div className="mx-1 min-h-screen">
+    <div className="px-4">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-gray-700 hide">Add CashRecord</h2>
         <Button
@@ -375,13 +375,13 @@ const AddCashManagementPage = () => {
       </div>
 
       {/* Remarks and file upload sections */}
-      <div className="mt-8 flex flex-col sm:flex-row sm:items-start">
-        <div className="max-w-2xl flex-1 mb-2 sm:mr-2">
-          <label className="block mb-1 text-sm">
+      <div className="flex flex-1 mt-4 gap-8 w-full justify-between">
+        <div className="max-w-[45%] flex-1">
+          <label className="block mb-1 text-xs">
             Remark <span className="text-red-500 ml-1">*</span>
           </label>
           <textarea
-            className="border rounded px-2 py-1.5 w-full resize-none text-xs"
+            className="border rounded px-2 py-1.5 w-full resize-none text-xs bg-gray-50 border-gray-300"
             rows={1}
             placeholder="Enter your remark here..."
             style={{ maxHeight: "100px", overflowY: "auto" }}
@@ -399,8 +399,8 @@ const AddCashManagementPage = () => {
         </div>
 
         {/* Upload PDF File */}
-        <div className="flex-1 sm:ml-4">
-          <label className="block mb-1 text-sm">
+        <div className="max-w-[45%] flex-1">
+          <label className="block mb-1 text-xs">
             Reference File <span className="text-red-500 ml-1">*</span>
           </label>
           <Input
@@ -441,7 +441,7 @@ const AddCashManagementPage = () => {
         <div>
           <label
             htmlFor="name"
-            className="block text-sm font-medium text-gray-700 mb-1 "
+            className="block text-xs font-medium text-gray-700 mb-1 "
           >
             Creator by<span className="text-red-500 ml-1">*</span>
           </label>

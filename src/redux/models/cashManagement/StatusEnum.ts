@@ -3,4 +3,5 @@ export enum CashStatusEnum {
   PROCESSING = "PROCESSING",
   APPROVED = "APPROVED",
   REJECT = "REJECT",
+  ALL = "ALL",
 }

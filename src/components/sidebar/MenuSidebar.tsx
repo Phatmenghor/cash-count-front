@@ -33,9 +33,6 @@ const MenuSidebar = () => {
         className="flex mb-4 items-end py-2 gap-2 sticky left-0 right-0 top-0"
       >
         <Image src="/img/logo.png" alt="logo" width={32} height={32} />
-        <span className="hidden lg:block font-bold text-white hide">
-          Cash Management
-        </span>
       </Link>
       <div data-aos="fade-right" className=" ">
         <div className="text-sm flex flex-col space-y-4 text-gray-300">

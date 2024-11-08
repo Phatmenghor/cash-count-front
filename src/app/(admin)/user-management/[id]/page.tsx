@@ -16,7 +16,7 @@ import { RegisterService } from "@/redux/service/registerService";
 import UserManagementService, {
   updateUserInfo,
 } from "@/redux/service/userManagementService";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import showToast from "@/components/toast/useToast";
 
 interface FormDataType {
@@ -29,6 +29,7 @@ interface FormDataType {
 
 const EditUserManagement = ({ params }: { params: { id: number } }) => {
   const idUser = params.id;
+  const router = useRouter();
   const searchParams = useSearchParams();
   const modeTypeEdit = searchParams.get("mode") === "edit";
   const [moveToEdit, setMoveToEdit] = useState(false);
@@ -103,7 +104,7 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
     e.preventDefault();
     if (!validateForm() || loading) return;
     setLoading(true);
-    const userPf: updateUserInfo = {
+    const profileData: updateUserInfo = {
       name: formData.name,
       branchId: formData.branch!.id,
       departmentId: formData.department!.id,
@@ -112,16 +113,19 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
     };
     const response = await UserManagementService.updateUserById(
       userInfo!.id,
-      userPf
+      profileData
     );
+
     if (response) {
       showToast(
         "Your update has been successfully submitted. Please wait for admin approval.",
         "warning"
       );
+      router.back();
     } else {
-      showToast("Failed to profile user. Please try again", "error");
+      showToast("Failed to update profile user. Please try again", "error");
     }
+    setLoading(false);
   };
 
   const validateForm = () => {
@@ -136,22 +140,36 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
     return Object.keys(newErrors).length === 0;
   };
 
+  function onCancel() {
+    if (modeTypeEdit) {
+      router.back();
+      return;
+    }
+    setMoveToEdit(false);
+  }
+
   return (
     <div className="px-6">
-      <h2 className="text-gray-700 text-3xl font-bold mb-4">
-        {modeTypeEdit || moveToEdit
-          ? "Edit User Information"
-          : "User Information"}
-      </h2>
+      {(modeTypeEdit || moveToEdit) && (
+        <h2 data-aos="fade-right" className="text-gray-700 hide mb-4">
+          Update User Information
+        </h2>
+      )}
 
-      {modeTypeEdit || moveToEdit ? (
-        <form onSubmit={handleSubmit}>
+      {!(modeTypeEdit || moveToEdit) && (
+        <h2 data-aos="fade-right" className="text-gray-700 hide mb-4">
+          User Information
+        </h2>
+      )}
+
+      {(modeTypeEdit || moveToEdit) && (
+        <form data-aos="fade-up" onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-4 ">
             {/* UserName */}
             <div>
               <label
                 htmlFor="name"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-xs font-medium text-gray-700 mb-1"
               >
                 Name <span className="text-red-500 ml-1">*</span>
               </label>
@@ -162,7 +180,7 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
                 value={formData.name}
                 placeholder="Enter your name"
                 onChange={handleInputChange}
-                className="py-1.5"
+                className="py-1"
               />
               {errors.name && (
                 <FormMessage message={errors.name} type="error" />
@@ -210,25 +228,20 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
             <Button
               type="button"
               variant="cancel"
-              onClick={() => setMoveToEdit(false)}
+              onClick={onCancel}
               className="py-1 px-4"
             >
               Cancel
             </Button>
-            <Button
-              className="py-1 px-4"
-              type="button"
-              loading={isLoadingEdit}
-              textLoading="Updating ..."
-              onClick={handleSubmit}
-            >
-              Save
+            <Button className="py-1 px-4" type="button" onClick={handleSubmit}>
+              Update
             </Button>
           </div>
         </form>
-      ) : (
-        // View Information
-        <div>
+      )}
+
+      {!(modeTypeEdit || moveToEdit) && (
+        <div data-aos="fade-up">
           <div className="grid grid-cols-2 gap-4">
             {/* UserName */}
             <div>
@@ -365,14 +378,16 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
               />
             </div>
           </div>
-          <div className="mt-8 justify-end flex">
+          <div className="mt-8 justify-end flex space-x-2">
             <Button
-              onClick={onClickEdit}
-              className="py-1 px-8"
-              loading={isLoadingEdit}
-              textLoading="Waiting ..."
+              variant="cancel"
+              onClick={() => router.back()}
+              className="py-1"
             >
-              Edit
+              Cancel
+            </Button>
+            <Button onClick={onClickEdit} className="py-1">
+              Want Update ?
             </Button>
           </div>
         </div>

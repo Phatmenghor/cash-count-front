@@ -85,7 +85,7 @@ const CustomSelect = <T,>({
     <div className="relative" ref={dropdownRef}>
       <label
         htmlFor={id}
-        className="block text-sm font-medium text-gray-700 mb-1"
+        className="block text-xs font-medium text-gray-700 mb-1"
       >
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
@@ -96,8 +96,8 @@ const CustomSelect = <T,>({
           onClick={toggleDropdown}
         >
           <span
-            className={`text-sm whitespace-nowrap overflow-hidden text-ellipsis ${
-              !value ? "text-gray-500" : "text-black"
+            className={`text-xs whitespace-nowrap py-0.5 overflow-hidden text-ellipsis ${
+              !value ? "text-gray-500" : "text-gray-700"
             }`}
           >
             {value ? getOptionLabel(value) : `Select ${label.toLowerCase()}`}

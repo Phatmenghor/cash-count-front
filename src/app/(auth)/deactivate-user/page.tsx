@@ -9,7 +9,7 @@ const DeactivateUser: React.FC = () => {
       <div className=" flex flex-col -mt-16 items-center text-center max-w-lg">
         <FaExclamationTriangle
           size={120}
-          className="text-yellow-500 animate-pulse mb-8"
+          className="text-yellow-500 animate-bounce mb-4"
         />
 
         <h1 className="text-3xl font-bold text-gray-800 mb-2">

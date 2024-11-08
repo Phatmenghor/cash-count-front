@@ -17,6 +17,7 @@ import {
 } from "@/redux/models/userManagement/UserRequestModel";
 import ModalConfirmation from "@/components/modal/ModalConfirmation";
 import { useRouter } from "next/navigation";
+import { ToastContainer } from "react-toastify";
 
 const UserRequestPage: React.FC = () => {
   const [userRequestList, setUserRequestList] = useState<userRequestListModel>({
@@ -156,7 +157,6 @@ const UserRequestPage: React.FC = () => {
               <th>Branch</th>
               <th>Department</th>
               <th>Role</th>
-
               <th>Actions</th>
             </tr>
           </thead>
@@ -256,6 +256,7 @@ const UserRequestPage: React.FC = () => {
         onConfirm={handleReject}
         message={`Are you sure you want to reject?`}
       />
+      <ToastContainer />
     </div>
   );
 };

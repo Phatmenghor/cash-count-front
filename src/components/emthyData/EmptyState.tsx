@@ -8,11 +8,11 @@ interface EmptyStateProps {
 
 const EmptyState: React.FC<EmptyStateProps> = ({
   message,
-  icon = <HiOutlineDocumentPlus className="w-32 h-32" />,
+  icon = <HiOutlineDocumentPlus className="w-28 h-28" />,
 }) => {
   return (
     <div className="flex flex-col items-center justify-center p-8 text-center h-[50vh]">
-      <div className="text-gray-400 mb-4 animate-pulse">{icon}</div>
+      <div className="text-gray-400 mb-1 animate-bounce">{icon}</div>
       <p className="text-gray-500 text-lg">{message}</p>
     </div>
   );

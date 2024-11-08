@@ -8,6 +8,7 @@ interface getUserParams {
   pageSize?: number;
   currentPage?: number;
   search?: string;
+  status?: number | null;
 }
 
 interface updateStatusParams {
@@ -53,6 +54,26 @@ class UserManagementService {
     try {
       const response = await axiosWithAuth.get(
         `/api/admin/get-user-all?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`
+      );
+      return {
+        data: response.data.data,
+        pagination: response.data.pagination,
+      };
+    } catch {
+      return { data: [], pagination: null };
+    }
+  };
+
+  static getAllByBodyUsers = async ({
+    pageSize = 15,
+    currentPage = 1,
+    search = "",
+    status = 1,
+  }: getUserParams) => {
+    try {
+      const response = await axiosWithAuth.post(
+        `/api/admin/get-user-all?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`,
+        { status }
       );
       return {
         data: response.data.data,

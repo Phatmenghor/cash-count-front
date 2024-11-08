@@ -14,6 +14,7 @@ import { DepartmentService } from "@/redux/service/departmentService";
 import { DepartmentListModel } from "@/redux/models/department/DepartmentListModel";
 import { DepartmentModel } from "@/redux/models/register/DepartmentModel";
 import ModalCreateEditDepartment from "@/components/modal/ModalCreateEditDepartment";
+import { ToastContainer } from "react-toastify";
 
 const DepartmentPage: React.FC = () => {
   const [departmentList, setDepartmentList] = useState<DepartmentListModel>({
@@ -151,7 +152,6 @@ const DepartmentPage: React.FC = () => {
           className="text-white flex items-center py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
         >
           <FiPlus size={18} />
-          <span className="ml-1">Add Department</span>
         </Button>
       </div>
 
@@ -225,6 +225,7 @@ const DepartmentPage: React.FC = () => {
         initialData={currentDepartment ? currentDepartment : undefined}
         loadingButton={loading}
       />
+      <ToastContainer />
     </div>
   );
 };

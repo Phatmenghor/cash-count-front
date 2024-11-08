@@ -161,7 +161,6 @@ const BranchPage: React.FC = () => {
           className="text-white flex items-center py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
         >
           <FiPlus size={18} />
-          <span className="ml-1">Add Branch</span>
         </Button>
       </div>
 

@@ -11,6 +11,7 @@ interface geCashListParams {
   pageSize?: number;
   currentPage?: number;
   srNumber?: string;
+  status?: string;
 }
 
 export interface SubmissionData {
@@ -26,10 +27,11 @@ export class CashManagementService {
     pageSize = 15,
     currentPage = 1,
     srNumber = "",
+    status = "",
   }: geCashListParams) => {
     try {
       const response = await axiosWithAuth.get(
-        `/api/cash-counts?pageSize=${pageSize}&currentPage=${currentPage}&srNumber=${srNumber}`
+        `/api/cash-counts?pageSize=${pageSize}&currentPage=${currentPage}&srNumber=${srNumber}&status=${status}`
       );
       return {
         data: response.data.data,

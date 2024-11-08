@@ -279,7 +279,7 @@ const page = ({ params }: { params: { id: number } }) => {
         </div>
 
         <div>
-          <label className="block text-xs font-medium text-gray-700 mb-1 ">
+          <label className="block text-xs font-medium text-gray-700 mb-1">
             Checker By<span className="text-red-500 ml-1">*</span>
           </label>
           <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
