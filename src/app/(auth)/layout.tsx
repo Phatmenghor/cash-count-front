@@ -1,17 +1,17 @@
 "use client";
-import "react-toastify/dist/ReactToastify.css";
 import "../globals.css";
 import "aos/dist/aos.css";
+import "react-toastify/dist/ReactToastify.css";
 import Footer from "@/components/layout/Footer";
-import { useEffect, useState } from "react";
-import Aos from "aos";
+import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
+import Aos from "aos";
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   useEffect(() => {
     Aos.init({
       duration: 1000,
@@ -21,9 +21,19 @@ export default function RootLayout({
   }, []);
 
   return (
-    <html lang="en">
-      <body className={`antialiased min-h-screen flex flex-col`}>
-        <main className="flex-grow">{children}</main>
+    <html lang="en" className="overflow-y-auto">
+      <body className="antialiased min-h-screen overflow-y-auto">
+        <ToastContainer
+          position="top-right"
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
+        <div className="bg-[#F7F8FA] min-h-screen pb-16">{children}</div>
         <Footer />
       </body>
     </html>

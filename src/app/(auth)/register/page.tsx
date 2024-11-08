@@ -218,9 +218,9 @@ const Register: React.FC = () => {
   return (
     <div
       data-aos="fade-up"
-      className="flex flex-col items-center justify-center min-h-screen bg-gray-50"
+      className="flex flex-col items-center justify-center min-h-screen" // Updated container styling
     >
-      <div className="max-w-lg w-full bg-white p-8 rounded-lg shadow-xl border border-gray-200 transition-transform duration-300 hover:scale-x-105 relative">
+      <div className="max-w-lg w-full h-full bg-white p-8 rounded-lg border border-gray-200">
         {step > 1 && (
           <button
             type="button"
@@ -288,10 +288,7 @@ const Register: React.FC = () => {
           )}
 
           {step === 3 && (
-            <div
-              data-aos="fade-up"
-              className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6"
-            >
+            <div data-aos="fade-up" className="mb-6 flex flex-col gap-4">
               {/* Email */}
               <div>
                 <label
@@ -315,182 +312,195 @@ const Register: React.FC = () => {
                 )}
               </div>
 
-              {/* Role */}
-              <CustomSelect
-                id="role"
-                value={formData.role}
-                onChange={(option) => handleChange("role", option)}
-                options={allData.roles}
-                label="Role"
-                getOptionLabel={(option) => option.name}
-                errorMessage={errors.role}
-                required
-              />
-
-              {/* Username AD */}
-              <div>
-                <label
-                  htmlFor="usernameAD"
-                  className="block text-xs font-medium text-gray-700 mb-1"
-                >
-                  AD Username<span className="text-red-500 ml-1">*</span>
-                </label>
-                <Input
-                  type="text"
-                  id="usernameAD"
-                  name="usernameAD"
-                  value={formData.usernameAD}
-                  placeholder="Enter AD username"
-                  onChange={handleInputChange}
-                  className="py-1"
-                />
-                {errors.usernameAD && (
-                  <FormMessage message={errors.usernameAD} type="error" />
-                )}
-              </div>
-
-              {/* Password */}
-              <div>
-                <label
-                  htmlFor="password"
-                  className="block text-xs font-medium text-gray-700 mb-1"
-                >
-                  Password<span className="text-red-500 ml-1">*</span>
-                </label>
-                <div className="relative">
+              <div className="flex space-x-2 ">
+                <div className="w-full">
+                  <label
+                    htmlFor="usernameAD"
+                    className="block text-xs font-medium text-gray-700 mb-1"
+                  >
+                    AD Username<span className="text-red-500 ml-1">*</span>
+                  </label>
                   <Input
-                    type={passwordVisible ? "text" : "password"}
-                    id="password"
-                    name="password"
-                    value={formData.password}
-                    placeholder="Enter your password"
+                    type="text"
+                    id="usernameAD"
+                    name="usernameAD"
+                    value={formData.usernameAD}
+                    placeholder="Enter AD username"
                     onChange={handleInputChange}
                     className="py-1"
                   />
-                  <button
-                    type="button"
-                    className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-400"
-                    onClick={togglePasswordVisibility}
-                  >
-                    {passwordVisible ? <FiEyeOff /> : <FiEye />}
-                  </button>
+                  {errors.usernameAD && (
+                    <FormMessage message={errors.usernameAD} type="error" />
+                  )}
                 </div>
-                {errors.password && (
-                  <FormMessage message={errors.password} type="error" />
-                )}
+
+                {/* Password */}
+                <div className="w-full">
+                  <label
+                    htmlFor="password"
+                    className="block text-xs font-medium text-gray-700 mb-1"
+                  >
+                    Password<span className="text-red-500 ml-1">*</span>
+                  </label>
+                  <div className="relative">
+                    <Input
+                      type={passwordVisible ? "text" : "password"}
+                      id="password"
+                      name="password"
+                      value={formData.password}
+                      placeholder="Enter your password"
+                      onChange={handleInputChange}
+                      className="py-1"
+                    />
+                    <button
+                      type="button"
+                      className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-400"
+                      onClick={togglePasswordVisibility}
+                    >
+                      {passwordVisible ? <FiEyeOff /> : <FiEye />}
+                    </button>
+                  </div>
+                  {errors.password && (
+                    <FormMessage message={errors.password} type="error" />
+                  )}
+                </div>
               </div>
 
-              {/* First Name */}
-              <div>
-                <label
-                  htmlFor="firstName"
-                  className="block text-xs font-medium text-gray-700 mb-1"
-                >
-                  First Name<span className="text-red-500 ml-1">*</span>
-                </label>
-                <Input
-                  type="text"
-                  id="firstName"
-                  name="firstName"
-                  value={formData.firstName}
-                  placeholder="Enter your first name"
-                  onChange={handleInputChange}
-                  className="py-1"
-                />
-                {errors.firstName && (
-                  <FormMessage message={errors.firstName} type="error" />
-                )}
+              <div className="flex space-x-2 ">
+                {/* First Name */}
+                <div className="w-full">
+                  <label
+                    htmlFor="firstName"
+                    className="block text-xs font-medium text-gray-700 mb-1"
+                  >
+                    First Name<span className="text-red-500 ml-1">*</span>
+                  </label>
+                  <Input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    value={formData.firstName}
+                    placeholder="Enter your first name"
+                    onChange={handleInputChange}
+                    className="py-1"
+                  />
+                  {errors.firstName && (
+                    <FormMessage message={errors.firstName} type="error" />
+                  )}
+                </div>
+
+                {/* Last Name */}
+                <div className="w-full">
+                  <label
+                    htmlFor="lastName"
+                    className="block text-xs font-medium text-gray-700 mb-1"
+                  >
+                    Last Name<span className="text-red-500 ml-1">*</span>
+                  </label>
+                  <Input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    value={formData.lastName}
+                    placeholder="Enter your last name"
+                    onChange={handleInputChange}
+                    className="py-1"
+                  />
+                  {errors.lastName && (
+                    <FormMessage message={errors.lastName} type="error" />
+                  )}
+                </div>
               </div>
 
-              {/* Last Name */}
-              <div>
-                <label
-                  htmlFor="lastName"
-                  className="block text-xs font-medium text-gray-700 mb-1"
-                >
-                  Last Name<span className="text-red-500 ml-1">*</span>
-                </label>
-                <Input
-                  type="text"
-                  id="lastName"
-                  name="lastName"
-                  value={formData.lastName}
-                  placeholder="Enter your last name"
-                  onChange={handleInputChange}
-                  className="py-1"
-                />
-                {errors.lastName && (
-                  <FormMessage message={errors.lastName} type="error" />
-                )}
+              <div className="flex space-x-2 ">
+                {/* Role */}
+                <div className="w-full">
+                  <CustomSelect
+                    id="role"
+                    value={formData.role}
+                    onChange={(option) => handleChange("role", option)}
+                    options={allData.roles}
+                    label="Role"
+                    getOptionLabel={(option) => option.name}
+                    errorMessage={errors.role}
+                    required
+                  />
+                </div>
+
+                <div className="w-full">
+                  {/* Branch */}
+                  <CustomSelect
+                    id="branch"
+                    value={formData.branch}
+                    onChange={(option) => handleChange("branch", option)}
+                    getOptionLabel={(option) => option.city}
+                    options={allData.branches}
+                    label="Branch"
+                    errorMessage={errors.branch}
+                    required
+                  />
+                </div>
               </div>
 
-              {/* Department */}
-              <CustomSelect
-                id="department"
-                value={formData.department}
-                onChange={(option) => handleChange("department", option)}
-                options={allData.departments}
-                label="Department"
-                getOptionLabel={(option) => option.name}
-                errorMessage={errors.department}
-                required
-              />
+              <div className="flex space-x-2 ">
+                {/* Department */}
+                <div className="w-full">
+                  <CustomSelect
+                    id="department"
+                    value={formData.department}
+                    onChange={(option) => handleChange("department", option)}
+                    options={allData.departments}
+                    label="Department"
+                    getOptionLabel={(option) => option.name}
+                    errorMessage={errors.department}
+                    required
+                  />
+                </div>
 
-              {/* Position */}
-              <CustomSelect
-                id="position"
-                value={formData.position}
-                onChange={(option) => handleChange("position", option)}
-                getOptionLabel={(option) => option.name}
-                label="Position"
-                options={allData.positions}
-                errorMessage={errors.position}
-                required
-              />
-
-              {/* Branch */}
-              <CustomSelect
-                id="branch"
-                value={formData.branch}
-                onChange={(option) => handleChange("branch", option)}
-                getOptionLabel={(option) => option.city}
-                options={allData.branches}
-                label="Branch"
-                errorMessage={errors.branch}
-                required
-              />
+                {/* Position */}
+                <div className="w-full">
+                  <CustomSelect
+                    id="position"
+                    value={formData.position}
+                    onChange={(option) => handleChange("position", option)}
+                    getOptionLabel={(option) => option.name}
+                    label="Position"
+                    options={allData.positions}
+                    errorMessage={errors.position}
+                    required
+                  />
+                </div>
+              </div>
             </div>
           )}
 
-          <Button
-            scaleOnHover={false}
-            loading={loading}
-            type="submit"
-            className="py-1.5 w-full mt-8 text-sm"
-            textLoading={
-              step === 1
-                ? "Request OTP ..."
-                : step === 2
-                ? "Verify OTP ..."
-                : "Register ..."
-            }
-          >
-            {step === 1 ? "Send OTP" : step === 2 ? "Verify OTP" : "Register"}
-          </Button>
-        </form>
-
-        <div className="mt-4 text-center flex justify-center space-x-2">
-          <p className="text-sm text-gray-600 flex">Have an account?</p>
-          <div
-            onClick={() => router.push(`/${route.LOGIN}`)}
-            className="text-blue-500 hover:text-blue-700 text-sm transition-colors underline"
-          >
-            Login
+          <div className="flex justify-between items-center mt-8">
+            <div
+              onClick={() => router.push(`/${route.LOGIN}`)}
+              className="text-center flex justify-center space-x-2"
+            >
+              <p className="text-sm text-gray-600 flex hover:underline  cursor-pointer">
+                Have an account? Login
+              </p>
+            </div>
+            <Button
+              scaleOnHover={false}
+              loading={loading}
+              type="submit"
+              className="py-1.5 text-sm"
+              textLoading={
+                step === 1
+                  ? "Request OTP ..."
+                  : step === 2
+                  ? "Verify OTP ..."
+                  : "Register ..."
+              }
+            >
+              {step === 1 ? "Send OTP" : step === 2 ? "Verify OTP" : "Register"}
+            </Button>
           </div>
-        </div>
+        </form>
       </div>
-
-      <ToastContainer />
     </div>
   );
 };

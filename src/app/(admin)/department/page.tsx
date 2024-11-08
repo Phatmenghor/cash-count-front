@@ -225,7 +225,7 @@ const DepartmentPage: React.FC = () => {
         initialData={currentDepartment ? currentDepartment : undefined}
         loadingButton={loading}
       />
-      <ToastContainer />
+      
     </div>
   );
 };

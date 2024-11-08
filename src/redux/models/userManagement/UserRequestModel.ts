@@ -7,7 +7,7 @@ export interface userRequestListModel {
 
 export interface UserRequestModel {
   id: number;
-  userId: any;
+  userId: number;
   firstName: string;
   lastName: string;
   username: string;
@@ -18,6 +18,7 @@ export interface UserRequestModel {
   position: Position;
   otpCode: string;
   status: number;
+  requestType?: string | null;
 }
 
 interface Role {

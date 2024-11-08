@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiEye, FiEyeOff } from "react-icons/fi";
@@ -8,14 +9,14 @@ import FormMessage from "../../../components/errorHandle/FormMessage";
 import { LoginService } from "@/redux/service/loginService";
 import { route } from "@/constants/routed";
 import { UserRoleEnum } from "@/constants/userRole";
-import { ToastContainer } from "react-toastify";
+import showToast from "@/components/toast/useToast";
 
 const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState("sokrann.voem");
+  const [adUsername, setAdUsername] = useState("sokrann.voem");
   const [password, setPassword] = useState("123456789");
   const [usernameError, setUsernameError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false); // New loading state
+  const [loading, setLoading] = useState(false);
   const [passwordVisible, setPasswordVisible] = useState(false);
   const router = useRouter();
 
@@ -26,8 +27,8 @@ const LoginPage: React.FC = () => {
 
     let hasError = false;
 
-    if (email.trim().length === 0) {
-      setUsernameError("Username must contain at least 1 character");
+    if (adUsername.trim().length === 0) {
+      setUsernameError("AD Username must contain at least 1 character");
       hasError = true;
     }
 
@@ -40,21 +41,33 @@ const LoginPage: React.FC = () => {
 
     setLoading(true);
     const response = await LoginService.loginUser({
-      email: email,
+      email: adUsername,
       password: password,
     });
-    if (
-      response == UserRoleEnum.IT_ADMIN_USER ||
-      response == UserRoleEnum.OPERATION_ADMIN_USER
-    ) {
-      router.push(`/${route.USER_MANAGEMENT}`);
+
+    if (response.success) {
+      if (
+        response.data == UserRoleEnum.IT_ADMIN_USER ||
+        response.data == UserRoleEnum.OPERATION_ADMIN_USER
+      ) {
+        router.push(`/${route.USER_MANAGEMENT}`);
+      } else {
+        router.push("/cash-management");
+      }
+      return;
     } else {
-      router.push("/user-management");
+      if (response.status == 404) {
+        router.push(
+          `/${route.REGISTER}?name=${encodeURIComponent(adUsername)}`
+        );
+      }
+      showToast(response.data, "error");
     }
+    setLoading(false);
   };
 
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setEmail(e.target.value);
+    setAdUsername(e.target.value);
     if (usernameError) {
       setUsernameError(null);
     }
@@ -98,13 +111,13 @@ const LoginPage: React.FC = () => {
               htmlFor="username"
               className="block text-sm font-medium text-gray-700"
             >
-              Email
+              AD Username
               <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
               type="text"
               id="email"
-              value={email}
+              value={adUsername}
               onChange={handleUsernameChange} // Use new handler
               placeholder="Enter your email"
               className="mt-1 w-full py-2 px-4"
@@ -170,8 +183,6 @@ const LoginPage: React.FC = () => {
           </p>
         </div>
       </div>
-
-      <ToastContainer />
     </div>
   );
 };

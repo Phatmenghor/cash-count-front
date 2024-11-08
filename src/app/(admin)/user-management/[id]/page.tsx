@@ -18,6 +18,7 @@ import UserManagementService, {
 } from "@/redux/service/userManagementService";
 import { useRouter, useSearchParams } from "next/navigation";
 import showToast from "@/components/toast/useToast";
+import LoadingFullPage from "@/components/loading/LoadingFullPage";
 
 interface FormDataType {
   name: string;
@@ -35,7 +36,6 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
   const [moveToEdit, setMoveToEdit] = useState(false);
   const [userInfo, setUserInfo] = useState<UserProfile | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [isLoadingEdit, setLoadingEdit] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<FormDataType>({
     name: "",
@@ -93,11 +93,11 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
   };
 
   async function onClickEdit() {
+    setLoading(true);
     setMoveToEdit(true);
-    setLoadingEdit(true);
     const response = await RegisterService.fetchAllData();
     setAllData(response);
-    setLoadingEdit(false);
+    setLoading(false);
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -392,6 +392,8 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
           </div>
         </div>
       )}
+
+      <LoadingFullPage loading={loading} />
     </div>
   );
 };

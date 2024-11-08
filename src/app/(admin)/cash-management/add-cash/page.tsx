@@ -2,7 +2,6 @@
 import ModalVerify from "@/components/modal/ModalVerify";
 import Button from "@/components/custom/Button";
 import Input from "@/components/custom/Input";
-import withAuth from "@/configs/withAuth";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FiCheckCircle } from "react-icons/fi";
@@ -16,7 +15,6 @@ import { UserListByInputterModel } from "@/redux/models/userManagement/UserListB
 import UserManagementService from "@/redux/service/userManagementService";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { FileResponseModel } from "@/redux/models/cashManagement/FileResponseModel";
 import { CashStatusEnum } from "@/redux/models/cashManagement/StatusEnum";
 import { AddRecordParamModel } from "@/redux/models/cashManagement/AddRecordParamModel";
 import showToast from "@/components/toast/useToast";
@@ -209,7 +207,7 @@ const AddCashManagementPage = () => {
     }
   };
 
-  const handleChange = (key: keyof typeof formData, option: any) => {
+  const handleChange = (key: keyof typeof formData, option: unknown) => {
     setFormData((prevData) => ({
       ...prevData,
       [key]: option,

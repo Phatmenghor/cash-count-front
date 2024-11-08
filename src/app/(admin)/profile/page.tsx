@@ -479,7 +479,7 @@ const ProfileSelfPage = () => {
         </div>
       )}
       <LoadingFullPage loading={loading} />
-      <ToastContainer />
+     
     </div>
   );
 };

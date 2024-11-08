@@ -9,7 +9,6 @@ import EmptyState from "@/components/emthyData/EmptyState";
 import showToast from "@/components/toast/useToast";
 import UserManagementService from "@/redux/service/userManagementService";
 import { LuView } from "react-icons/lu";
-import { AiOutlineUser } from "react-icons/ai";
 import { UserRequestModel } from "@/redux/models/userManagement/UserRequestModel";
 import { useRouter } from "next/navigation";
 import Button from "@/components/custom/Button";
@@ -78,7 +77,7 @@ const CashManagementPage: React.FC = () => {
     srNumber = "",
     status = "",
   }) {
-    let response = await CashManagementService.getCashRecordList({
+    const response = await CashManagementService.getCashRecordList({
       pageSize,
       currentPage,
       srNumber,
@@ -363,7 +362,7 @@ const CashManagementPage: React.FC = () => {
         onConfirm={handleReject}
         message={`Are you sure you want to reject?`}
       />
-      <ToastContainer />
+
     </div>
   );
 };

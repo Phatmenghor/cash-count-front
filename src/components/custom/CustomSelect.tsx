@@ -1,6 +1,12 @@
-import React, { useState, useEffect, useRef } from "react";
+// components/CustomSelect.tsx
+import React, { useState, useEffect } from "react";
 import { FiChevronDown, FiX } from "react-icons/fi";
-import { motion, AnimatePresence } from "framer-motion";
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu";
 
 interface CustomSelectProps<T> {
   id: string;
@@ -25,10 +31,8 @@ const CustomSelect = <T,>({
   required = false,
   disabled = false,
 }: CustomSelectProps<T>) => {
-  const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
-  const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Debounce the search term to reduce the number of filter calls
   useEffect(() => {
@@ -41,37 +45,6 @@ const CustomSelect = <T,>({
     };
   }, [searchTerm]);
 
-  // Close dropdown on clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
-
-  const toggleDropdown = () => {
-    if (disabled) {
-      return;
-    }
-    setIsOpen((prev) => !prev);
-    setSearchTerm("");
-  };
-
-  const handleOptionClick = (option: T) => {
-    onChange(option); // Pass the entire option
-    setIsOpen(false);
-    setSearchTerm(""); // Clear search term after selection
-  };
-
   // Filter options based on the debounced search term
   const filteredOptions = debouncedSearchTerm
     ? options?.filter((option) =>
@@ -82,7 +55,7 @@ const CustomSelect = <T,>({
     : options || [];
 
   return (
-    <div className="relative" ref={dropdownRef}>
+    <div className="relative">
       <label
         htmlFor={id}
         className="block text-xs font-medium text-gray-700 mb-1"
@@ -90,68 +63,61 @@ const CustomSelect = <T,>({
         {label}
         {required && <span className="text-red-500 ml-1">*</span>}
       </label>
-      <div className="relative">
-        <div
-          className="flex justify-between items-center border border-gray-300 rounded-md px-3 py-1 cursor-pointer"
-          onClick={toggleDropdown}
-        >
-          <span
-            className={`text-xs whitespace-nowrap py-0.5 overflow-hidden text-ellipsis ${
-              !value ? "text-gray-500" : "text-gray-700"
-            }`}
+
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <button
+            className="flex justify-between items-center w-full border border-gray-300 rounded-md px-3 py-1 cursor-pointer"
+            disabled={disabled}
           >
-            {value ? getOptionLabel(value) : `Select ${label.toLowerCase()}`}
-          </span>
-          <FiChevronDown
-            className={`transition-transform ${isOpen ? "rotate-180" : ""}`}
-          />
-        </div>
-        <AnimatePresence>
-          {isOpen && (
-            <motion.div
-              className="absolute z-10 w-full bg-white border border-gray-300 rounded-md shadow-lg mt-1"
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.2 }}
+            <span
+              className={`text-xs whitespace-nowrap py-0.5 overflow-hidden text-ellipsis ${
+                !value ? "text-gray-500" : "text-gray-700"
+              }`}
             >
-              <div className="flex items-center border-b border-gray-300 px-1 py-0.5">
-                <input
-                  type="text"
-                  className="flex-grow px-2 py-0.5 border-none focus:ring-transparent"
-                  placeholder="Search..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                />
-                {searchTerm && (
-                  <FiX
-                    className="absolute right-2 cursor-pointer text-gray-500"
-                    onClick={() => setSearchTerm("")}
-                    aria-label="Clear search"
-                  />
-                )}
-              </div>
-              <div className="max-h-48 overflow-y-auto pb-1">
-                {filteredOptions.length > 0 ? (
-                  filteredOptions.map((option, index) => (
-                    <div
-                      key={index}
-                      onClick={() => handleOptionClick(option)}
-                      className={`block py-1 px-2 cursor-pointer hover:bg-gray-200`}
-                    >
-                      <span className="text-sm">{getOptionLabel(option)}</span>
-                    </div>
-                  ))
-                ) : (
-                  <span className="block text-sm py-4 px-2 text-gray-500">
-                    No options found
-                  </span>
-                )}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+              {value ? getOptionLabel(value) : `Select ${label.toLowerCase()}`}
+            </span>
+            <FiChevronDown />
+          </button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuContent className="w-full border border-gray-300 rounded-md shadow-lg bg-white">
+          <div className="flex items-center border-b border-gray-300 px-2 py-1">
+            <input
+              type="text"
+              className="w-full px-2 py-0.5 border-none focus:ring-transparent"
+              placeholder="Search..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            {searchTerm && (
+              <FiX
+                className="cursor-pointer text-gray-500"
+                onClick={() => setSearchTerm("")}
+                aria-label="Clear search"
+              />
+            )}
+          </div>
+          <div className="max-h-48 overflow-y-auto pb-1">
+            {filteredOptions.length > 0 ? (
+              filteredOptions.map((option, index) => (
+                <DropdownMenuItem
+                  key={index}
+                  onClick={() => onChange(option)}
+                  className="cursor-pointer hover:bg-gray-200"
+                >
+                  <span className="text-sm">{getOptionLabel(option)}</span>
+                </DropdownMenuItem>
+              ))
+            ) : (
+              <span className="block text-sm py-4 px-2 text-gray-500">
+                No options found
+              </span>
+            )}
+          </div>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
       {errorMessage && (
         <span className="text-red-500 text-sm">{errorMessage}</span>
       )}

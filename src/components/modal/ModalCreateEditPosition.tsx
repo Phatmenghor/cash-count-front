@@ -89,7 +89,7 @@ const ModalCreateEditPosition: React.FC<ModalCreateEditPositionProps> = ({
             <Input
               id="positionRole"
               type="text"
-              placeholder="Input position role ..."
+              placeholder="Position role ..."
               value={positionName}
               onChange={(e) => {
                 setPositionName(e.target.value);
@@ -101,15 +101,15 @@ const ModalCreateEditPosition: React.FC<ModalCreateEditPositionProps> = ({
               <FormMessage message={errors.mnemonic} type="error" />
             )}
           </div>
-          <div className="flex justify-end space-x-2 mt-4">
-            <Button onClick={onClose} className="px-4 py-2" variant="cancel">
+          <div className="flex justify-end space-x-2 mt-8">
+            <Button onClick={onClose} className="px-4 py-1.5" variant="cancel">
               Cancel
             </Button>
             <Button
               loading={loadingButton}
               textLoading={initialData ? "Updating ..." : "Creating ..."}
               onClick={handleConfirm}
-              className="px-4 py-2 transition"
+              className="px-4 py-1.5 transition"
             >
               {initialData ? "Update" : "Create"}
             </Button>

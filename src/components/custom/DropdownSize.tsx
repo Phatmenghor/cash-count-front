@@ -22,7 +22,7 @@ const DropdownSize: React.FC<DropdownProps> = ({
 }) => {
   return (
     <Select onValueChange={(value) => onSelect(Number(value))}>
-      <SelectTrigger className="w-auto min-w-[110px]  border border-gray-300  active:border-blue-400">
+      <SelectTrigger className="w-auto min-w-[110px]  border border-gray-700  active:border-blue-400">
         <SelectValue placeholder={`Select size`} />
       </SelectTrigger>
       <SelectContent className="max-h-40 overflow-y-auto ">

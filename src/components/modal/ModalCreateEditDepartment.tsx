@@ -93,7 +93,7 @@ const ModalCreateEditDepartment: React.FC<ModalCreateEditDepartmentProps> = ({
             <Input
               id="departmentName"
               type="text"
-              placeholder="Input department name ..."
+              placeholder="Department name ..."
               value={departmentName}
               onChange={(e) => {
                 setDepartmentName(e.target.value);
@@ -114,7 +114,7 @@ const ModalCreateEditDepartment: React.FC<ModalCreateEditDepartmentProps> = ({
             <Input
               id="departmentCode"
               type="text"
-              placeholder="Input department code ..."
+              placeholder="Department code ..."
               value={departmentCode}
               onChange={(e) => {
                 setDepartmentCode(e.target.value);
@@ -126,15 +126,15 @@ const ModalCreateEditDepartment: React.FC<ModalCreateEditDepartmentProps> = ({
               <FormMessage message={errors.branchCode} type="error" />
             )}
           </div>
-          <div className="flex justify-end space-x-2 mt-4">
-            <Button onClick={onClose} className="px-4 py-2" variant="cancel">
+          <div className="flex justify-end space-x-2 mt-8">
+            <Button onClick={onClose} className="px-4 py-1.5" variant="cancel">
               Cancel
             </Button>
             <Button
               loading={loadingButton}
               textLoading={initialData ? "Updating ..." : "Creating ..."}
               onClick={handleConfirm}
-              className="px-4 py-2 transition"
+              className="px-4 py-1.5 transition"
             >
               {initialData ? "Update" : "Create"}
             </Button>

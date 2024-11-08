@@ -20,7 +20,6 @@ import EmptyState from "@/components/emthyData/EmptyState";
 import { Switch } from "@/components/custom/Switch";
 import Pagination from "@/components/pagination/Pagination";
 import FilterUser from "@/components/custom/FilterUser";
-import { ToastContainer } from "react-toastify";
 
 const UserManagement = () => {
   const router = useRouter();
@@ -262,7 +261,6 @@ const UserManagement = () => {
           />
         </div>
       )}
-      <ToastContainer />
     </div>
   );
 };

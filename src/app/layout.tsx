@@ -1,10 +1,9 @@
 "use client";
-import localFont from "next/font/local";
-import "./globals.css";
-import "react-toastify/dist/ReactToastify.css";
-import ReduxProvider from "./ReduxProvider";
-import { ToastContainer } from "react-toastify";
 import { useEffect, useState } from "react";
+import "react-toastify/dist/ReactToastify.css";
+import "./globals.css";
+import "aos/dist/aos.css";
+import ReduxProvider from "./ReduxProvider";
 
 export default function RootLayout({
   children,
@@ -18,13 +17,13 @@ export default function RootLayout({
   }, []);
 
   if (!isMounted) {
-    return null; 
+    return null;
   }
+
   return (
     <html lang="en">
       <body>
         <ReduxProvider>{children}</ReduxProvider>
-        <ToastContainer />
       </body>
     </html>
   );

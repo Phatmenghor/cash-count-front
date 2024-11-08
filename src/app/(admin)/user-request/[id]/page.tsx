@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -9,6 +8,7 @@ import UserManagementService from "@/redux/service/userManagementService";
 import ModalConfirmation from "@/components/modal/ModalConfirmation";
 import showToast from "@/components/toast/useToast";
 import { useRouter } from "next/navigation";
+import { ToastContainer } from "react-toastify";
 
 const UserCompareRequest = ({ params }: { params: { id: number } }) => {
   const idUser = params.id;
@@ -18,6 +18,7 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [modalReject, setModalReject] = useState(false);
   const router = useRouter();
+  const typeView = userRequest?.requestType != "Create-Info";
 
   useEffect(() => {
     fetchData();
@@ -28,7 +29,10 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
       id: idUser,
     });
 
-    if (responseResquest.success) {
+    if (
+      responseResquest.success &&
+      responseResquest.data.requestType != "Create-Info"
+    ) {
       const response = await UserManagementService.getUserByID({
         id: responseResquest.data.userId,
       });
@@ -82,7 +86,9 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
   return (
     <div className="px-6">
       <h2 data-aos="fade-down" className="text-gray-700 hide mb-4">
-        Compare Information Request
+        {typeView
+          ? "Compare Information Request"
+          : "User Information created new Request"}
       </h2>
 
       <div className="flex">
@@ -163,141 +169,146 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
           </div>
         </div>
 
-        <div className="flex flex-col justify-between mt-6">
-          <h2 className="justify-center text-lg px-4">{"==>"}</h2>
-          <h2 className="justify-center text-lg px-4">{"==>"}</h2>
-          <h2 className="justify-center text-lg px-4">{"==>"}</h2>
-          <h2 className="justify-center text-lg px-4">{"==>"}</h2>
-          <h2 className="justify-center text-lg px-4">{"==>"}</h2>
-          <h2 className="justify-center text-lg px-4">{"==>"}</h2>
-        </div>
-
-        <div className="flex-1 space-y-4" data-aos="fade-left">
-          {/* Name Field */}
-          <div>
-            <label
-              className={`block text-sm font-medium text-gray-700 mb-1 ${
-                userInfo?.name != userRequest?.name
-                  ? "border-red-500 text-red-500"
-                  : ""
-              }`}
-            >
-              Name After<span className="text-red-500 ml-1">*</span>
-            </label>
-            <Input
-              value={userInfo?.name}
-              className={`py-1.5 w-full ${
-                userInfo?.name != userRequest?.name
-                  ? "border-red-500 text-red-500"
-                  : ""
-              }`}
-              disabled={true}
-            />
+        {typeView && (
+          <div className="flex flex-col justify-between mt-6">
+            <h2 className="justify-center text-lg px-4">{"==>"}</h2>
+            <h2 className="justify-center text-lg px-4">{"==>"}</h2>
+            <h2 className="justify-center text-lg px-4">{"==>"}</h2>
+            <h2 className="justify-center text-lg px-4">{"==>"}</h2>
+            <h2 className="justify-center text-lg px-4">{"==>"}</h2>
+            <h2 className="justify-center text-lg px-4">{"==>"}</h2>
           </div>
+        )}
 
-          {/* Email Field */}
-          <div>
-            <label
-              className={`block text-sm font-medium text-gray-700 mb-1 ${
-                userInfo?.email != userRequest?.email
-                  ? "border-red-500 text-red-500"
-                  : ""
-              }`}
-            >
-              Email After<span className="text-red-500 ml-1">*</span>
-            </label>
-            <Input
-              value={userInfo?.email}
-              className={`py-1.5 w-full ${
-                userInfo?.email != userRequest?.email
-                  ? "border-red-500 text-red-500"
-                  : ""
-              }`}
-              disabled={true}
-            />
-          </div>
+        {typeView && (
+          <div className="flex-1 space-y-4" data-aos="fade-left">
+            {/* Name Field */}
+            <div>
+              <label
+                className={`block text-sm font-medium text-gray-700 mb-1 ${
+                  userInfo?.name != userRequest?.name
+                    ? "border-red-500 text-red-500"
+                    : ""
+                }`}
+              >
+                Name After<span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userInfo?.name}
+                className={`py-1.5 w-full ${
+                  userInfo?.name != userRequest?.name
+                    ? "border-red-500 text-red-500"
+                    : ""
+                }`}
+                disabled={true}
+              />
+            </div>
 
-          {/* Department after Field */}
-          <div>
-            <label
-              htmlFor="department"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              Department After<span className="text-red-500 ml-1">*</span>
-            </label>
-            <Input
-              value={userInfo?.department.name}
-              className="py-1.5 w-full"
-              disabled={true}
-            />
-          </div>
+            {/* Email Field */}
+            <div>
+              <label
+                className={`block text-sm font-medium text-gray-700 mb-1 ${
+                  userInfo?.email != userRequest?.email
+                    ? "border-red-500 text-red-500"
+                    : ""
+                }`}
+              >
+                Email After<span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userInfo?.email}
+                className={`py-1.5 w-full ${
+                  userInfo?.email != userRequest?.email
+                    ? "border-red-500 text-red-500"
+                    : ""
+                }`}
+                disabled={true}
+              />
+            </div>
 
-          {/* Branch after Field */}
-          <div>
-            <label
-              className={`block text-sm font-medium text-gray-700 mb-1  ${
-                userInfo?.branch.mnemonic != userRequest?.branch.mnemonic
-                  ? "border-red-500 text-red-500"
-                  : ""
-              }`}
-            >
-              Branch After<span className="text-red-500 ml-1">*</span>
-            </label>
-            <Input
-              value={userInfo?.branch.mnemonic}
-              className={`py-1.5 w-full ${
-                userInfo?.branch.mnemonic != userRequest?.branch.mnemonic
-                  ? "border-red-500 text-red-500"
-                  : ""
-              }`}
-              disabled={true}
-            />
-          </div>
+            {/* Department after Field */}
+            <div>
+              <label
+                htmlFor="department"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Department After<span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userInfo?.department.name}
+                className="py-1.5 w-full"
+                disabled={true}
+              />
+            </div>
 
-          {/* Branch Location after Field */}
-          <div>
-            <label
-              className={`block text-sm font-medium text-gray-700 mb-1  ${
-                userInfo?.branch.city != userRequest?.branch.city
-                  ? "border-red-500 text-red-500"
-                  : ""
-              }`}
-            >
-              Branch Location After<span className="text-red-500 ml-1">*</span>
-            </label>
-            <Input
-              value={userInfo?.branch.city}
-              className={`py-1.5 w-full ${
-                userInfo?.branch.city != userRequest?.branch.city
-                  ? "border-red-500 text-red-500"
-                  : ""
-              }`}
-              disabled={true}
-            />
-          </div>
+            {/* Branch after Field */}
+            <div>
+              <label
+                className={`block text-sm font-medium text-gray-700 mb-1  ${
+                  userInfo?.branch.mnemonic != userRequest?.branch.mnemonic
+                    ? "border-red-500 text-red-500"
+                    : ""
+                }`}
+              >
+                Branch After<span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userInfo?.branch.mnemonic}
+                className={`py-1.5 w-full ${
+                  userInfo?.branch.mnemonic != userRequest?.branch.mnemonic
+                    ? "border-red-500 text-red-500"
+                    : ""
+                }`}
+                disabled={true}
+              />
+            </div>
 
-          {/* Role after Field */}
-          <div>
-            <label
-              className={`block text-sm font-medium text-gray-700 mb-1 ${
-                userInfo?.role.name != userRequest?.role.name
-                  ? "border-red-500 text-red-500"
-                  : ""
-              }`}
-            >
-              Role After<span className="text-red-500 ml-1">*</span>
-            </label>
-            <Input
-              value={userInfo?.role.name}
-              className={`py-1.5 w-full ${
-                userInfo?.role.name != userRequest?.role.name
-                  ? "border-red-500 text-red-500"
-                  : ""
-              }`}
-              disabled={true}
-            />
+            {/* Branch Location after Field */}
+            <div>
+              <label
+                className={`block text-sm font-medium text-gray-700 mb-1  ${
+                  userInfo?.branch.city != userRequest?.branch.city
+                    ? "border-red-500 text-red-500"
+                    : ""
+                }`}
+              >
+                Branch Location After
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userInfo?.branch.city}
+                className={`py-1.5 w-full ${
+                  userInfo?.branch.city != userRequest?.branch.city
+                    ? "border-red-500 text-red-500"
+                    : ""
+                }`}
+                disabled={true}
+              />
+            </div>
+
+            {/* Role after Field */}
+            <div>
+              <label
+                className={`block text-sm font-medium text-gray-700 mb-1 ${
+                  userInfo?.role.name != userRequest?.role.name
+                    ? "border-red-500 text-red-500"
+                    : ""
+                }`}
+              >
+                Role After<span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userInfo?.role.name}
+                className={`py-1.5 w-full ${
+                  userInfo?.role.name != userRequest?.role.name
+                    ? "border-red-500 text-red-500"
+                    : ""
+                }`}
+                disabled={true}
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       <div className="mt-8 justify-end flex space-x-2">
@@ -342,6 +353,8 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
         loading={loading}
         textLoading="Rejecting ..."
       />
+
+      <ToastContainer />
     </div>
   );
 };

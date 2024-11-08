@@ -153,15 +153,15 @@ const ModalCreateEditBranch: React.FC<ModalCreateEditBranchProps> = ({
             />
             {errors.city && <FormMessage message={errors.city} type="error" />}
           </div>
-          <div className="flex justify-end space-x-2 mt-4">
-            <Button onClick={onClose} className="px-4 py-2" variant="cancel">
+          <div className="flex justify-end space-x-2 mt-8">
+            <Button onClick={onClose} className="px-4 py-1.5" variant="cancel">
               Cancel
             </Button>
             <Button
               loading={loadingButton}
               textLoading={initialData ? "Updating ..." : "Creating ..."}
               onClick={handleConfirm}
-              className="px-4 py-2 transition"
+              className="px-4 py-1.5"
             >
               {initialData ? "Update" : "Create"}
             </Button>

@@ -7,6 +7,7 @@ export interface UserProfile {
   branch: Branch;
   email: string;
   username: string;
+  requestType?: string | null;
 }
 
 interface Role {
