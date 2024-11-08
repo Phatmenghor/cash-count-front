@@ -14,7 +14,6 @@ import { DepartmentService } from "@/redux/service/departmentService";
 import { DepartmentListModel } from "@/redux/models/department/DepartmentListModel";
 import { DepartmentModel } from "@/redux/models/register/DepartmentModel";
 import ModalCreateEditDepartment from "@/components/modal/ModalCreateEditDepartment";
-import { ToastContainer } from "react-toastify";
 
 const DepartmentPage: React.FC = () => {
   const [departmentList, setDepartmentList] = useState<DepartmentListModel>({
@@ -225,7 +224,6 @@ const DepartmentPage: React.FC = () => {
         initialData={currentDepartment ? currentDepartment : undefined}
         loadingButton={loading}
       />
-      
     </div>
   );
 };

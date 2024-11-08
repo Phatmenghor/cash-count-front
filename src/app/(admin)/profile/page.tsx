@@ -15,12 +15,10 @@ import { RegisterService } from "@/redux/service/registerService";
 import UserManagementService, {
   updateUserInfo,
 } from "@/redux/service/userManagementService";
-import { AppDispatch, RootState } from "@/redux/store";
-import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "@/redux/store";
+import { useSelector } from "react-redux";
 import LoadingFullPage from "@/components/loading/LoadingFullPage";
 import showToast from "@/components/toast/useToast";
-import ModalConfirmation from "@/components/modal/ModalConfirmation";
-import { ToastContainer } from "react-toastify";
 
 interface FormDataType {
   name: string;
@@ -38,7 +36,6 @@ const ProfileSelfPage = () => {
   const [verifyOTP, setVerifyOTP] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState(false);
-  const dispatch = useDispatch<AppDispatch>();
   const [formData, setFormData] = useState<FormDataType>({
     email: "",
     otp: "",
@@ -479,7 +476,6 @@ const ProfileSelfPage = () => {
         </div>
       )}
       <LoadingFullPage loading={loading} />
-     
     </div>
   );
 };

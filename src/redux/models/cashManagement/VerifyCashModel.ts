@@ -26,5 +26,4 @@ interface Branch {
   branchCode: string;
   mnemonic: string;
   city: string;
-  userType: any;
 }

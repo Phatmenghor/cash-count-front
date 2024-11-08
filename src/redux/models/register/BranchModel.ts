@@ -3,5 +3,4 @@ export interface BranchModel {
   branchCode: string;
   mnemonic: string;
   city: string;
-  userType: string;
 }

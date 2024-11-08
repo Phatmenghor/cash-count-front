@@ -1,72 +1,23 @@
 "use client";
 import ModalVerify from "@/components/modal/ModalVerify";
 import Button from "@/components/custom/Button";
-import Input from "@/components/custom/Input";
-import withAuth from "@/configs/withAuth";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { FiCheckCircle } from "react-icons/fi";
-import { VerifyCashModel } from "@/redux/models/cashManagement/VerifyCashModel";
-import {
-  CashManagementService,
-  SubmissionData,
-} from "@/redux/service/cashManagementService";
-import CustomSelect from "@/components/custom/CustomSelect";
-import { UserListByInputterModel } from "@/redux/models/userManagement/UserListByInputterModel";
-import UserManagementService from "@/redux/service/userManagementService";
-import { useSelector } from "react-redux";
-import { RootState } from "@/redux/store";
-import { FileResponseModel } from "@/redux/models/cashManagement/FileResponseModel";
-import { CashStatusEnum } from "@/redux/models/cashManagement/StatusEnum";
-import { AddRecordParamModel } from "@/redux/models/cashManagement/AddRecordParamModel";
+import { CashManagementService } from "@/redux/service/cashManagementService";
 import showToast from "@/components/toast/useToast";
 import { CashRecordDetailModel } from "@/redux/models/cashManagement/CashRecordDetailModel";
 import { CashInSystemModel } from "@/redux/models/cashManagement/CashInSystemModel";
 import { FaFilePdf } from "react-icons/fa";
 
-type Currency = "USD" | "KHR" | "THB";
-
-interface CashRow {
-  vault: Record<Currency, number>;
-  nostro: Record<Currency, number>;
-}
-
-interface AllUserType {
-  approve: UserListByInputterModel[] | null;
-  checker: UserListByInputterModel[] | null;
-}
-
-interface FormDataType {
-  approve: UserListByInputterModel | null;
-  checker: UserListByInputterModel | null;
-}
-
-const page = ({ params }: { params: { id: number } }) => {
+const EditViewCashRecord = ({ params }: { params: { id: number } }) => {
   const idCashRecord = params.id;
-  const [cashOnHand, setCashOnHand] = useState<CashRow>({
-    vault: { USD: 0, KHR: 0, THB: 0 },
-    nostro: { USD: 0, KHR: 0, THB: 0 },
-  });
-  const [isVerified, setIsVerified] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
-  const [verifyCash, setVerifyCash] = useState<VerifyCashModel | null>(null);
   const [cashRecordDetail, setCashRecordDetail] =
     useState<CashRecordDetailModel | null>(null);
   const [cashInSystem, setCashInSystem] = useState<CashInSystemModel | null>(
     null
   );
-  const [file, setFile] = useState<File | null>(null);
-  const [remark, setRemark] = useState("");
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-  const [allData, setAllData] = useState<AllUserType>({
-    approve: null,
-    checker: null,
-  });
-  const [formData, setFormData] = useState<FormDataType>({
-    approve: null,
-    checker: null,
-  });
 
   useEffect(() => {
     fetchData();
@@ -84,37 +35,6 @@ const page = ({ params }: { params: { id: number } }) => {
     }
     setCashRecordDetail(response.data);
   }
-
-  // Handle input changes
-  const handleCashOnHandChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    type: "vault" | "nostro",
-    currency: Currency
-  ) => {
-    let value = e.target.value;
-
-    // Regular expression to allow valid decimal input (e.g., 0.75, 1.2412)
-    const isValidMoneyInput = /^(0(\.\d{0,9})?|[1-9]\d*(\.\d{0,9})?)?$/.test(
-      value
-    );
-
-    console.log("Is valid money input:", isValidMoneyInput);
-    if (!isValidMoneyInput) {
-      return;
-    }
-
-    // If the input is valid, parse it; otherwise, keep it as an empty string
-    const numericValue = isValidMoneyInput ? value : "";
-
-    // Update state
-    setCashOnHand((prev) => {
-      const newState = {
-        ...prev,
-        [type]: { ...prev[type], [currency]: numericValue },
-      };
-      return newState;
-    });
-  };
 
   const handleViewFile = async () => {
     const resposne = await CashManagementService.getViewPDFById({
@@ -318,4 +238,4 @@ const page = ({ params }: { params: { id: number } }) => {
   );
 };
 
-export default page;
+export default EditViewCashRecord;

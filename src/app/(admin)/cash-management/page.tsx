@@ -6,10 +6,7 @@ import Input from "@/components/custom/Input";
 import { pageSizeData, statusCashData } from "@/constants/dataListing";
 import { debounce } from "@/utils/function/debounce";
 import EmptyState from "@/components/emthyData/EmptyState";
-import showToast from "@/components/toast/useToast";
-import UserManagementService from "@/redux/service/userManagementService";
 import { LuView } from "react-icons/lu";
-import { UserRequestModel } from "@/redux/models/userManagement/UserRequestModel";
 import { useRouter } from "next/navigation";
 import Button from "@/components/custom/Button";
 import { CashManagementService } from "@/redux/service/cashManagementService";
@@ -25,10 +22,7 @@ import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 import { getStatusColor } from "@/utils/function/checkColorStatus";
 import { FiPlus } from "react-icons/fi";
 import FilterStatusCash from "@/components/custom/FilterStatusCash";
-import { ToastContainer } from "react-toastify";
-const ModalConfirmation = dynamic(
-  () => import("@/components/modal/ModalConfirmation")
-);
+
 const DropdownSize = dynamic(() => import("@/components/custom/DropdownSize"));
 const Pagination = dynamic(() => import("@/components/pagination/Pagination"));
 
@@ -38,13 +32,10 @@ const CashManagementPage: React.FC = () => {
     pagination: null,
   });
   const router = useRouter();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalReject, setModalReject] = useState(false);
   const [size, setSize] = useState<number>(15);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const listSize = cashRecordList.pagination?.currentPage ?? 15;
-  const [dataUser, setDataUser] = useState<UserRequestModel | null>(null);
 
   useEffect(() => {
     fetchData({});
@@ -126,63 +117,9 @@ const CashManagementPage: React.FC = () => {
     [size]
   );
 
-  async function fetchSearch({
-    page = 1,
-    pageSize = size,
-    searchSrNumber = "",
-    status = statusFilter,
-  }) {
-    const response = await CashManagementService.getCashRecordList({
-      pageSize,
-      currentPage: page,
-      srNumber: searchSrNumber,
-      status: status,
-    });
-
-    setCashRecordList(response);
-  }
-
   function onSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchTerm(e.target.value);
     handleSearch(e.target.value);
-  }
-
-  async function handleApprove() {
-    const response = await UserManagementService.approveRequestUser({
-      id: dataUser!.id,
-    });
-    if (response.success) {
-      setCashRecordList((prevList) => ({
-        ...prevList,
-        data: prevList.data.filter((request) => request.id !== dataUser?.id),
-      }));
-      if (cashRecordList.data.length === 1) {
-        fetchData({});
-      }
-      showToast(response.message, "success");
-    } else {
-      showToast(response.message, "error");
-    }
-    setModalOpen(false);
-  }
-
-  async function handleReject() {
-    const response = await UserManagementService.rejectRequestUser({
-      id: dataUser!.id,
-    });
-    if (response.success) {
-      setCashRecordList((prevList) => ({
-        ...prevList,
-        data: prevList.data.filter((request) => request.id !== dataUser?.id),
-      }));
-      if (cashRecordList.data.length === 1) {
-        fetchData({});
-      }
-      showToast(response.message, "success");
-    } else {
-      showToast(response.message, "error");
-    }
-    setModalOpen(false);
   }
 
   function onViewCash(id: number) {
@@ -344,25 +281,6 @@ const CashManagementPage: React.FC = () => {
           />
         </div>
       )}
-
-      {/* Confirmation approve */}
-      <ModalConfirmation
-        isOpen={modalOpen}
-        title="Confirm Approve!"
-        onClose={() => setModalOpen(false)}
-        onConfirm={handleApprove}
-        message={`Are you sure you want to approve?`}
-      />
-
-      {/* Confirmation Reject */}
-      <ModalConfirmation
-        isOpen={modalReject}
-        title="Confirm Reject!"
-        onClose={() => setModalReject(false)}
-        onConfirm={handleReject}
-        message={`Are you sure you want to reject?`}
-      />
-
     </div>
   );
 };

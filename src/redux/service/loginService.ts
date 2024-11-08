@@ -1,7 +1,3 @@
-// import { createAsyncThunk } from "@reduxjs/toolkit";
-// import apiService from "../services/apiService";
-
-import { LoginUserModel } from "@/redux/models/login/LoginUserModel";
 import { axiosNoAuth } from "@/utils/api/axios";
 import TokenStorage from "@/utils/localStorage/tokenStorage";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";

@@ -12,7 +12,7 @@ interface createPositionParams {
 }
 
 interface updatePositionParams {
-  id: string;
+  id: number;
   name: string;
 }
 

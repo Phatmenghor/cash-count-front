@@ -3,7 +3,6 @@ import {
   axiosViewPDF,
   axiosWithAuth,
 } from "@/utils/api/axios";
-import axios from "axios";
 import { AddRecordParamModel } from "../models/cashManagement/AddRecordParamModel";
 import { UpdateRecordModel } from "../models/cashManagement/UpdateRecordParam";
 

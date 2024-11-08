@@ -4,7 +4,6 @@ import Button from "@/components/custom/Button";
 import Input from "@/components/custom/Input";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { VerifyCashModel } from "@/redux/models/cashManagement/VerifyCashModel";
 import {
   CashManagementService,
   SubmissionData,
@@ -19,7 +18,7 @@ import showToast from "@/components/toast/useToast";
 import LoadingFullPage from "@/components/loading/LoadingFullPage";
 import { CashInSystemModel } from "@/redux/models/cashManagement/CashInSystemModel";
 import { CashRecordDetailModel } from "@/redux/models/cashManagement/CashRecordDetailModel";
-import { FaCloudUploadAlt, FaEye } from "react-icons/fa";
+import { FaCloudUploadAlt } from "react-icons/fa";
 import { UpdateRecordModel } from "@/redux/models/cashManagement/UpdateRecordParam";
 import { MdOutlineClear } from "react-icons/md";
 
@@ -46,11 +45,9 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
     vault: { USD: 0, KHR: 0, THB: 0 },
     nostro: { USD: 0, KHR: 0, THB: 0 },
   });
-  const [isVerified, setIsVerified] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const [verifyCash, setVerifyCash] = useState<VerifyCashModel | null>(null);
   const [cashInSystem, setCashInSystem] = useState<CashInSystemModel | null>(
     null
   );
@@ -70,18 +67,18 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
   });
   const { userData } = useSelector((state: RootState) => state.user);
   const usdVaultResult =
-    cashOnHand.vault.USD - (verifyCash?.vaultAccount.usdBalance || 0);
+    cashOnHand.vault.USD - (cashInSystem?.vaultAccount.usdBalance || 0);
   const khrVaultResult =
-    cashOnHand.vault.KHR - (verifyCash?.vaultAccount.khrBalance || 0);
+    cashOnHand.vault.KHR - (cashInSystem?.vaultAccount.khrBalance || 0);
   const thbVaultResult =
-    cashOnHand.vault.THB - (verifyCash?.vaultAccount.thbBalance || 0);
+    cashOnHand.vault.THB - (cashInSystem?.vaultAccount.thbBalance || 0);
 
   const usdNostroResult =
-    cashOnHand.nostro.USD - (verifyCash?.nostroAccount.usdBalance || 0);
+    cashOnHand.nostro.USD - (cashInSystem?.nostroAccount.usdBalance || 0);
   const khrNostroResult =
-    cashOnHand.nostro.USD - (verifyCash?.nostroAccount.khrBalance || 0);
+    cashOnHand.nostro.USD - (cashInSystem?.nostroAccount.khrBalance || 0);
   const thbNostroResult =
-    cashOnHand.nostro.USD - (verifyCash?.nostroAccount.thbBalance || 0);
+    cashOnHand.nostro.USD - (cashInSystem?.nostroAccount.thbBalance || 0);
 
   useEffect(() => {
     fetchData();
@@ -246,7 +243,10 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
     }
   };
 
-  const handleChange = (key: keyof typeof formData, option: any) => {
+  const handleChange = (
+    key: keyof typeof formData,
+    option: Partial<UserListByInputterModel> | null
+  ) => {
     setFormData((prevData) => ({
       ...prevData,
       [key]: option,

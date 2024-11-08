@@ -10,10 +10,10 @@ export interface CashRecordDetailModel {
   updatedDate: string;
   referenceFile: ReferenceFile;
   remarkFromCreate: string;
-  remarkFromChecker: any;
-  remarkFromAuthorizer: any;
-  checkerDate: any;
-  authorizerDate: any;
+  remarkFromChecker?: string | null;
+  remarkFromAuthorizer?: string | null;
+  checkerDate?: string | null;
+  authorizerDate?: string | null;
   branch: Branch;
   createdBy: CreatedBy;
   cashInSystem: CashInSystem;
@@ -47,7 +47,6 @@ interface Branch {
   branchCode: string;
   mnemonic: string;
   city: string;
-  userType: any;
 }
 
 interface CreatedBy {

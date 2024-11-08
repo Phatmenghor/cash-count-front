@@ -11,7 +11,8 @@ import showToast from "@/components/toast/useToast";
 import { FiEye, FiEyeOff } from "react-icons/fi";
 import { RegisterService } from "@/redux/service/registerService";
 import { AllDataType, FormDataType } from "./type";
-import { ToastContainer } from "react-toastify";
+import { BranchModel } from "@/redux/models/register/BranchModel";
+import { RoleModel } from "@/redux/models/register/RoleModel";
 
 const Register: React.FC = () => {
   const searchParams = useSearchParams();
@@ -207,7 +208,10 @@ const Register: React.FC = () => {
     setPasswordVisible(!passwordVisible);
   };
 
-  const handleChange = (key: keyof typeof formData, option: any) => {
+  const handleChange = (
+    key: keyof typeof formData,
+    option: RoleModel | BranchModel | null
+  ) => {
     setFormData((prevData) => ({
       ...prevData,
       [key]: option,
