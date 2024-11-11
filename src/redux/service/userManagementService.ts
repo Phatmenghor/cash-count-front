@@ -24,7 +24,6 @@ export interface updateUserInfo {
   name: string;
   roleId: number;
   branchId: number;
-  departmentId: number;
   positionId: number;
 }
 

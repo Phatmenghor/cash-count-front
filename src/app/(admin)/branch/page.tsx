@@ -15,18 +15,19 @@ import DropdownSize from "@/components/custom/DropdownSize";
 import ModalCreateEditBranch from "@/components/modal/ModalCreateEditBranch";
 import { BranchModel } from "@/redux/models/register/BranchModel";
 import showToast from "@/components/toast/useToast";
+import { FaTimes } from "react-icons/fa";
 
 const BranchPage: React.FC = () => {
   const [branchList, setBranchList] = useState<BranchListModel>({
     data: [],
     pagination: null,
   });
-  const [size, setSize] = useState<number>(15);
+  const [size, setSize] = useState<number>(10);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const headers = ["Number", "Mnemonic", "Branch Code", "City", "Actions"];
-  const listSize = branchList.pagination?.currentPage ?? 15;
+  const listSize = branchList.pagination?.currentPage ?? 10;
   const [isModalOpen, setModalOpen] = useState(false);
-  const [loading, setLoading] = useState(false); // Set initial loading state to true
+  const [loading, setLoading] = useState(false);
   const [currentBranch, setCurrentBranch] = useState<BranchModel | null>(null);
 
   useEffect(() => {
@@ -42,7 +43,7 @@ const BranchPage: React.FC = () => {
   }
 
   function onPageChange(value: number) {
-    fetchData(value, branchList.pagination?.pageSize ?? 15);
+    fetchData(value, branchList.pagination?.pageSize ?? 10);
   }
 
   function handlePageSize(value: number) {
@@ -144,17 +145,32 @@ const BranchPage: React.FC = () => {
     setLoading(false);
   }
 
+  const clearSearch = () => {
+    setSearchTerm("");
+    handleSearch("");
+  };
+
   return (
     <div className="px-4">
       <div className="flex items-center mb-4 justify-between">
-        <Input
-          type="text"
-          placeholder="Search Branch ..."
-          value={searchTerm}
-          onChange={onSearch}
-          className="mr-4 py-1 max-w-md"
-          data-aos="fade-right"
-        />
+        <div className="relative rounded  max-w-md">
+          <Input
+            type="text"
+            placeholder="Search Branch ... "
+            value={searchTerm}
+            onChange={onSearch}
+            className="mr-4 py-1 pr-8"
+            data-aos="fade-right"
+          />
+          {searchTerm && (
+            <button
+              onClick={clearSearch}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+            >
+              <FaTimes /> {/* Clear icon */}
+            </button>
+          )}
+        </div>
         <Button
           data-aos="fade-left"
           onClick={handleOpenCreateModal}

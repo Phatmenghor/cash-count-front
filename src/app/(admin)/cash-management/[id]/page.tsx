@@ -3,7 +3,7 @@ import ModalVerify from "@/components/modal/ModalVerify";
 import Button from "@/components/custom/Button";
 import Input from "@/components/custom/Input";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   CashManagementService,
   SubmissionData,
@@ -80,46 +80,57 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
   const thbNostroResult =
     cashOnHand.nostro.USD - (cashInSystem?.nostroAccount.thbBalance || 0);
 
+  const fetchData = useCallback(async () => {
+    try {
+      const responseRecord = await CashManagementService.getCashRecordById({
+        id: idCashRecord,
+      });
+
+      if (responseRecord.success) {
+        const item = responseRecord.data;
+
+        const responseSystem = await CashManagementService.getCashInSystemById({
+          id: item.cashInSystem.id,
+        });
+
+        setCashOnHand({
+          vault: {
+            KHR: item.cashInHandVaultAccount.khrBalance,
+            USD: item.cashInHandVaultAccount.usdBalance,
+            THB: item.cashInHandVaultAccount.thbBalance,
+          },
+          nostro: {
+            KHR: item.cashInHandNostroAccount.khrBalance,
+            USD: item.cashInHandNostroAccount.usdBalance,
+            THB: item.cashInHandNostroAccount.thbBalance,
+          },
+        });
+
+        setFormData({
+          approve: item.approvedBy,
+          checker: item.checkerBy,
+        });
+
+        if (item.referenceFile) {
+          setFileName(item.referenceFile.fileName);
+        }
+
+        setRemark(item.remarkFromCreate);
+        setCashInSystem(responseSystem);
+      }
+
+      setCashRecordDetail(responseRecord.data);
+
+      const response = await UserManagementService.fetchAllUser();
+      setAllData(response);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
+  }, [idCashRecord]);
+
   useEffect(() => {
     fetchData();
   }, []);
-
-  async function fetchData() {
-    const responseRecord = await CashManagementService.getCashRecordById({
-      id: idCashRecord,
-    });
-    if (responseRecord.success) {
-      const item: CashRecordDetailModel = responseRecord.data;
-      const responseSystem = await CashManagementService.getCashInSystemById({
-        id: item.cashInSystem.id,
-      });
-      setCashOnHand({
-        vault: {
-          KHR: item.cashInHandVaultAccount.usdBalance,
-          USD: item.cashInHandVaultAccount.khrBalance,
-          THB: item.cashInHandVaultAccount.thbBalance,
-        },
-        nostro: {
-          KHR: item.cashInHandNostroAccount.usdBalance,
-          USD: item.cashInHandNostroAccount.khrBalance,
-          THB: item.cashInHandNostroAccount.thbBalance,
-        },
-      });
-      setFormData({
-        approve: item.approvedBy,
-        checker: item.checkerBy,
-      });
-      if (item.referenceFile) {
-        setFileName(item.referenceFile.fileName);
-      }
-      setRemark(item.remarkFromCreate);
-      setCashInSystem(responseSystem);
-    }
-
-    setCashRecordDetail(responseRecord.data);
-    const response = await UserManagementService.fetchAllUser();
-    setAllData(response);
-  }
 
   // Handle input changes
   const handleCashOnHandChange = (

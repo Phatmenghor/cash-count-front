@@ -1,5 +1,4 @@
-// components/CustomSelect.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { FiChevronDown, FiX } from "react-icons/fi";
 import {
   DropdownMenu,
@@ -7,6 +6,17 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
+
+// Debounce function
+export function debounce<
+  T extends (...args: Parameters<T>) => void | Promise<void>
+>(func: T, delay: number = 400) {
+  let timeoutId: ReturnType<typeof setTimeout> | null = null;
+  return function (...args: Parameters<T>) {
+    if (timeoutId) clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func(...args), delay);
+  };
+}
 
 interface CustomSelectProps<T> {
   id: string;
@@ -18,6 +28,7 @@ interface CustomSelectProps<T> {
   errorMessage?: string;
   required?: boolean;
   disabled?: boolean;
+  buttonClassName?: string;
 }
 
 const CustomSelect = <T,>({
@@ -30,22 +41,27 @@ const CustomSelect = <T,>({
   errorMessage,
   required = false,
   disabled = false,
+  buttonClassName,
 }: CustomSelectProps<T>) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+  const searchInputRef = useRef<HTMLInputElement | null>(null); // Reference for input field
 
-  // Debounce the search term to reduce the number of filter calls
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearchTerm(searchTerm);
-    }, 300);
+  const handleSearch = useCallback(
+    debounce(async (query: string) => {
+      setDebouncedSearchTerm(query); // Set the debounced search term
+    }, 10),
+    []
+  );
 
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [searchTerm]);
+  // Handle search term change
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    handleSearch(value); // Trigger the debounced search
+  };
 
-  // Filter options based on the debounced search term
+  // Filter options based on debounced search term
   const filteredOptions = debouncedSearchTerm
     ? options?.filter((option) =>
         getOptionLabel(option)
@@ -53,6 +69,13 @@ const CustomSelect = <T,>({
           .includes(debouncedSearchTerm.toLowerCase())
       ) || []
     : options || [];
+
+  // Focus management: Ensure that the search input stays focused
+  useEffect(() => {
+    if (searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [debouncedSearchTerm]); // Trigger focus management when debounced search term changes
 
   return (
     <div className="relative">
@@ -67,7 +90,7 @@ const CustomSelect = <T,>({
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <button
-            className="flex justify-between items-center w-full border border-gray-300 rounded-md px-3 py-1 cursor-pointer"
+            className={`flex justify-between items-center w-full border border-gray-300 rounded-md px-3 py-1 cursor-pointer ${buttonClassName}`}
             disabled={disabled}
           >
             <span
@@ -84,11 +107,12 @@ const CustomSelect = <T,>({
         <DropdownMenuContent className="w-full border border-gray-300 rounded-md shadow-lg bg-white">
           <div className="flex items-center border-b border-gray-300 px-2 py-1">
             <input
+              ref={searchInputRef} // Apply the ref to the search input
               type="text"
               className="w-full px-2 py-0.5 border-none focus:ring-transparent"
               placeholder="Search..."
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+              onChange={handleSearchChange} // Use the debounced change handler
             />
             {searchTerm && (
               <FiX
@@ -98,6 +122,8 @@ const CustomSelect = <T,>({
               />
             )}
           </div>
+
+          {/* Make only the list scrollable */}
           <div className="max-h-48 overflow-y-auto pb-1">
             {filteredOptions.length > 0 ? (
               filteredOptions.map((option, index) => (

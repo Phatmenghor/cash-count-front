@@ -83,12 +83,14 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
     router.back();
   };
 
+  console.log("## ==", userRequest);
+
   return (
     <div className="px-6">
       <h2 data-aos="fade-down" className="text-gray-700 hide mb-4">
         {typeView
           ? "Compare Information Request"
-          : "User Information created new Request"}
+          : "New user Information Request"}
       </h2>
 
       <div className="flex">
@@ -98,7 +100,8 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
               htmlFor="name"
               className="block text-sm font-medium text-gray-700 mb-1 "
             >
-              Name Before<span className="text-red-500 ml-1">*</span>
+              {typeView ? "Name Before" : "Name user"}
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
               value={userRequest?.name}
@@ -109,21 +112,11 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Email Before<span className="text-red-500 ml-1">*</span>
+              {typeView ? "Email Before" : "Email user"}
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
               value={userRequest?.email}
-              className="py-1.5 w-full"
-              disabled={true}
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
-              Department Before<span className="text-red-500 ml-1">*</span>
-            </label>
-            <Input
-              value={userRequest?.department.name}
               className="py-1.5 w-full"
               disabled={true}
             />
@@ -134,7 +127,8 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
               htmlFor="branch"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Branch Before<span className="text-red-500 ml-1">*</span>
+              {typeView ? "Branch Before" : "Branch user"}
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
               value={userRequest?.branch.mnemonic}
@@ -145,10 +139,23 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
 
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Branch Location<span className="text-red-500 ml-1">*</span>
+              {typeView ? "Branch Location Before" : "Branch Location user"}
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
               value={userRequest?.branch.city}
+              className="py-1.5 w-full"
+              disabled={true}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {typeView ? "Position Before" : "Position user"}
+              <span className="text-red-500 ml-1">*</span>
+            </label>
+            <Input
+              value={userRequest?.position.fullName}
               className="py-1.5 w-full"
               disabled={true}
             />
@@ -159,7 +166,8 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
               htmlFor="role"
               className="block text-sm font-medium text-gray-700 mb-1"
             >
-              Role Before<span className="text-red-500 ml-1">*</span>
+              {typeView ? "Role Before" : "Role user"}
+              <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
               value={userRequest?.role.name}
@@ -171,6 +179,7 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
 
         {typeView && (
           <div className="flex flex-col justify-between mt-6">
+            <h2 className="justify-center text-lg px-4">{"==>"}</h2>
             <h2 className="justify-center text-lg px-4">{"==>"}</h2>
             <h2 className="justify-center text-lg px-4">{"==>"}</h2>
             <h2 className="justify-center text-lg px-4">{"==>"}</h2>
@@ -226,21 +235,6 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
               />
             </div>
 
-            {/* Department after Field */}
-            <div>
-              <label
-                htmlFor="department"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Department After<span className="text-red-500 ml-1">*</span>
-              </label>
-              <Input
-                value={userInfo?.department.name}
-                className="py-1.5 w-full"
-                disabled={true}
-              />
-            </div>
-
             {/* Branch after Field */}
             <div>
               <label
@@ -279,6 +273,29 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
                 value={userInfo?.branch.city}
                 className={`py-1.5 w-full ${
                   userInfo?.branch.city != userRequest?.branch.city
+                    ? "border-red-500 text-red-500"
+                    : ""
+                }`}
+                disabled={true}
+              />
+            </div>
+
+            {/* Position after Field */}
+            <div>
+              <label
+                className={`block text-sm font-medium text-gray-700 mb-1  ${
+                  userInfo?.position.fullName != userRequest?.position.fullName
+                    ? "border-red-500 text-red-500"
+                    : ""
+                }`}
+              >
+                Position After
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userInfo?.position.fullName}
+                className={`py-1.5 w-full ${
+                  userInfo?.position.fullName != userRequest?.position.fullName
                     ? "border-red-500 text-red-500"
                     : ""
                 }`}

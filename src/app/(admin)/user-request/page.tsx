@@ -18,6 +18,7 @@ import {
 import ModalConfirmation from "@/components/modal/ModalConfirmation";
 import { useRouter } from "next/navigation";
 import { ToastContainer } from "react-toastify";
+import { FaTimes } from "react-icons/fa";
 
 const UserRequestPage: React.FC = () => {
   const [userRequestList, setUserRequestList] = useState<userRequestListModel>({
@@ -126,18 +127,31 @@ const UserRequestPage: React.FC = () => {
     setModalOpen(false);
   }
 
+  const clearSearch = () => {
+    setSearchTerm("");
+    handleSearch("");
+  };
+
   return (
     <div className="px-4">
       {/* Search and Add Record Section */}
-      <div className="flex items-center mb-4 justify-between">
+      <div className="relative rounded  max-w-md mb-4">
         <Input
           type="text"
-          placeholder="Search user request ..."
+          placeholder="Search user request..."
           value={searchTerm}
           onChange={onSearch}
-          className="mr-4 py-1 max-w-md"
+          className="mr-4 py-1 pr-8"
           data-aos="fade-right"
         />
+        {searchTerm && (
+          <button
+            onClick={clearSearch}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+          >
+            <FaTimes /> {/* Clear icon */}
+          </button>
+        )}
       </div>
 
       {/* User List Table */}
@@ -155,7 +169,6 @@ const UserRequestPage: React.FC = () => {
               <th>Status</th>
               <th>Position</th>
               <th>Branch</th>
-              <th>Department</th>
               <th>Role</th>
               <th>Actions</th>
             </tr>
@@ -192,7 +205,6 @@ const UserRequestPage: React.FC = () => {
                     </td>
                     <td className="truncate">{user.position.name}</td>
                     <td className="truncate">{user.branch.mnemonic}</td>
-                    <td className="truncate">{user.department.name}</td>
                     <td className="truncate">{user.role.name}</td>
                     <td className="flex items-center truncate">
                       <button

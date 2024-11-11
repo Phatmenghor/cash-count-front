@@ -8,7 +8,6 @@ import CustomSelect from "@/components/custom/CustomSelect";
 import Input from "@/components/custom/Input";
 import FormMessage from "@/components/errorHandle/FormMessage";
 import { BranchModel } from "@/redux/models/register/BranchModel";
-import { DepartmentModel } from "@/redux/models/register/DepartmentModel";
 import { PositionModel } from "@/redux/models/register/PositionModel";
 import { RoleModel } from "@/redux/models/register/RoleModel";
 import { UserProfile } from "@/redux/models/userManagement/UserProfileModel";
@@ -22,7 +21,6 @@ import LoadingFullPage from "@/components/loading/LoadingFullPage";
 
 interface FormDataType {
   name: string;
-  department: DepartmentModel | null;
   position: PositionModel | null;
   role: RoleModel | null;
   branch: BranchModel | null;
@@ -39,7 +37,6 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<FormDataType>({
     name: "",
-    department: null,
     position: null,
     role: null,
     branch: null,
@@ -48,7 +45,6 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
     roles: null,
     branches: null,
     positions: null,
-    departments: null,
   });
 
   useEffect(() => {
@@ -62,7 +58,6 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
     setFormData({
       name: response.name,
       branch: response.branch,
-      department: response?.department,
       position: response?.position,
       role: response.role,
     });
@@ -107,7 +102,6 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
     const profileData: updateUserInfo = {
       name: formData.name,
       branchId: formData.branch!.id,
-      departmentId: formData.department!.id,
       positionId: formData.position!.id,
       roleId: formData.role!.id,
     };
@@ -130,8 +124,7 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
-    const { department, position, branch, role, name } = formData;
-    if (!department) newErrors.department = "Department is required.";
+    const { position, branch, role, name } = formData;
     if (!position) newErrors.position = "Position is required.";
     if (!branch) newErrors.branch = "Branch is required.";
     if (!role) newErrors.role = "Role is required.";
@@ -180,24 +173,12 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
                 value={formData.name}
                 placeholder="Enter your name"
                 onChange={handleInputChange}
-                className="py-1"
+                className="py-1.5"
               />
               {errors.name && (
                 <FormMessage message={errors.name} type="error" />
               )}
             </div>
-
-            {/* Department */}
-            <CustomSelect
-              id="department"
-              value={formData.department}
-              onChange={(option) => handleChange("department", option)}
-              options={allData.departments}
-              label="Department"
-              getOptionLabel={(option) => option?.name}
-              errorMessage={errors.branch}
-              required
-            />
 
             {/* Branch */}
             <CustomSelect
@@ -206,9 +187,10 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
               onChange={(option) => handleChange("branch", option)}
               options={allData.branches}
               label="Branch"
-              getOptionLabel={(option) => option?.city}
+              getOptionLabel={(option) => option?.mnemonic}
               errorMessage={errors.branch}
               required
+              buttonClassName="py-1.5"
             />
 
             {/* Role */}
@@ -221,6 +203,7 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
               getOptionLabel={(option) => option?.name}
               errorMessage={errors.role}
               required
+              buttonClassName="py-1.5"
             />
           </div>
 

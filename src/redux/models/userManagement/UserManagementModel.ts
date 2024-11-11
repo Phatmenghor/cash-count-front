@@ -10,7 +10,6 @@ export interface userManagementModel {
   name: string;
   username: string;
   branchMnemonic: string;
-  department: Department;
   position: Position;
   userType: string;
   email: string;
@@ -18,15 +17,10 @@ export interface userManagementModel {
   roles: Role[];
 }
 
-interface Department {
-  id: number;
-  code: string;
-  name: string;
-}
-
 interface Position {
   id: number;
   name: string;
+  fullName: string;
 }
 
 interface Role {

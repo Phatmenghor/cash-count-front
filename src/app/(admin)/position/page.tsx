@@ -5,7 +5,7 @@ import Pagination from "@/components/pagination/Pagination";
 import Button from "@/components/custom/Button";
 import Input from "@/components/custom/Input";
 import { pageSizeData } from "@/constants/dataListing";
-import { FiEdit, FiPlus } from "react-icons/fi";
+import { FiEdit, FiLoader, FiPlus } from "react-icons/fi";
 import { debounce } from "@/utils/function/debounce";
 import EmptyState from "@/components/emthyData/EmptyState";
 import DropdownSize from "@/components/custom/DropdownSize";
@@ -14,21 +14,27 @@ import { PositionListModel } from "@/redux/models/position/PositionListModel";
 import { PositionModel } from "@/redux/models/register/PositionModel";
 import ModalCreateEditPosition from "@/components/modal/ModalCreateEditPosition";
 import { PositionService } from "@/redux/service/positionService";
+import { Switch } from "@/components/custom/Switch";
+import { FaTimes } from "react-icons/fa";
 
 const PositionPage: React.FC = () => {
   const [positionList, setPositionList] = useState<PositionListModel>({
     data: [],
     pagination: null,
   });
-  const [size, setSize] = useState<number>(15);
+  const [size, setSize] = useState<number>(10);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const headers = ["Number", "Position", "Actions"];
-  const listSize = positionList.pagination?.currentPage ?? 15;
+  const headers = ["Number", "Short name", "Full name", "Status", "Actions"];
+  const listSize = positionList.pagination?.currentPage ?? 10;
   const [isModalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [currentPosition, setCurrentPosition] = useState<PositionModel | null>(
     null
   );
+  const [loadingUpdate, setLoadingUpdate] = useState({
+    id: 0,
+    loading: false,
+  });
 
   useEffect(() => {
     fetchData();
@@ -43,7 +49,7 @@ const PositionPage: React.FC = () => {
   }
 
   function onPageChange(value: number) {
-    fetchData(value, positionList.pagination?.pageSize ?? 15);
+    fetchData(value, positionList.pagination?.pageSize ?? 10);
   }
 
   function handlePageSize(value: number) {
@@ -86,7 +92,11 @@ const PositionPage: React.FC = () => {
     setModalOpen(true);
   };
 
-  const handleCreateEditBranch = async (data: { name: string }) => {
+  const handleCreateEditBranch = async (data: {
+    name: string;
+    fullName: string;
+    status: number;
+  }) => {
     if (currentPosition) {
       updateBranch({ ...currentPosition, ...data });
     } else {
@@ -95,12 +105,13 @@ const PositionPage: React.FC = () => {
     setModalOpen(false);
   };
 
-  async function createDepartment(data: { name: string }) {
+  async function createDepartment(data: {
+    name: string;
+    fullName: string;
+    status: number;
+  }) {
     setLoading(true);
-    const response = await PositionService.createPosition({
-      name: data.name,
-    });
-
+    const response = await PositionService.createPosition(data);
     if (response.success) {
       setPositionList((prevBranchList) => ({
         ...prevBranchList,
@@ -125,22 +136,79 @@ const PositionPage: React.FC = () => {
       }));
       showToast("Position updated successfully!", "success");
     } else {
-      showToast("Failed to update position.", "error");
+      showToast(response.data, "error");
     }
     setLoading(false);
   }
 
+  async function toggleUserStatus(position: PositionModel) {
+    setLoadingUpdate({
+      id: position.id,
+      loading: true,
+    });
+    const statusUpdate = position.status === 1 ? 0 : 1;
+    const response = await PositionService.updatePosition({
+      ...position,
+      status: statusUpdate,
+    });
+    if (response) {
+      setPositionList((prev) => ({
+        ...prev,
+        data: prev.data.map((item: PositionModel) =>
+          item.id == position.id
+            ? { ...position, ...{ status: statusUpdate } }
+            : item
+        ),
+      }));
+      if (statusUpdate === 0) {
+        showToast(
+          `${position.fullName} has been deactivated successfully!`,
+          "success"
+        );
+      } else if (statusUpdate === 1) {
+        showToast(
+          `${position.fullName} has been activated successfully!`,
+          "success"
+        );
+      }
+    } else {
+      showToast(
+        `Failed to update status for ${position.name}. Please try again.`,
+        "error"
+      );
+    }
+    setLoadingUpdate({
+      id: 0,
+      loading: false,
+    });
+  }
+
+  const clearSearch = () => {
+    setSearchTerm("");
+    handleSearch("");
+  };
+
   return (
     <div className="px-4">
       <div className="flex items-center mb-4 justify-between">
-        <Input
-          type="text"
-          placeholder="Search position role ..."
-          value={searchTerm}
-          onChange={onSearch}
-          className="mr-4 py-1 max-w-md"
-          data-aos="fade-right"
-        />
+        <div className="relative rounded  max-w-md">
+          <Input
+            type="text"
+            placeholder="Search position ..."
+            value={searchTerm}
+            onChange={onSearch}
+            className="mr-4 py-1 pr-8"
+            data-aos="fade-right"
+          />
+          {searchTerm && (
+            <button
+              onClick={clearSearch}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+            >
+              <FaTimes /> {/* Clear icon */}
+            </button>
+          )}
+        </div>
         <Button
           onClick={handleOpenCreateModal}
           className="text-white flex items-center py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
@@ -167,7 +235,7 @@ const PositionPage: React.FC = () => {
           <tbody>
             {positionList.data.length === 0 ? (
               <tr>
-                <td colSpan={3} className="hover:bg-white">
+                <td colSpan={4} className="hover:bg-white">
                   <EmptyState message="No position available." />
                 </td>
               </tr>
@@ -176,8 +244,34 @@ const PositionPage: React.FC = () => {
                 const displayIndex = (listSize - 1) * size + index + 1;
                 return (
                   <tr key={data.id} className="hover:bg-gray-200">
-                    <td>{displayIndex}</td>
-                    <td>{data.name}</td>
+                    <td className="truncate">{displayIndex}</td>
+                    <td className="truncate">{data.name}</td>
+                    <td className="truncate">{data.fullName}</td>
+                    <td className="truncate">
+                      <div className="flex-1 flex items-center">
+                        <Switch
+                          disable={loadingUpdate.loading}
+                          checked={data.status === 1}
+                          onChange={() => toggleUserStatus(data)}
+                        />
+                        <span
+                          className={`ml-2 py-[1px] px-2 rounded-full text-[10px] ${
+                            data.status ? "bg-green-500" : "bg-red-500"
+                          } text-white`}
+                        >
+                          {loadingUpdate.loading &&
+                          loadingUpdate.id == data.id ? (
+                            <div className="px-2">
+                              <FiLoader className="animate-spin  h-4 w-4" />
+                            </div>
+                          ) : data.status === 1 ? (
+                            "Active"
+                          ) : (
+                            "Inactive"
+                          )}
+                        </span>
+                      </div>
+                    </td>
                     <td>
                       <button
                         onClick={() => {
@@ -214,7 +308,7 @@ const PositionPage: React.FC = () => {
         isOpen={isModalOpen}
         onClose={() => setModalOpen(false)}
         onConfirm={handleCreateEditBranch}
-        title={currentPosition ? "Edit Department" : "Create New Department"}
+        title={currentPosition ? "Edit Position" : "Create New Position"}
         initialData={currentPosition ? currentPosition : undefined}
         loadingButton={loading}
       />

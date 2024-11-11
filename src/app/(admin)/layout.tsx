@@ -7,6 +7,7 @@ import MenuSidebar from "@/components/sidebar/MenuSidebar";
 import Navbar from "@/components/layout/Navbar";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import Head from "next/head";
 
 export default function LayoutWithSidebar({
   children,
@@ -19,6 +20,9 @@ export default function LayoutWithSidebar({
 
   return (
     <html lang="en">
+      <Head>
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <body className="flex h-screen container">
         {/* Toast container should be outside of your main layout content */}
         <ToastContainer

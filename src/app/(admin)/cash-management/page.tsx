@@ -191,7 +191,7 @@ const CashManagementPage: React.FC = () => {
           <tbody>
             {cashRecordList.data.length === 0 ? (
               <tr>
-                <td colSpan={9} className="hover:bg-white">
+                <td colSpan={10} className="hover:bg-white">
                   <EmptyState message="No cash available." />
                 </td>
               </tr>

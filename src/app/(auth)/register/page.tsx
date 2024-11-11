@@ -13,6 +13,7 @@ import { RegisterService } from "@/redux/service/registerService";
 import { AllDataType, FormDataType } from "./type";
 import { BranchModel } from "@/redux/models/register/BranchModel";
 import { RoleModel } from "@/redux/models/register/RoleModel";
+import UserStorage from "@/utils/localStorage/UserStorage";
 
 const Register: React.FC = () => {
   const searchParams = useSearchParams();
@@ -22,7 +23,6 @@ const Register: React.FC = () => {
     roles: null,
     branches: null,
     positions: null,
-    departments: null,
   });
 
   const [formData, setFormData] = useState<FormDataType>({
@@ -32,7 +32,6 @@ const Register: React.FC = () => {
     firstName: "",
     lastName: "",
     password: "",
-    department: null,
     position: null,
     role: null,
     branch: null,
@@ -63,7 +62,6 @@ const Register: React.FC = () => {
       firstName: "",
       lastName: "",
       password: "",
-      department: null,
       position: null,
       role: null,
       branch: null,
@@ -80,7 +78,6 @@ const Register: React.FC = () => {
       otp,
       firstName,
       lastName,
-      department,
       position,
       branch,
       role,
@@ -97,7 +94,6 @@ const Register: React.FC = () => {
     if (step === 3) {
       if (!firstName) newErrors.firstName = "First name is required.";
       if (!lastName) newErrors.lastName = "Last name is required.";
-      if (!department) newErrors.department = "Department is required.";
       if (!position) newErrors.position = "Position is required.";
       if (!branch) newErrors.branch = "Branch is required.";
       if (!role) newErrors.role = "Role is required.";
@@ -172,6 +168,8 @@ const Register: React.FC = () => {
         username: formData.usernameAD,
       });
       if (resposne.success) {
+        UserStorage.setUsername(formData.usernameAD);
+        UserStorage.setPassword(formData.password);
         showToast("Your registration was successful!", "success");
         router.push(`/${route.DEACTIVATE_USER}`);
         setLoading(false);
@@ -437,7 +435,7 @@ const Register: React.FC = () => {
                     id="branch"
                     value={formData.branch}
                     onChange={(option) => handleChange("branch", option)}
-                    getOptionLabel={(option) => option.city}
+                    getOptionLabel={(option) => option.mnemonic}
                     options={allData.branches}
                     label="Branch"
                     errorMessage={errors.branch}
@@ -447,20 +445,6 @@ const Register: React.FC = () => {
               </div>
 
               <div className="flex space-x-2 ">
-                {/* Department */}
-                <div className="w-full">
-                  <CustomSelect
-                    id="department"
-                    value={formData.department}
-                    onChange={(option) => handleChange("department", option)}
-                    options={allData.departments}
-                    label="Department"
-                    getOptionLabel={(option) => option.name}
-                    errorMessage={errors.department}
-                    required
-                  />
-                </div>
-
                 {/* Position */}
                 <div className="w-full">
                   <CustomSelect

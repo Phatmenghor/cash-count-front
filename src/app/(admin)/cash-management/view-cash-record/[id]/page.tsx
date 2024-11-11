@@ -2,7 +2,7 @@
 import ModalVerify from "@/components/modal/ModalVerify";
 import Button from "@/components/custom/Button";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { CashManagementService } from "@/redux/service/cashManagementService";
 import showToast from "@/components/toast/useToast";
 import { CashRecordDetailModel } from "@/redux/models/cashManagement/CashRecordDetailModel";
@@ -19,11 +19,7 @@ const EditViewCashRecord = ({ params }: { params: { id: number } }) => {
     null
   );
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  async function fetchData() {
+  const fetchData = useCallback(async () => {
     const response = await CashManagementService.getCashRecordById({
       id: idCashRecord,
     });
@@ -34,7 +30,11 @@ const EditViewCashRecord = ({ params }: { params: { id: number } }) => {
       setCashInSystem(responseSystem);
     }
     setCashRecordDetail(response.data);
-  }
+  }, [idCashRecord]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   const handleViewFile = async () => {
     const resposne = await CashManagementService.getViewPDFById({

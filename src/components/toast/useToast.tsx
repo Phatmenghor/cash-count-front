@@ -6,7 +6,7 @@ const showToast = (
   type: "success" | "error" | "info" | "warning" = "info"
 ) => {
   // Set autoClose based on type
-  const autoClose = type == "error" || type == "warning" ? 6000 : 2500;
+  const autoClose = type == "error" || type == "warning" ? 8000 : 4000;
 
   // Define options with proper typing for position
   const options: ToastOptions = {

@@ -8,7 +8,6 @@ import CustomSelect from "@/components/custom/CustomSelect";
 import Input from "@/components/custom/Input";
 import FormMessage from "@/components/errorHandle/FormMessage";
 import { BranchModel } from "@/redux/models/register/BranchModel";
-import { DepartmentModel } from "@/redux/models/register/DepartmentModel";
 import { PositionModel } from "@/redux/models/register/PositionModel";
 import { RoleModel } from "@/redux/models/register/RoleModel";
 import { RegisterService } from "@/redux/service/registerService";
@@ -24,7 +23,6 @@ interface FormDataType {
   name: string;
   email: string;
   otp: string;
-  department: DepartmentModel | null;
   position: PositionModel | null;
   role: RoleModel | null;
   branch: BranchModel | null;
@@ -40,7 +38,6 @@ const ProfileSelfPage = () => {
     email: "",
     otp: "",
     name: "",
-    department: null,
     position: null,
     role: null,
     branch: null,
@@ -49,7 +46,6 @@ const ProfileSelfPage = () => {
     roles: null,
     branches: null,
     positions: null,
-    departments: null,
   });
 
   const handleChange = (key: keyof typeof formData, option: unknown) => {
@@ -83,7 +79,6 @@ const ProfileSelfPage = () => {
         email: userData.email,
         name: userData.name,
         branch: userData.branch,
-        department: userData.department,
         position: userData.position,
         role: userData.role,
       });
@@ -126,7 +121,6 @@ const ProfileSelfPage = () => {
       name: formData.name,
       roleId: formData.role!.id,
       branchId: formData.branch!.id,
-      departmentId: formData.department!.id,
       positionId: formData.position!.id,
     };
 
@@ -166,8 +160,7 @@ const ProfileSelfPage = () => {
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
-    const { department, position, branch, role, name } = formData;
-    if (!department) newErrors.department = "Department is required.";
+    const { position, branch, role, name } = formData;
     if (!position) newErrors.position = "Position is required.";
     if (!branch) newErrors.branch = "Branch is required.";
     if (!role) newErrors.role = "Role is required.";
@@ -212,24 +205,12 @@ const ProfileSelfPage = () => {
                 value={formData.name}
                 placeholder="Enter your name"
                 onChange={handleInputChange}
-                className="py-1"
+                className="py-1.5"
               />
               {errors.name && (
                 <FormMessage message={errors.name} type="error" />
               )}
             </div>
-
-            {/* Department */}
-            <CustomSelect
-              id="department"
-              value={formData.department}
-              onChange={(option) => handleChange("department", option)}
-              options={allData.departments}
-              label="Department"
-              getOptionLabel={(option) => option?.name}
-              errorMessage={errors.branch}
-              required
-            />
 
             {/* Branch */}
             <CustomSelect
@@ -238,9 +219,23 @@ const ProfileSelfPage = () => {
               onChange={(option) => handleChange("branch", option)}
               options={allData.branches}
               label="Branch"
-              getOptionLabel={(option) => option?.city}
+              getOptionLabel={(option) => option?.mnemonic}
               errorMessage={errors.branch}
               required
+              buttonClassName="py-1.5"
+            />
+
+            {/* Branch */}
+            <CustomSelect
+              id="position"
+              value={formData.position}
+              onChange={(option) => handleChange("position", option)}
+              options={allData.positions}
+              label="Position"
+              getOptionLabel={(option) => option?.fullName}
+              errorMessage={errors.branch}
+              required
+              buttonClassName="py-1.5"
             />
 
             {/* Role */}
@@ -253,6 +248,7 @@ const ProfileSelfPage = () => {
               getOptionLabel={(option) => option?.name}
               errorMessage={errors.role}
               required
+              buttonClassName="py-1.5"
             />
 
             {/* Email */}
@@ -270,7 +266,7 @@ const ProfileSelfPage = () => {
                 value={formData.email}
                 placeholder="Enter your name"
                 onChange={handleInputChange}
-                className="py-1"
+                className="py-1.5"
               />
               {errors.name && (
                 <FormMessage message={errors.email} type="error" />
@@ -392,22 +388,7 @@ const ProfileSelfPage = () => {
                 Position<span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userData?.position.name}
-                className="py-1.5"
-                disabled={true}
-              />
-            </div>
-
-            {/* Department */}
-            <div>
-              <label
-                htmlFor="department"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Department<span className="text-red-500 ml-1">*</span>
-              </label>
-              <Input
-                value={userData?.department.name}
+                value={userData?.position.fullName}
                 className="py-1.5"
                 disabled={true}
               />
@@ -464,7 +445,7 @@ const ProfileSelfPage = () => {
                 htmlFor="city"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                City<span className="text-red-500 ml-1">*</span>
+                Location<span className="text-red-500 ml-1">*</span>
               </label>
               <Input
                 value={userData?.branch.city}

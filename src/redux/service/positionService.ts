@@ -9,11 +9,15 @@ interface getPositionParams {
 
 interface createPositionParams {
   name: string;
+  fullName: string;
+  status: number;
 }
 
 interface updatePositionParams {
   id: number;
   name: string;
+  fullName: string;
+  status: number;
 }
 
 export class PositionService {
@@ -72,12 +76,23 @@ export class PositionService {
         success: true,
         data: response.data.data,
       };
-    } catch {
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response && error.response.status === 403) {
+          return {
+            success: false,
+            data: "This Positon is already created. Please try a different one.",
+          };
+        }
+        return {
+          success: false,
+          data: "Failed to update position. Please try again.",
+        };
+      }
       return {
         success: false,
+        data: "An unexpected error occurred. Please check your connection.",
       };
     }
   };
-
-  
 }

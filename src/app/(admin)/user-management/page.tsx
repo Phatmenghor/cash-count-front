@@ -20,6 +20,8 @@ import EmptyState from "@/components/emthyData/EmptyState";
 import { Switch } from "@/components/custom/Switch";
 import Pagination from "@/components/pagination/Pagination";
 import FilterUser from "@/components/custom/FilterUser";
+import Head from "next/head";
+import { FaTimes } from "react-icons/fa";
 
 const UserManagement = () => {
   const router = useRouter();
@@ -133,134 +135,151 @@ const UserManagement = () => {
     setUserData(response);
   }
 
+  const clearSearch = () => {
+    setSearchTerm("");
+    handleSearch("");
+  };
+
+  console.log("### ===", userData.data);
+
   return (
-    <div className="px-4">
-      {/* Search and Add Record Section */}
-      <div className="flex items-center mb-4 justify-between">
-        <Input
-          type="text"
-          placeholder="Search user ..."
-          value={searchTerm}
-          onChange={onSearch}
-          className="mr-4 py-1 max-w-md"
-          data-aos="fade-right"
-        />
-        <FilterUser
-          options={userStatus}
-          onSelect={handleFilterStatus}
-          label="Select User"
-        />
-      </div>
-
-      {/* User List Table */}
-      <div className="overflow-auto min-h-[70vh]">
-        <table
-          data-aos="fade-up"
-          className="min-w-full border-collapse border border-gray-300"
-        >
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Full Name</th>
-              <th>Email</th>
-              <th>AD User</th>
-              <th>Position</th>
-              <th>Branch</th>
-              <th>Department</th>
-              <th>Role</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {userData.data.length === 0 ? (
-              <tr>
-                <td colSpan={10} className="hover:bg-white">
-                  <EmptyState
-                    message="No user available."
-                    icon={<AiOutlineUser size={94} />}
-                  />
-                </td>
-              </tr>
-            ) : (
-              userData.data.map((user: userManagementModel, index) => {
-                const displayIndex = (listSize - 1) * size + index + 1;
-                return (
-                  <tr key={user.id}>
-                    <td className="truncate">{displayIndex}</td>
-                    <td className="truncate">{user.name}</td>
-                    <td className="truncate">{user.email}</td>
-                    <td className="truncate">{user.username}</td>
-                    <td className="truncate">{user.position.name}</td>
-                    <td className="truncate">{user.branchMnemonic}</td>
-                    <td className="truncate">{user.department.name}</td>
-                    <td className="truncate">{user.roles[0].name}</td>
-                    <td className="truncate">
-                      <div className="flex-1 flex items-center">
-                        <Switch
-                          disable={loadingUpdate.loading}
-                          checked={user.status === 1}
-                          onChange={() => toggleUserStatus(user)}
-                        />
-                        <span
-                          className={`ml-2 py-[1px] px-2 rounded-full text-[10px] ${
-                            user.status ? "bg-green-500" : "bg-red-500"
-                          } text-white`}
-                        >
-                          {loadingUpdate.loading &&
-                          loadingUpdate.id == user.id ? (
-                            <div className="px-2">
-                              <FiLoader className="animate-spin  h-4 w-4" />
-                            </div>
-                          ) : user.status === 1 ? (
-                            "Active"
-                          ) : (
-                            "Inactive"
-                          )}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="flex items-center truncate">
-                      <button
-                        onClick={() =>
-                          router.push(`/user-management/${user.id}?mode=view`)
-                        }
-                        className="bg-gray-300 text-white px-2 p-1 rounded hover:bg-gray-400 mr-2 flex items-center"
-                      >
-                        <LuView size={14} className="text-white" />
-                      </button>
-                      <button
-                        onClick={() =>
-                          router.push(`/user-management/${user.id}?mode=edit`)
-                        }
-                        className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"
-                      >
-                        <FiEdit size={14} className="text-white" />
-                      </button>
-                    </td>
-                  </tr>
-                );
-              })
+    <div>
+      <Head>Contact Page</Head>
+      <div className="px-4">
+        {/* Search and Add Record Section */}
+        <div className="flex items-center mb-4 justify-between">
+          <div className="relative rounded  max-w-md">
+            <Input
+              type="text"
+              placeholder="Search user ..."
+              value={searchTerm}
+              onChange={onSearch}
+              className="mr-4 py-1 pr-8"
+              data-aos="fade-right"
+            />
+            {searchTerm && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-500"
+              >
+                <FaTimes /> {/* Clear icon */}
+              </button>
             )}
-          </tbody>
-        </table>
-      </div>
-
-      {userData.data.length > 0 && (
-        <div className="flex justify-between mt-8 mb-16">
-          <DropdownSize
-            options={pageSizeData}
-            onSelect={handlePageSize}
-            label="Select Size"
-          />
-
-          <Pagination
-            totalPages={userData.pagination?.totalPages ?? 1}
-            currentPage={userData.pagination?.currentPage ?? 1}
-            onPageChange={onPageChange}
+          </div>
+          <FilterUser
+            options={userStatus}
+            onSelect={handleFilterStatus}
+            label="Select User"
           />
         </div>
-      )}
+        {/* User List Table */}
+        <div className="overflow-auto min-h-[70vh]">
+          <table
+            data-aos="fade-up"
+            className="min-w-full border-collapse border border-gray-300"
+          >
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Full Name</th>
+                <th>Email</th>
+                <th>AD User</th>
+                <th>Position</th>
+                <th>Position Fullname</th>
+                <th>Branch</th>
+                <th>Role</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {userData.data.length === 0 ? (
+                <tr>
+                  <td colSpan={10} className="hover:bg-white">
+                    <EmptyState
+                      message="No user available."
+                      icon={<AiOutlineUser size={94} />}
+                    />
+                  </td>
+                </tr>
+              ) : (
+                userData.data.map((user: userManagementModel, index) => {
+                  const displayIndex = (listSize - 1) * size + index + 1;
+                  return (
+                    <tr key={user.id}>
+                      <td className="truncate">{displayIndex}</td>
+                      <td className="truncate">{user.name}</td>
+                      <td className="truncate">{user.email}</td>
+                      <td className="truncate">{user.username}</td>
+                      <td className="truncate">{user.position.name}</td>
+                      <td className="truncate">{user.position.fullName}</td>
+                      <td className="truncate">{user.branchMnemonic}</td>
+                      <td className="truncate">{user.roles[0].name}</td>
+                      <td className="truncate">
+                        <div className="flex-1 flex items-center">
+                          <Switch
+                            disable={loadingUpdate.loading}
+                            checked={user.status === 1}
+                            onChange={() => toggleUserStatus(user)}
+                          />
+                          <span
+                            className={`ml-2 py-[1px] px-2 rounded-full text-[10px] ${
+                              user.status ? "bg-green-500" : "bg-red-500"
+                            } text-white`}
+                          >
+                            {loadingUpdate.loading &&
+                            loadingUpdate.id == user.id ? (
+                              <div className="px-2">
+                                <FiLoader className="animate-spin  h-4 w-4" />
+                              </div>
+                            ) : user.status === 1 ? (
+                              "Active"
+                            ) : (
+                              "Inactive"
+                            )}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="flex items-center truncate">
+                        <button
+                          onClick={() =>
+                            router.push(`/user-management/${user.id}?mode=view`)
+                          }
+                          className="bg-gray-300 text-white px-2 p-1 rounded hover:bg-gray-400 mr-2 flex items-center"
+                        >
+                          <LuView size={14} className="text-white" />
+                        </button>
+                        <button
+                          onClick={() =>
+                            router.push(`/user-management/${user.id}?mode=edit`)
+                          }
+                          className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"
+                        >
+                          <FiEdit size={14} className="text-white" />
+                        </button>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+        {userData.data.length > 0 && (
+          <div className="flex justify-between mt-8 mb-16">
+            <DropdownSize
+              options={pageSizeData}
+              onSelect={handlePageSize}
+              label="Select Size"
+            />
+            <Pagination
+              totalPages={userData.pagination?.totalPages ?? 1}
+              currentPage={userData.pagination?.currentPage ?? 1}
+              onPageChange={onPageChange}
+            />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

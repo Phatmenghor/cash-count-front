@@ -1,0 +1,6 @@
+apps:
+  - script: "npm start -- -p 4005"
+    name: "CASH-MANAGEMENT-FRONT"
+    instances: 1
+    exec_mode: fork
+    watch: false

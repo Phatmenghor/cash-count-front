@@ -5,22 +5,13 @@ import {
   FaUserCircle,
   FaSignOutAlt,
 } from "react-icons/fa";
-import { MdGroup, MdPersonAdd, MdWork } from "react-icons/md";
+import { MdGroup, MdPersonAdd } from "react-icons/md";
 import { UserRoleEnum } from "../userRole";
 
 export const menuItemsSlibar = [
   {
     title: "MENU",
     items: [
-      {
-        label: "Department",
-        href: "/department",
-        icon: <MdWork />, // Add an icon
-        visible: [
-          UserRoleEnum.IT_ADMIN_USER,
-          UserRoleEnum.OPERATION_ADMIN_USER,
-        ],
-      },
       {
         label: "Branch",
         href: "/branch",

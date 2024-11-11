@@ -18,6 +18,8 @@ interface Role {
 interface Position {
   id: number;
   name: string;
+  fullName: string;
+  status: number;
 }
 
 interface Department {
