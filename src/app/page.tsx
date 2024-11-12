@@ -7,6 +7,7 @@ import TokenStorage from "@/utils/localStorage/tokenStorage";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import Image from "next/image";
 
 export default function App() {
   const router = useRouter();
@@ -44,7 +45,13 @@ export default function App() {
         transition={{ duration: 1.5 }}
         onAnimationComplete={handleAnimationComplete}
       >
-        <img src="img/images.png" alt="Logo" className="w-[35vw] h-auto" />
+        <Image
+          src="/img/images.png" // Path to your image
+          alt="Logo"
+          width={500} // You can specify a width (or use dynamic sizing)
+          height={281} // Use dynamic height if necessary
+          className="w-[35vw] h-auto" // Tailwind styles can still be applied
+        />
       </motion.div>
 
       {/* Heading Animation */}

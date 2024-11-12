@@ -4,7 +4,6 @@ import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import "aos/dist/aos.css";
 import ReduxProvider from "./ReduxProvider";
-import { ToastContainer } from "react-toastify";
 
 export default function RootLayout({
   children,
