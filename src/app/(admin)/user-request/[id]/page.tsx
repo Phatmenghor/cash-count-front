@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Button from "@/components/custom/Button";
 import Input from "@/components/custom/Input";
 import { UserProfile } from "@/redux/models/userManagement/UserProfileModel";
@@ -22,11 +22,7 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
   const router = useRouter();
   const typeView = userRequest?.requestType != "Create-Info";
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  async function fetchData() {
+  const fetchData = useCallback(async () => {
     const responseResquest = await UserManagementService.getUserRequestByID({
       id: idUser,
     });
@@ -41,7 +37,11 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
       setUserInfo(response);
     }
     setUserRequest(responseResquest.data);
-  }
+  }, [idUser]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   async function handleApprove() {
     setLoading(true);

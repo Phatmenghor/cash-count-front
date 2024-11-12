@@ -65,16 +65,29 @@ class UserManagementService {
     search = "",
   }: getUserParams) => {
     try {
-      // const response = await axiosWithAuth.get(
-      //   `/api/admin/get-user-all?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`
-      // );
-      const response = await axiosWithAuth.get(
-        `/api/admin/get-user-normal-for-authorize?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`
-      );
-      return {
-        data: response.data.data,
-        pagination: response.data.pagination,
-      };
+      const userRole = UserRoleStorage.getUserRole();
+      if (userRole == UserRoleEnum.IT_ADMIN_USER) {
+        const response = await axiosWithAuth.get(
+          `/api/admin/get-user-all?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`
+        );
+        return {
+          data: response.data.data,
+          pagination: response.data.pagination,
+        };
+      } else if (userRole == UserRoleEnum.OPERATION_ADMIN_USER) {
+        const response = await axiosWithAuth.get(
+          `/api/admin/get-user-normal?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`
+        );
+        return {
+          data: response.data.data,
+          pagination: response.data.pagination,
+        };
+      } else {
+        return {
+          data: [],
+          pagination: null,
+        };
+      }
     } catch {
       return { data: [], pagination: null };
     }
@@ -87,14 +100,31 @@ class UserManagementService {
     status = 1,
   }: getUserParams) => {
     try {
-      const response = await axiosWithAuth.post(
-        `/api/admin/get-user-all?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`,
-        { status }
-      );
-      return {
-        data: response.data.data,
-        pagination: response.data.pagination,
-      };
+      const userRole = UserRoleStorage.getUserRole();
+      if (userRole == UserRoleEnum.IT_ADMIN_USER) {
+        const response = await axiosWithAuth.post(
+          `/api/admin/get-user-all?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`,
+          { status }
+        );
+        return {
+          data: response.data.data,
+          pagination: response.data.pagination,
+        };
+      } else if (userRole == UserRoleEnum.OPERATION_ADMIN_USER) {
+        const response = await axiosWithAuth.post(
+          `/api/admin/get-user-normal?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`,
+          { status }
+        );
+        return {
+          data: response.data.data,
+          pagination: response.data.pagination,
+        };
+      } else {
+        return {
+          data: [],
+          pagination: null,
+        };
+      }
     } catch {
       return { data: [], pagination: null };
     }

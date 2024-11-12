@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { FiChevronDown, FiX } from "react-icons/fi";
 import {
   DropdownMenu,
@@ -47,12 +47,9 @@ const CustomSelect = <T,>({
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
   const searchInputRef = useRef<HTMLInputElement | null>(null); // Reference for input field
 
-  const handleSearch = useCallback(
-    debounce(async (query: string) => {
-      setDebouncedSearchTerm(query); // Set the debounced search term
-    }, 10),
-    []
-  );
+  const handleSearch = (query: string) => {
+    setDebouncedSearchTerm(query);
+  };
 
   // Handle search term change
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {

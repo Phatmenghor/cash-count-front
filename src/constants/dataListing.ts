@@ -23,7 +23,7 @@ export const userStatus: statusUser[] = [
   { id: 3, status: 0, name: "Inactive" },
 ];
 
-export const headersReport: String[] = [
+export const headersReport: string[] = [
   "No",
   "Date",
   "Branch",

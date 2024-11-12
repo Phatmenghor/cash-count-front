@@ -1,4 +1,4 @@
-import { axiosNoAuth, axiosWithAuth } from "@/utils/api/axios";
+import { axiosWithAuth } from "@/utils/api/axios";
 
 interface getAllReportModel {
   fromDate: string;
@@ -18,7 +18,7 @@ export class ReportService {
         `/api/report/preview?fromDate=${fromDate}&toDate=${toDate}&status=${status}`
       );
       return response.data.data;
-    } catch (error) {
+    } catch {
       return [];
     }
   };

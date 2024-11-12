@@ -1,22 +1,18 @@
 // src/app/deactivate-users/page.tsx
 "use client";
-import showToast from "@/components/toast/useToast";
+
+import UserStorage from "@/utils/localStorage/userStorage";
 import { route } from "@/constants/routed";
 import { UserRoleEnum } from "@/constants/userRole";
 import { LoginService } from "@/redux/service/loginService";
-import UserStorage from "@/utils/localStorage/userStorage";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect } from "react";
 import { FaExclamationTriangle } from "react-icons/fa"; // Alert icon
 
 const DeactivateUser: React.FC = () => {
   const router = useRouter();
 
-  useEffect(() => {
-    loginUser();
-  }, []);
-
-  const loginUser = async () => {
+  const fetchData = useCallback(async () => {
     const username = UserStorage.getUsername();
     const password = UserStorage.getPassword();
 
@@ -38,7 +34,11 @@ const DeactivateUser: React.FC = () => {
         return;
       }
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">

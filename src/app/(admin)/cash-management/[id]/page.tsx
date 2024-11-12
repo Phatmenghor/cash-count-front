@@ -132,7 +132,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   // Handle input changes
   const handleCashOnHandChange = (

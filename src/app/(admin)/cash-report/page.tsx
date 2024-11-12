@@ -17,7 +17,7 @@ import showToast from "@/components/toast/useToast";
 import { UserRoleEnum } from "@/constants/userRole";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 
-export function ReportDownloadPage() {
+ function CashReportPage() {
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [openPreview, setOpenPreview] = useState<boolean>(false);
@@ -327,7 +327,7 @@ export function ReportDownloadPage() {
   );
 }
 
-export default withAuthWrapper(ReportDownloadPage, [
+export default withAuthWrapper(CashReportPage, [
   UserRoleEnum.CHECKER_USER,
   UserRoleEnum.INPUTTER_USER,
   UserRoleEnum.AUTHORIZER_USER,
