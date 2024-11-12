@@ -4,7 +4,7 @@ import showToast from "@/components/toast/useToast";
 import { route } from "@/constants/routed";
 import { UserRoleEnum } from "@/constants/userRole";
 import { LoginService } from "@/redux/service/loginService";
-import UserStorage from "@/utils/localStorage/UserStorage";
+import UserStorage from "@/utils/localStorage/userStorage";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { FaExclamationTriangle } from "react-icons/fa"; // Alert icon

@@ -22,6 +22,8 @@ import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 import { getStatusColor } from "@/utils/function/checkColorStatus";
 import { FiPlus } from "react-icons/fi";
 import FilterStatusCash from "@/components/custom/FilterStatusCash";
+import UserTypeStorage from "@/utils/localStorage/userTypeStorage";
+import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 
 const DropdownSize = dynamic(() => import("@/components/custom/DropdownSize"));
 const Pagination = dynamic(() => import("@/components/pagination/Pagination"));
@@ -150,22 +152,23 @@ const CashManagementPage: React.FC = () => {
           data-aos="fade-right"
         />
 
-        {UserRoleStorage.getUserRole() == UserRoleEnum.INPUTTER_USER && (
-          <div className="flex space-x-2">
-            <FilterStatusCash
-              options={statusCashData}
-              onSelect={handleFilterStatus}
-              label="Select Status"
-            />
-            <Button
-              data-aos="fade-left"
-              onClick={() => router.push("/cash-management/add-cash")}
-              className="text-white flex items-center py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
-            >
-              <FiPlus size={18} />
-            </Button>
-          </div>
-        )}
+        {UserRoleStorage.getUserRole() == UserRoleEnum.INPUTTER_USER &&
+          UserTypeStorage.getUserType() != "HO" && (
+            <div className="flex space-x-2">
+              <FilterStatusCash
+                options={statusCashData}
+                onSelect={handleFilterStatus}
+                label="Select Status"
+              />
+              <Button
+                data-aos="fade-left"
+                onClick={() => router.push("/cash-management/add-cash")}
+                className="text-white flex items-center py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
+              >
+                <FiPlus size={18} />
+              </Button>
+            </div>
+          )}
       </div>
 
       {/* User List Table */}
@@ -226,7 +229,8 @@ const CashManagementPage: React.FC = () => {
                       </button>
                       {cash.status == CashStatusEnum.PROCESSING &&
                         UserRoleStorage.getUserRole() ==
-                          UserRoleEnum.AUTHORIZER_USER && (
+                          UserRoleEnum.AUTHORIZER_USER &&
+                        UserTypeStorage.getUserType() != "HO" && (
                           <button
                             onClick={() => onCheckCash(cash.id)}
                             className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 flex items-center"
@@ -237,7 +241,8 @@ const CashManagementPage: React.FC = () => {
 
                       {cash.status == CashStatusEnum.PENDING &&
                         UserRoleStorage.getUserRole() ==
-                          UserRoleEnum.CHECKER_USER && (
+                          UserRoleEnum.CHECKER_USER &&
+                        UserTypeStorage.getUserType() != "HO" && (
                           <button
                             onClick={() => onCheckCash(cash.id)}
                             className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 flex items-center"
@@ -249,7 +254,8 @@ const CashManagementPage: React.FC = () => {
                       {(cash.status == CashStatusEnum.REJECT ||
                         cash.status == CashStatusEnum.PENDING) &&
                         UserRoleStorage.getUserRole() ==
-                          UserRoleEnum.INPUTTER_USER && (
+                          UserRoleEnum.INPUTTER_USER &&
+                        UserTypeStorage.getUserType() != "HO" && (
                           <button
                             onClick={() => onEditCash(cash.id)}
                             className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"
@@ -285,4 +291,10 @@ const CashManagementPage: React.FC = () => {
   );
 };
 
-export default CashManagementPage;
+export default withAuthWrapper(CashManagementPage, [
+  UserRoleEnum.OPERATION_ADMIN_USER,
+  UserRoleEnum.CHECKER_USER,
+  UserRoleEnum.INPUTTER_USER,
+  UserRoleEnum.IT_ADMIN_USER,
+  UserRoleEnum.AUTHORIZER_USER,
+]);

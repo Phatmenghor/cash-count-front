@@ -105,6 +105,7 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
       positionId: formData.position!.id,
       roleId: formData.role!.id,
     };
+
     const response = await UserManagementService.updateUserById(
       userInfo!.id,
       profileData
@@ -179,6 +180,19 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
                 <FormMessage message={errors.name} type="error" />
               )}
             </div>
+
+            {/* Branch */}
+            <CustomSelect
+              id="position"
+              value={formData.position}
+              onChange={(option) => handleChange("position", option)}
+              options={allData.positions}
+              label="Position"
+              getOptionLabel={(option) => option?.name}
+              errorMessage={errors.branch}
+              required
+              buttonClassName="py-1.5"
+            />
 
             {/* Branch */}
             <CustomSelect

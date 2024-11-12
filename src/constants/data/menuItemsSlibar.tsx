@@ -56,6 +56,7 @@ export const menuItemsSlibar = [
           UserRoleEnum.INPUTTER_USER,
           UserRoleEnum.CHECKER_USER,
           UserRoleEnum.AUTHORIZER_USER,
+          UserRoleEnum.SHOW_ALL,
         ],
       },
     ],

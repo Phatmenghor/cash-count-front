@@ -7,12 +7,17 @@ import Image from "next/image";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 import { menuItemsSlibar } from "@/constants/data/menuItemsSlibar";
 import { UserRoleEnum } from "@/constants/userRole";
+import UserTypeStorage from "@/utils/localStorage/userTypeStorage";
 
 const MenuSidebar = () => {
   const pathname = usePathname();
   const [activeHref, setActiveHref] = useState(pathname);
   const dispatch = useDispatch();
   const role = UserRoleStorage.getUserRole() || UserRoleEnum.NONE;
+  const dataType =
+    UserTypeStorage.getUserType() == "HO"
+      ? UserRoleEnum.SHOW_ALL
+      : UserRoleEnum.NONE;
 
   useEffect(() => {
     setActiveHref(pathname);
@@ -42,7 +47,10 @@ const MenuSidebar = () => {
                 {section.title}
               </span>
               {section.items.map((item, index) => {
-                if (item.visible.includes(role as UserRoleEnum)) {
+                if (
+                  item.visible.includes(role as UserRoleEnum) ||
+                  item.visible.includes(dataType)
+                ) {
                   const isActive = activeHref == item.href;
                   return (
                     <Link

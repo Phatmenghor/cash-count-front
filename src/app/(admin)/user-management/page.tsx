@@ -140,8 +140,6 @@ const UserManagement = () => {
     handleSearch("");
   };
 
-  console.log("### ===", userData.data);
-
   return (
     <div>
       <Head>Contact Page</Head>

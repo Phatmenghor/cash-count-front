@@ -89,8 +89,7 @@ export class CashManagementService {
         success: true,
         message: "Cash record created successfully!",
       };
-    } catch (error) {
-      console.log("### ===", error);
+    } catch {
       return {
         success: false,
         message: "Failed to create cash record. Please try again.",
@@ -100,9 +99,7 @@ export class CashManagementService {
 
   static updateCashRecord = async (id: number, data: UpdateRecordModel) => {
     try {
-      const res = await axiosWithAuth.put(`/api/cash-counts/${id}`, data);
-      console.log("### ==res", res);
-      console.log("### ==res", data);
+      await axiosWithAuth.put(`/api/cash-counts/${id}`, data);
       return {
         success: true,
         message: "Cash record updated successfully!",
@@ -145,9 +142,7 @@ export class CashManagementService {
     try {
       const response = await axiosViewPDF.get(`/api/files/view/${data.id}`);
 
-      console.log("## ==response.data", response);
       const url = URL.createObjectURL(response.data);
-      console.log("### ====HAHA", url);
       return url;
     } catch {
       return null;

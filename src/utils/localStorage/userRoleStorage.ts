@@ -20,9 +20,10 @@ class UserRoleStorage {
    */
   static getUserRole() {
     if (typeof window !== "undefined") {
-      return localStorage.getItem(keyStorage.USER_ROLE_KEY) || null;
+      const role = localStorage.getItem(keyStorage.USER_ROLE_KEY);
+      return role as UserRoleEnum | null; // Ensures it's either a valid role or null
     }
-    return null; // Return null if not in the browser environment
+    return null;
   }
 
   /**

@@ -16,6 +16,8 @@ import ModalCreateEditBranch from "@/components/modal/ModalCreateEditBranch";
 import { BranchModel } from "@/redux/models/register/BranchModel";
 import showToast from "@/components/toast/useToast";
 import { FaTimes } from "react-icons/fa";
+import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
+import { UserRoleEnum } from "@/constants/userRole";
 
 const BranchPage: React.FC = () => {
   const [branchList, setBranchList] = useState<BranchListModel>({
@@ -258,4 +260,7 @@ const BranchPage: React.FC = () => {
   );
 };
 
-export default BranchPage;
+  export default withAuthWrapper(BranchPage, [
+    UserRoleEnum.IT_ADMIN_USER,
+    UserRoleEnum.OPERATION_ADMIN_USER,
+  ]);

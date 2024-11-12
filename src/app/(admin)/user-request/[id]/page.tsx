@@ -83,7 +83,7 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
     router.back();
   };
 
-  console.log("## ==", userRequest);
+
 
   return (
     <div className="px-6">

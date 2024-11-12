@@ -11,6 +11,7 @@ import { route } from "@/constants/routed";
 import { useRouter } from "next/navigation";
 import showToast from "../toast/useToast";
 import Link from "next/link";
+import UserTypeStorage from "@/utils/localStorage/userTypeStorage";
 
 const Navbar = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -30,9 +31,13 @@ const Navbar = () => {
     }
   }, [isOpenLogout]);
 
-  function fetchData() {
+  async function fetchData() {
     dispatch(UserManagementService.getUserByToken());
+    if (UserTypeStorage.getUserType() == null) {
+      await UserManagementService.getUserByTokenStore();
+    }
   }
+
 
   function onCloseModal() {
     dispatch(setCloseModalLogout());

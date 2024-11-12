@@ -1,7 +1,6 @@
 import keyEnv from "@/constants/env";
 import axios from "axios";
 import TokenStorage from "../localStorage/tokenStorage";
-import { useRouter } from "next/navigation";
 
 // Base Axios instance (no token required)
 const axiosNoAuth = axios.create({
@@ -44,8 +43,6 @@ axiosWithAuth.interceptors.request.use(
     if (token) {
       config.headers["Authorization"] = `Bearer ${token}`;
     } else {
-      const router = useRouter();
-      router.push("/login");
       console.warn("## No token found");
     }
 

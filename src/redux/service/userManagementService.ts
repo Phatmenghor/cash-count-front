@@ -3,6 +3,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { UserProfile } from "../models/userManagement/UserProfileModel";
 import { UserRoleEnum } from "@/constants/userRole";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
+import UserTypeStorage from "@/utils/localStorage/userTypeStorage";
 
 interface getUserParams {
   pageSize?: number;
@@ -44,6 +45,19 @@ class UserManagementService {
       return rejectWithValue("Failed to fetch user data");
     }
   });
+
+  static getUserByTokenStore = async () => {
+    try {
+      const response = await axiosWithAuth.get(`/auth/get-user-info-by-token`);
+      if (response.status == 200) {
+        const data: UserProfile = response.data.data;
+        UserTypeStorage.setUserType(data.branch.userType);
+      }
+      return response.data.data;
+    } catch {
+      return null;
+    }
+  };
 
   static getAllUsers = async ({
     pageSize = 15,

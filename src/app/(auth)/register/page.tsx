@@ -13,7 +13,7 @@ import { RegisterService } from "@/redux/service/registerService";
 import { AllDataType, FormDataType } from "./type";
 import { BranchModel } from "@/redux/models/register/BranchModel";
 import { RoleModel } from "@/redux/models/register/RoleModel";
-import UserStorage from "@/utils/localStorage/UserStorage";
+import UserStorage from "@/utils/localStorage/userStorage";
 
 const Register: React.FC = () => {
   const searchParams = useSearchParams();
