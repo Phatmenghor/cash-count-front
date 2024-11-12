@@ -222,7 +222,7 @@ const Register: React.FC = () => {
       data-aos="fade-up"
       className="flex flex-col items-center justify-center min-h-screen" // Updated container styling
     >
-      <div className="max-w-lg w-full h-full bg-white p-8 rounded-lg border border-gray-200">
+      <div className="max-w-lg w-full h-full bg-white p-8 rounded-lg shadow-lg transition-transform duration-300">
         {step > 1 && (
           <button
             type="button"

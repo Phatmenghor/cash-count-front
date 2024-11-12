@@ -4,6 +4,7 @@ import "react-toastify/dist/ReactToastify.css";
 import "./globals.css";
 import "aos/dist/aos.css";
 import ReduxProvider from "./ReduxProvider";
+import { ToastContainer } from "react-toastify";
 
 export default function RootLayout({
   children,
@@ -26,6 +27,16 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" />
       </head>
       <body>
+        <ToastContainer
+          position="top-right"
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+        />
         <ReduxProvider>{children}</ReduxProvider>
       </body>
     </html>

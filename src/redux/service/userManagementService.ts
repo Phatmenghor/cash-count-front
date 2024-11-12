@@ -65,8 +65,11 @@ class UserManagementService {
     search = "",
   }: getUserParams) => {
     try {
+      // const response = await axiosWithAuth.get(
+      //   `/api/admin/get-user-all?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`
+      // );
       const response = await axiosWithAuth.get(
-        `/api/admin/get-user-all?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`
+        `/api/admin/get-user-normal-for-authorize?pageSize=${pageSize}&currentPage=${currentPage}&search=${search}`
       );
       return {
         data: response.data.data,

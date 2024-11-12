@@ -16,19 +16,13 @@ export const menuItemsSlibar = [
         label: "Branch",
         href: "/branch",
         icon: <FaHome />, // Add an icon
-        visible: [
-          UserRoleEnum.IT_ADMIN_USER,
-          UserRoleEnum.OPERATION_ADMIN_USER,
-        ],
+        visible: [UserRoleEnum.IT_ADMIN_USER],
       },
       {
         label: "Position",
         href: "/position",
         icon: <FaCog />, // Add an icon
-        visible: [
-          UserRoleEnum.IT_ADMIN_USER,
-          UserRoleEnum.OPERATION_ADMIN_USER,
-        ],
+        visible: [UserRoleEnum.IT_ADMIN_USER],
       },
       {
         label: "User Management",

@@ -39,6 +39,13 @@ export class LoginService {
             data: "We couldn't find an account with that username. Please try again or crated new account.",
           };
         }
+        if (error.response && error.response.status === 401) {
+          return {
+            success: false,
+            status: 401,
+            data: "Your account is inactive. Please contact to admin for detail.",
+          };
+        }
         return {
           success: false,
           status: 400,

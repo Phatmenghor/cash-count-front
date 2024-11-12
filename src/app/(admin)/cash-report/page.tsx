@@ -119,7 +119,7 @@ export function ReportDownloadPage() {
   }
 
   return (
-    <div className="flex-1">
+    <div className="px-4">
       <div className="flex justify-between items-center mb-4">
         <h2 data-aos="fade-right" className="text-gray-700 hide">
           Cash Report
