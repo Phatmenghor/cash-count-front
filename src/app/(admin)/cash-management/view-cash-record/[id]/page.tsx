@@ -8,8 +8,10 @@ import showToast from "@/components/toast/useToast";
 import { CashRecordDetailModel } from "@/redux/models/cashManagement/CashRecordDetailModel";
 import { CashInSystemModel } from "@/redux/models/cashManagement/CashInSystemModel";
 import { FaFilePdf } from "react-icons/fa";
+import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
+import { UserRoleEnum } from "@/constants/userRole";
 
-const EditViewCashRecord = ({ params }: { params: { id: number } }) => {
+const ViewCashRecordPage = ({ params }: { params: { id: number } }) => {
   const idCashRecord = params.id;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
@@ -238,4 +240,9 @@ const EditViewCashRecord = ({ params }: { params: { id: number } }) => {
   );
 };
 
-export default EditViewCashRecord;
+export default withAuthWrapper(ViewCashRecordPage, [
+  UserRoleEnum.AUTHORIZER_USER,
+  UserRoleEnum.CHECKER_USER,
+  UserRoleEnum.INPUTTER_USER,
+  UserRoleEnum.SHOW_ALL,
+]);

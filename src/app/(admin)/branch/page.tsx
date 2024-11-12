@@ -260,7 +260,4 @@ const BranchPage: React.FC = () => {
   );
 };
 
-  export default withAuthWrapper(BranchPage, [
-    UserRoleEnum.IT_ADMIN_USER,
-    UserRoleEnum.OPERATION_ADMIN_USER,
-  ]);
+export default withAuthWrapper(BranchPage, [UserRoleEnum.IT_ADMIN_USER]);

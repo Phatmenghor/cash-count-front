@@ -9,6 +9,8 @@ import ModalConfirmation from "@/components/modal/ModalConfirmation";
 import showToast from "@/components/toast/useToast";
 import { useRouter } from "next/navigation";
 import { ToastContainer } from "react-toastify";
+import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
+import { UserRoleEnum } from "@/constants/userRole";
 
 const UserCompareRequest = ({ params }: { params: { id: number } }) => {
   const idUser = params.id;
@@ -82,8 +84,6 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
   const handleCancel = () => {
     router.back();
   };
-
-
 
   return (
     <div className="px-6">
@@ -376,4 +376,7 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
   );
 };
 
-export default UserCompareRequest;
+export default withAuthWrapper(UserCompareRequest, [
+  UserRoleEnum.IT_ADMIN_USER,
+  UserRoleEnum.OPERATION_ADMIN_USER,
+]);

@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import TokenStorage from "../localStorage/tokenStorage";
 import UserRoleStorage from "../localStorage/userRoleStorage";
+import UserTypeStorage from "../localStorage/userTypeStorage";
+import { UserRoleEnum } from "@/constants/userRole";
 
 interface AuthWrapperProps {
   children: React.ReactNode;
@@ -23,9 +25,17 @@ const AuthWrapper = ({ children, requiredRoles }: AuthWrapperProps) => {
       return;
     }
 
+    const dataType =
+      UserTypeStorage.getUserType() === "HO"
+        ? UserRoleEnum.SHOW_ALL
+        : UserRoleEnum.NONE;
+
     // Handle the case when role is null
-    if (!role || !requiredRoles.includes(role)) {
-      router.push("/deactivate-user");
+    if (
+      (!role || !requiredRoles.includes(role)) &&
+      dataType == UserRoleEnum.NONE
+    ) {
+      router.push("/no-permission");
       return;
     }
 

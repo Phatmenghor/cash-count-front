@@ -22,6 +22,8 @@ import Pagination from "@/components/pagination/Pagination";
 import FilterUser from "@/components/custom/FilterUser";
 import Head from "next/head";
 import { FaTimes } from "react-icons/fa";
+import { UserRoleEnum } from "@/constants/userRole";
+import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 
 const UserManagement = () => {
   const router = useRouter();
@@ -282,4 +284,7 @@ const UserManagement = () => {
   );
 };
 
-export default UserManagement;
+export default withAuthWrapper(UserManagement, [
+  UserRoleEnum.IT_ADMIN_USER,
+  UserRoleEnum.OPERATION_ADMIN_USER,
+]);

@@ -15,6 +15,7 @@ import { UpdateRecordModel } from "@/redux/models/cashManagement/UpdateRecordPar
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 import { UserRoleEnum } from "@/constants/userRole";
 import ModalConfirmation from "@/components/modal/ModalConfirmation";
+import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 
 const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
   const idCashRecord = params.id;
@@ -370,4 +371,8 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
   );
 };
 
-export default CheckCashManagementPage;
+export default withAuthWrapper(CheckCashManagementPage, [
+  UserRoleEnum.AUTHORIZER_USER,
+  UserRoleEnum.CHECKER_USER,
+  UserRoleEnum.INPUTTER_USER,
+]);

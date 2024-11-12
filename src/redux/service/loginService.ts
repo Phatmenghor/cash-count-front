@@ -1,6 +1,7 @@
 import { axiosNoAuth } from "@/utils/api/axios";
 import TokenStorage from "@/utils/localStorage/tokenStorage";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
+import UserTypeStorage from "@/utils/localStorage/userTypeStorage";
 import axios from "axios";
 
 interface LoginPayload {
@@ -18,6 +19,7 @@ export class LoginService {
       if (response.status === 200) {
         TokenStorage.setToken(response.data.data.userToken);
         UserRoleStorage.setUserRole(response.data.data.roleName);
+        UserTypeStorage.setUserType(response.data.data.userType);
         return {
           success: true,
           data: response.data.data.roleName,

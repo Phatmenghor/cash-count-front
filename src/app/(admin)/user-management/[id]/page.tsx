@@ -18,6 +18,8 @@ import UserManagementService, {
 import { useRouter, useSearchParams } from "next/navigation";
 import showToast from "@/components/toast/useToast";
 import LoadingFullPage from "@/components/loading/LoadingFullPage";
+import { UserRoleEnum } from "@/constants/userRole";
+import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 
 interface FormDataType {
   name: string;
@@ -395,4 +397,7 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
   );
 };
 
-export default EditUserManagement;
+export default withAuthWrapper(EditUserManagement, [
+  UserRoleEnum.IT_ADMIN_USER,
+  UserRoleEnum.OPERATION_ADMIN_USER,
+]);

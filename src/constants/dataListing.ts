@@ -21,5 +21,25 @@ export const userStatus: statusUser[] = [
   { id: 1, status: 2, name: "All User" },
   { id: 2, status: 1, name: "Active" },
   { id: 3, status: 0, name: "Inactive" },
+];
 
+export const headersReport: String[] = [
+  "No",
+  "Date",
+  "Branch",
+  "Type of Txn",
+  "CASH_USD",
+  "CASH_KHR",
+  "CASH_THB",
+  "System_USD",
+  "System_KHR",
+  "System_THB",
+  "Varian_USD",
+  "Varian_KHR",
+  "Varian_THB",
+  "Status",
+  "Remark",
+  "Cash Custodian",
+  "Checkd By",
+  "Approved By",
 ];

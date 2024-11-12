@@ -16,6 +16,8 @@ import ModalCreateEditPosition from "@/components/modal/ModalCreateEditPosition"
 import { PositionService } from "@/redux/service/positionService";
 import { Switch } from "@/components/custom/Switch";
 import { FaTimes } from "react-icons/fa";
+import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
+import { UserRoleEnum } from "@/constants/userRole";
 
 const PositionPage: React.FC = () => {
   const [positionList, setPositionList] = useState<PositionListModel>({
@@ -316,4 +318,4 @@ const PositionPage: React.FC = () => {
   );
 };
 
-export default PositionPage;
+export default withAuthWrapper(PositionPage, [UserRoleEnum.IT_ADMIN_USER]);

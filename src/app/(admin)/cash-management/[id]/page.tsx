@@ -21,6 +21,8 @@ import { CashRecordDetailModel } from "@/redux/models/cashManagement/CashRecordD
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { UpdateRecordModel } from "@/redux/models/cashManagement/UpdateRecordParam";
 import { MdOutlineClear } from "react-icons/md";
+import { UserRoleEnum } from "@/constants/userRole";
+import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 
 type Currency = "USD" | "KHR" | "THB";
 
@@ -511,4 +513,6 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
   );
 };
 
-export default CheckCashManagementPage;
+export default withAuthWrapper(CheckCashManagementPage, [
+  UserRoleEnum.INPUTTER_USER,
+]);

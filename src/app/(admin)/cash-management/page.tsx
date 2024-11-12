@@ -292,9 +292,8 @@ const CashManagementPage: React.FC = () => {
 };
 
 export default withAuthWrapper(CashManagementPage, [
-  UserRoleEnum.OPERATION_ADMIN_USER,
   UserRoleEnum.CHECKER_USER,
   UserRoleEnum.INPUTTER_USER,
-  UserRoleEnum.IT_ADMIN_USER,
   UserRoleEnum.AUTHORIZER_USER,
+  UserRoleEnum.SHOW_ALL,
 ]);

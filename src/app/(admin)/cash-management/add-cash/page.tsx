@@ -19,6 +19,8 @@ import { CashStatusEnum } from "@/redux/models/cashManagement/StatusEnum";
 import { AddRecordParamModel } from "@/redux/models/cashManagement/AddRecordParamModel";
 import showToast from "@/components/toast/useToast";
 import LoadingFullPage from "@/components/loading/LoadingFullPage";
+import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
+import { UserRoleEnum } from "@/constants/userRole";
 
 type Currency = "USD" | "KHR" | "THB";
 
@@ -110,9 +112,11 @@ const AddCashManagementPage = () => {
   };
 
   const handleVerifyClick = async () => {
+    setLoading(true);
     setIsVerified(true);
     const resposne = await CashManagementService.getVerifyRecord();
     setVerifyCash(resposne);
+    setLoading(false);
   };
 
   const handleSaveClick = async () => {
@@ -214,11 +218,14 @@ const AddCashManagementPage = () => {
     }));
     setErrors((prevErrors) => ({ ...prevErrors, [key]: "" }));
   };
+  const isCheckVerified = isVerified
+    ? ""
+    : "bg-[#687180] opacity-20 backdrop-blur-sm text-white";
 
   return (
     <div className="px-4">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-gray-700 hide">Add CashRecord</h2>
+        <h2 className="text-gray-700 hide">Add cash reconcile</h2>
         <Button
           onClick={handleVerifyClick}
           disabled={isVerified}
@@ -231,7 +238,7 @@ const AddCashManagementPage = () => {
           <FiCheckCircle
             className={`mr-2 ${isVerified ? "opacity-50" : "animate-spin"}`}
           />
-          Verify
+          Reconcile
         </Button>
       </div>
       <div className="overflow-auto">
@@ -325,34 +332,34 @@ const AddCashManagementPage = () => {
             <tr>
               {/* vault account */}
               <td>{"Cash In System"}</td>
-              <td>
+              <td className={isCheckVerified}>
                 {isVerified
                   ? verifyCash?.vaultAccount.usdBalance.toFixed(2)
                   : "0.00"}
               </td>
-              <td>
+              <td className={isCheckVerified}>
                 {isVerified
                   ? verifyCash?.vaultAccount.khrBalance.toFixed(2)
                   : "0.00"}
               </td>
-              <td>
+              <td className={isCheckVerified}>
                 {isVerified
                   ? verifyCash?.vaultAccount.thbBalance.toFixed(2)
                   : "0.00"}
               </td>
 
               {/* nostro */}
-              <td>
+              <td className={isCheckVerified}>
                 {isVerified
                   ? verifyCash?.nostroAccount.usdBalance.toFixed(2)
                   : "0.00"}
               </td>
-              <td>
+              <td className={isCheckVerified}>
                 {isVerified
                   ? verifyCash?.nostroAccount.khrBalance.toFixed(2)
                   : "0.00"}
               </td>
-              <td>
+              <td className={isCheckVerified}>
                 {isVerified
                   ? verifyCash?.nostroAccount.thbBalance.toFixed(2)
                   : "0.00"}
@@ -361,12 +368,24 @@ const AddCashManagementPage = () => {
 
             <tr>
               <td>{"Cash Result"}</td>
-              <td>{isVerified ? usdVaultResult.toFixed(2) : "0.00"}</td>
-              <td>{isVerified ? khrVaultResult.toFixed(2) : "0.00"}</td>
-              <td>{isVerified ? thbVaultResult.toFixed(2) : "0.00"}</td>
-              <td>{isVerified ? usdNostroResult.toFixed(2) : "0.00"}</td>
-              <td>{isVerified ? khrNostroResult.toFixed(2) : "0.00"}</td>
-              <td>{isVerified ? thbNostroResult.toFixed(2) : "0.00"}</td>
+              <td className={isCheckVerified}>
+                {isVerified ? usdVaultResult.toFixed(2) : "0.00"}
+              </td>
+              <td className={isCheckVerified}>
+                {isVerified ? khrVaultResult.toFixed(2) : "0.00"}
+              </td>
+              <td className={isCheckVerified}>
+                {isVerified ? thbVaultResult.toFixed(2) : "0.00"}
+              </td>
+              <td className={isCheckVerified}>
+                {isVerified ? usdNostroResult.toFixed(2) : "0.00"}
+              </td>
+              <td className={isCheckVerified}>
+                {isVerified ? khrNostroResult.toFixed(2) : "0.00"}
+              </td>
+              <td className={isCheckVerified}>
+                {isVerified ? thbNostroResult.toFixed(2) : "0.00"}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -469,7 +488,7 @@ const AddCashManagementPage = () => {
       <ModalVerify
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        message="Please click 'Verify' before saving."
+        message="Please click 'Reconcile' before saving."
       />
 
       <LoadingFullPage loading={loading} text="Adding record, please wait..." />
@@ -477,4 +496,6 @@ const AddCashManagementPage = () => {
   );
 };
 
-export default AddCashManagementPage;
+export default withAuthWrapper(AddCashManagementPage, [
+  UserRoleEnum.INPUTTER_USER,
+]);

@@ -59,6 +59,17 @@ export const menuItemsSlibar = [
           UserRoleEnum.SHOW_ALL,
         ],
       },
+      {
+        label: "Cash Report",
+        href: "/cash-report",
+        icon: <FaMoneyBillWave />,
+        visible: [
+          UserRoleEnum.INPUTTER_USER,
+          UserRoleEnum.CHECKER_USER,
+          UserRoleEnum.AUTHORIZER_USER,
+          UserRoleEnum.SHOW_ALL,
+        ],
+      },
     ],
   },
   {

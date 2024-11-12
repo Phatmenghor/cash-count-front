@@ -18,6 +18,8 @@ import { RootState } from "@/redux/store";
 import { useSelector } from "react-redux";
 import LoadingFullPage from "@/components/loading/LoadingFullPage";
 import showToast from "@/components/toast/useToast";
+import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
+import { UserRoleEnum } from "@/constants/userRole";
 
 interface FormDataType {
   name: string;
@@ -461,4 +463,10 @@ const ProfileSelfPage = () => {
   );
 };
 
-export default ProfileSelfPage;
+export default withAuthWrapper(ProfileSelfPage, [
+  UserRoleEnum.IT_ADMIN_USER,
+  UserRoleEnum.OPERATION_ADMIN_USER,
+  UserRoleEnum.AUTHORIZER_USER,
+  UserRoleEnum.CHECKER_USER,
+  UserRoleEnum.INPUTTER_USER,
+]);
