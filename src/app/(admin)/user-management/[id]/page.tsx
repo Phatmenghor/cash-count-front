@@ -302,21 +302,6 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
               />
             </div>
 
-            {/* Department */}
-            <div>
-              <label
-                htmlFor="department"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Department<span className="text-red-500 ml-1">*</span>
-              </label>
-              <Input
-                value={userInfo?.department.name}
-                className="py-1.5"
-                disabled={true}
-              />
-            </div>
-
             {/* Branch */}
             <div>
               <label
