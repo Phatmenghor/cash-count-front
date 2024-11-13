@@ -16,6 +16,7 @@ import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 import { UserRoleEnum } from "@/constants/userRole";
 import ModalConfirmation from "@/components/modal/ModalConfirmation";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
+import { validateText } from "@/utils/validate/textLenght";
 
 const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
   const idCashRecord = params.id;
@@ -68,10 +69,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
   const handleSaveClick = async ({ isApprove = false }) => {
     setLoading(true);
 
-    const cashCountData: UpdateRecordModel = {
-      createdBy: cashRecordDetail!.createdBy,
-      checkerBy: cashRecordDetail!.checkerBy,
-      approvedBy: cashRecordDetail!.approvedBy,
+    const updateCashCount: UpdateRecordModel = {
       referenceFile: cashRecordDetail?.referenceFile,
       cashInSystem: { id: cashInSystem!.id },
       remarkFromCreate: cashRecordDetail?.remarkFromCreate,
@@ -83,11 +81,14 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
       cashInHandNostroAccount: cashRecordDetail!.cashInHandNostroAccount,
       remarkFromChecker: remarkFromChecker ? remarkFromChecker : null,
       remarkFromAuthorizer: remarkFromAuthorizer ? remarkFromAuthorizer : null,
+      createdBy: { id: cashRecordDetail!.createdBy.id },
+      checkerBy: { id: cashRecordDetail!.checkerBy.id },
+      approvedBy: { id: cashRecordDetail!.approvedBy.id },
     };
 
     const response = await CashManagementService.updateCashRecord(
       cashRecordDetail!.id,
-      cashCountData
+      updateCashCount
     );
     if (response.success) {
       showToast(response.message, "success");
@@ -119,6 +120,37 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
     handleSaveClick({ isApprove: true });
     setModalApprove(false);
   }
+
+  const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
+    const value = e.currentTarget.value;
+
+    if (value.length <= validateText.MAX_TEXT_LENGTH) {
+      setRemarkFromChecker(value);
+
+      e.currentTarget.style.height = "auto"; // Reset height to auto
+      e.currentTarget.style.height = `${Math.min(
+        e.currentTarget.scrollHeight,
+        100
+      )}px`; // Resize to maxHeight
+    } else {
+      showToast("Character limit exceeded only 60000lenght in remark checker!", "error");
+    }
+  };
+
+  const handleInputApprove = (e: React.FormEvent<HTMLTextAreaElement>) => {
+    const value = e.currentTarget.value;
+
+    if (value.length <= validateText.MAX_TEXT_LENGTH) {
+      setRemarkFromAuthorizer(value);
+      e.currentTarget.style.height = "auto"; // Reset height to auto
+      e.currentTarget.style.height = `${Math.min(
+        e.currentTarget.scrollHeight,
+        100
+      )}px`; // Resize to maxHeight
+    } else {
+      showToast("Character limit exceeded only 60000lenght in remark authorizer!", "error");
+    }
+  };
 
   return (
     <div className="px-4">
@@ -201,19 +233,25 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
       </div>
 
       {/* From Checker and Approved */}
-      <div className="flex mt-6 gap-8 w-full justify-between ">
+      <div className="flex space-x-4 mt-6 justify-between ">
         {/* Remarks and file upload sections */}
-        <div className="max-w-[45%] flex-1">
+        <div className="max-w-xl min-w-48 flex-1">
           <label className="block text-xs font-medium text-gray-700 mb-1 line1">
             Remark from created<span className="text-red-500 ml-1">*</span>
           </label>
-          <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
+          <div
+            style={{
+              maxHeight: "100px",
+              overflowY: "auto",
+            }}
+            className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700 whitespace-normal break-words"
+          >
             {cashRecordDetail?.remarkFromCreate || "No remark provided"}
           </div>
         </div>
 
         {/* Display Reference File with PDF Icon */}
-        <div className="max-w-[45%] flex-1">
+        <div className="max-w-xl  min-w-48 flex-1">
           <label className="block text-xs font-medium text-gray-700 mb-1 line1">
             Reference file<span className="text-red-500 ml-1">*</span>
           </label>
@@ -238,32 +276,41 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
         </div>
       </div>
 
-      <div className="flex flex-1 mt-4 gap-8 w-full justify-between">
-        <div className="max-w-[45%] flex-1">
-          <label className="block text-xs font-medium text-gray-700 mb-1 line1">
-            Remark from checker<span className="text-red-500 ml-1">*</span>
-          </label>
-          <textarea
-            disabled={cashRecordDetail?.status != CashStatusEnum.PENDING}
-            className="border border-gray-300 rounded px-2 py-1.5 w-full resize-none text-xs disabled:bg-gray-100 disabled:text-gray-700"
-            rows={1}
-            placeholder="Enter your remark here..."
-            style={{ maxHeight: "100px", overflowY: "auto" }}
-            value={remarkFromChecker}
-            onInput={(e) => {
-              const value = e.currentTarget.value;
-              setRemarkFromChecker(value);
-              e.currentTarget.style.height = "auto"; // Reset height to auto
-              e.currentTarget.style.height = `${Math.min(
-                e.currentTarget.scrollHeight,
-                100
-              )}px`; // Resize up to maxHeight
-            }}
-          ></textarea>
-        </div>
+      <div className="flex space-x-4 justify-between mt-4">
+        {cashRecordDetail?.status == CashStatusEnum.PROCESSING ? (
+          <div className="max-w-xl min-w-48 flex-1">
+            <label className="block text-xs font-medium text-gray-700 mb-1 line1">
+              Remark from checker<span className="text-red-500 ml-1">*</span>
+            </label>
+            <div
+              style={{
+                maxHeight: "100px",
+                overflowY: "auto",
+              }}
+              className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700 whitespace-normal break-words"
+            >
+              {cashRecordDetail?.remarkFromChecker || "No remark from checker"}
+            </div>
+          </div>
+        ) : (
+          <div className="max-w-xl min-w-48 flex-1">
+            <label className="block text-xs font-medium text-gray-700 mb-1 line1">
+              Remark from checker<span className="text-red-500 ml-1">*</span>
+            </label>
+            <textarea
+              disabled={cashRecordDetail?.status != CashStatusEnum.PENDING}
+              className="border border-gray-300 rounded px-2 py-1.5 w-full resize-none text-xs disabled:bg-gray-100 disabled:text-gray-700"
+              rows={1}
+              placeholder="Enter your remark here..."
+              style={{ maxHeight: "100px", overflowY: "auto" }}
+              value={remarkFromChecker}
+              onInput={handleInput}
+            />
+          </div>
+        )}
 
         {rolesUser == UserRoleEnum.AUTHORIZER_USER && (
-          <div className="max-w-[45%] flex-1">
+          <div className="max-w-xl flex-1">
             <label className="block text-xs font-medium text-gray-700 mb-1 line1">
               Remark from authorizer<span className="text-red-500 ml-1">*</span>
             </label>
@@ -274,16 +321,8 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
               placeholder="Enter your remark here..."
               style={{ maxHeight: "100px", overflowY: "auto" }}
               value={remarkFromAuthorizer}
-              onInput={(e) => {
-                const value = e.currentTarget.value;
-                setRemarkFromAuthorizer(value);
-                e.currentTarget.style.height = "auto";
-                e.currentTarget.style.height = `${Math.min(
-                  e.currentTarget.scrollHeight,
-                  100
-                )}px`; // Resize up to maxHeight
-              }}
-            ></textarea>
+              onInput={handleInputApprove}
+            />
           </div>
         )}
       </div>
@@ -320,12 +359,6 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
       {/* Save and Cancel Buttons */}
       <div className="flex justify-end space-x-2 mt-6">
         <Button
-          onClick={() => setModalReject(true)}
-          className="py-0.5 bg-red-500 hover:bg-red-600"
-        >
-          Reject
-        </Button>
-        <Button
           onClick={() => {
             router.back();
           }}
@@ -333,6 +366,12 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
           className="py-0.5"
         >
           Cancel
+        </Button>
+        <Button
+          onClick={() => setModalReject(true)}
+          className="py-0.5 bg-red-500 hover:bg-red-600"
+        >
+          Reject
         </Button>
         <Button onClick={() => setModalApprove(true)} className="py-0.5">
           Approve

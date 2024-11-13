@@ -22,6 +22,7 @@ import showToast from "@/components/toast/useToast";
 import LoadingFullPage from "@/components/loading/LoadingFullPage";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { UserRoleEnum } from "@/constants/userRole";
+import { validateText } from "@/utils/validate/textLenght";
 
 type Currency = "USD" | "KHR" | "THB";
 
@@ -219,9 +220,28 @@ const AddCashManagementPage = () => {
     }));
     setErrors((prevErrors) => ({ ...prevErrors, [key]: "" }));
   };
+
   const isCheckVerified = isVerified
     ? ""
     : "bg-[#687180] opacity-20 backdrop-blur-sm text-white";
+
+  const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
+    const value = e.currentTarget.value;
+
+    if (value.length <= validateText.MAX_TEXT_LENGTH) {
+      setRemark(value);
+      e.currentTarget.style.height = "auto"; // Reset height to auto
+      e.currentTarget.style.height = `${Math.min(
+        e.currentTarget.scrollHeight,
+        100
+      )}px`; // Resize to maxHeight
+    } else {
+      showToast(
+        "Character limit exceeded only 60000lenght in remark!",
+        "error"
+      );
+    }
+  };
 
   return (
     <div className="px-4">
@@ -404,16 +424,8 @@ const AddCashManagementPage = () => {
             placeholder="Enter your remark here..."
             style={{ maxHeight: "100px", overflowY: "auto" }}
             value={remark}
-            onInput={(e) => {
-              const value = e.currentTarget.value;
-              setRemark(value);
-              e.currentTarget.style.height = "auto"; // Reset height to auto
-              e.currentTarget.style.height = `${Math.min(
-                e.currentTarget.scrollHeight,
-                100
-              )}px`; // Resize up to maxHeight
-            }}
-          ></textarea>
+            onInput={handleInput}
+          />
         </div>
 
         {/* Upload PDF File */}
@@ -492,7 +504,10 @@ const AddCashManagementPage = () => {
         message="Please click 'Reconcile' before saving."
       />
 
-      <LoadingFullPage loading={loading} text="Processing record, please wait..." />
+      <LoadingFullPage
+        loading={loading}
+        text="Processing record, please wait..."
+      />
     </div>
   );
 };

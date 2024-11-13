@@ -23,6 +23,7 @@ import { UpdateRecordModel } from "@/redux/models/cashManagement/UpdateRecordPar
 import { MdOutlineClear } from "react-icons/md";
 import { UserRoleEnum } from "@/constants/userRole";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
+import { validateText } from "@/utils/validate/textLenght";
 
 type Currency = "USD" | "KHR" | "THB";
 
@@ -272,6 +273,24 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
     setFileName("No file chosen");
   }
 
+  const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
+    const value = e.currentTarget.value;
+
+    if (value.length <= validateText.MAX_TEXT_LENGTH) {
+      setRemark(value);
+      e.currentTarget.style.height = "auto"; // Reset height to auto
+      e.currentTarget.style.height = `${Math.min(
+        e.currentTarget.scrollHeight,
+        100
+      )}px`; // Resize to maxHeight
+    } else {
+      showToast(
+        "Character limit exceeded only 60000lenght in remark!",
+        "error"
+      );
+    }
+  };
+
   return (
     <div className="px-4">
       <div className="overflow-auto">
@@ -394,15 +413,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
             placeholder="Enter your remark here..."
             style={{ maxHeight: "100px", overflowY: "auto" }}
             value={remark}
-            onInput={(e) => {
-              const value = e.currentTarget.value;
-              setRemark(value);
-              e.currentTarget.style.height = "auto"; // Reset height to auto
-              e.currentTarget.style.height = `${Math.min(
-                e.currentTarget.scrollHeight,
-                100
-              )}px`; // Resize up to maxHeight
-            }}
+            onInput={handleInput}
           ></textarea>
         </div>
 

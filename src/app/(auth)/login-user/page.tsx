@@ -115,6 +115,7 @@ const LoginPage: React.FC = () => {
               <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
+              disabled={loading}
               type="text"
               id="email"
               value={adUsername}
@@ -138,6 +139,7 @@ const LoginPage: React.FC = () => {
             </label>
             <div className="relative">
               <Input
+                disabled={loading}
                 type={passwordVisible ? "text" : "password"} // Toggle input type between text and password
                 id="password"
                 value={password}

@@ -1,7 +1,7 @@
 export interface UpdateRecordModel {
+  createdBy: CreatedBy;
   checkerBy: CheckerBy;
   approvedBy: ApprovedBy;
-  createdBy: CreatedBy;
   referenceFile?: ReferenceFile | null;
   cashInSystem: CashInSystem;
   status: string;

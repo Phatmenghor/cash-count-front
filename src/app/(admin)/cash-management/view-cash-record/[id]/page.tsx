@@ -130,21 +130,27 @@ const ViewCashRecordPage = ({ params }: { params: { id: number } }) => {
         </table>
       </div>
 
-      <div className="flex mt-6">
+      <div className="flex space-x-4 mt-6 justify-between">
         {/* Remarks and file upload sections */}
-        <div className="max-w-2xl flex-1 mb-2 sm:mr-2">
+        <div className="max-w-xl min-w-48 flex-1 mb-2 sm:mr-2">
           <label className="block text-xs font-medium text-gray-700 mb-1 line1">
-            Remark From Created<span className="text-red-500 ml-1">*</span>
+            Remark from created<span className="text-red-500 ml-1">*</span>
           </label>
-          <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
-            {cashRecordDetail?.remarkFromCreate || "No remark provided"}
+          <div
+            style={{
+              maxHeight: "100px",
+              overflowY: "auto",
+            }}
+            className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700 whitespace-normal break-words"
+          >
+            {cashRecordDetail?.remarkFromCreate || "No remark"}
           </div>
         </div>
 
         {/* Display Reference File with PDF Icon */}
-        <div className="max-w-2xl flex-1 sm:ml-4 mb-2">
+        <div className="max-w-xl min-w-48 flex-1 sm:ml-4 mb-2">
           <label className="block text-xs font-medium text-gray-700 mb-1 line1">
-            Reference File<span className="text-red-500 ml-1">*</span>
+            Reference file<span className="text-red-500 ml-1">*</span>
           </label>
           <div className="border rounded  py-1 px-2 w-full text-xs bg-gray-100 text-gray-700 flex items-center">
             <div className="flex flex-1 items-center space-x-2">
@@ -167,23 +173,35 @@ const ViewCashRecordPage = ({ params }: { params: { id: number } }) => {
         </div>
       </div>
 
-      <div className="flex mt-2">
+      <div className="flex space-x-4 mt-2 justify-between">
         {/* Remarks and file upload sections */}
-        <div className="max-w-2xl flex-1 mb-2 sm:mr-2">
+        <div className="max-w-xl  min-w-48 flex-1 mb-2 sm:mr-2">
           <label className="block text-xs font-medium text-gray-700 mb-1 line1">
-            Remark From Checker<span className="text-red-500 ml-1">*</span>
+            Remark from checker<span className="text-red-500 ml-1">*</span>
           </label>
-          <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
+          <div
+            style={{
+              maxHeight: "100px",
+              overflowY: "auto",
+            }}
+            className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700 whitespace-normal break-words"
+          >
             {cashRecordDetail?.remarkFromChecker || "No remark from checker"}
           </div>
         </div>
 
         {/* Display Reference File with PDF Icon */}
-        <div className="max-w-2xl flex-1 sm:ml-4 mb-2">
+        <div className="max-w-xl min-w-48 flex-1 sm:ml-4 mb-2">
           <label className="block text-xs font-medium text-gray-700 mb-1 line1">
-            Remark From Authorizer<span className="text-red-500 ml-1">*</span>
+            Remark from authorizer<span className="text-red-500 ml-1">*</span>
           </label>
-          <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
+          <div
+            style={{
+              maxHeight: "100px",
+              overflowY: "auto",
+            }}
+            className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700 whitespace-normal break-words"
+          >
             {cashRecordDetail?.remarkFromAuthorizer ||
               "No remark from authorizer"}
           </div>

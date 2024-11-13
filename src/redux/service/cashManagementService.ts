@@ -97,9 +97,12 @@ export class CashManagementService {
     }
   };
 
-  static updateCashRecord = async (id: number, data: UpdateRecordModel) => {
+  static updateCashRecord = async (
+    id: number,
+    updateCashCount: UpdateRecordModel
+  ) => {
     try {
-      await axiosWithAuth.put(`/api/cash-counts/${id}`, data);
+      await axiosWithAuth.put(`/api/cash-counts/${id}`, updateCashCount);
       return {
         success: true,
         message: "Cash record updated successfully!",
