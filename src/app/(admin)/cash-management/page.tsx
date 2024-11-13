@@ -34,10 +34,10 @@ const CashManagementPage: React.FC = () => {
     pagination: null,
   });
   const router = useRouter();
-  const [size, setSize] = useState<number>(15);
+  const [size, setSize] = useState<number>(10);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("");
-  const listSize = cashRecordList.pagination?.currentPage ?? 15;
+  const listSize = cashRecordList.pagination?.currentPage ?? 10;
 
   useEffect(() => {
     fetchData({});
@@ -152,23 +152,23 @@ const CashManagementPage: React.FC = () => {
           data-aos="fade-right"
         />
 
-        {UserRoleStorage.getUserRole() == UserRoleEnum.INPUTTER_USER &&
-          UserTypeStorage.getUserType() != "HO" && (
-            <div className="flex space-x-2">
-              <FilterStatusCash
-                options={statusCashData}
-                onSelect={handleFilterStatus}
-                label="Select Status"
-              />
-              <Button
-                data-aos="fade-left"
-                onClick={() => router.push("/cash-management/add-cash")}
-                className="text-white flex items-center py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
-              >
-                <FiPlus size={18} />
-              </Button>
-            </div>
+        <div className="flex space-x-2">
+          <FilterStatusCash
+            options={statusCashData}
+            onSelect={handleFilterStatus}
+            label="Select Status"
+          />
+
+          {UserRoleStorage.getUserRole() == UserRoleEnum.INPUTTER_USER && (
+            <Button
+              data-aos="fade-left"
+              onClick={() => router.push("/cash-management/add-cash")}
+              className="text-white flex items-center py-1 whitespace-nowrap overflow-hidden overflow-ellipsis"
+            >
+              <FiPlus size={18} />
+            </Button>
           )}
+        </div>
       </div>
 
       {/* User List Table */}
