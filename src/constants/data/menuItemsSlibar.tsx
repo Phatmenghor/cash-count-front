@@ -4,6 +4,7 @@ import {
   FaCog,
   FaUserCircle,
   FaSignOutAlt,
+  FaFileInvoiceDollar,
 } from "react-icons/fa";
 import { MdGroup, MdPersonAdd } from "react-icons/md";
 import { UserRoleEnum } from "../userRole";
@@ -56,7 +57,7 @@ export const menuItemsSlibar = [
       {
         label: "Cash Report",
         href: "/cash-report",
-        icon: <FaMoneyBillWave />,
+        icon: <FaFileInvoiceDollar />,
         visible: [
           UserRoleEnum.INPUTTER_USER,
           UserRoleEnum.CHECKER_USER,

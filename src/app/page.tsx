@@ -6,34 +6,26 @@ import { UserRoleEnum } from "@/constants/userRole";
 import TokenStorage from "@/utils/localStorage/tokenStorage";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import Image from "next/image";
 
 export default function App() {
   const router = useRouter();
-  const [isAnimating, setIsAnimating] = useState(true);
 
   // Check if the token exists
-  if (!TokenStorage.getToken() && !isAnimating) {
+  if (!TokenStorage.getToken()) {
     router.push(`/${route.LOGIN}`);
     return;
   }
 
   // Redirect based on the user role
   if (
-    (UserRoleStorage.getUserRole() == UserRoleEnum.IT_ADMIN_USER ||
-      UserRoleStorage.getUserRole() == UserRoleEnum.OPERATION_ADMIN_USER) &&
-    !isAnimating
+    UserRoleStorage.getUserRole() == UserRoleEnum.IT_ADMIN_USER ||
+    UserRoleStorage.getUserRole() == UserRoleEnum.OPERATION_ADMIN_USER
   ) {
     router.push(`/${route.USER_MANAGEMENT}`);
   } else {
     router.push("/cash-management");
   }
-
-  // Triggered when the animation is completed
-  const handleAnimationComplete = () => {
-    setIsAnimating(false);
-  };
 
   return (
     <div className="flex flex-col items-center justify-center h-screen  text-white overflow-hidden">
@@ -43,7 +35,6 @@ export default function App() {
         initial={{ opacity: 0, scale: 0.5 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 1.5 }}
-        onAnimationComplete={handleAnimationComplete}
       >
         <Image
           src="/img/images.png" // Path to your image
@@ -70,7 +61,6 @@ export default function App() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2.5, duration: 1 }}
-        onAnimationComplete={handleAnimationComplete}
       >
         Get ready for an amazing experience.
       </motion.p>
