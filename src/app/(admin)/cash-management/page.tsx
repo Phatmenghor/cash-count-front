@@ -180,13 +180,13 @@ const CashManagementPage: React.FC = () => {
           <thead>
             <tr>
               <th>ID</th>
-              <th>Sr Number</th>
+              <th>Sr number</th>
               <th>Branch</th>
               <th>City</th>
               <th>Status</th>
-              <th>Created By</th>
-              <th>Checker By</th>
-              <th>Approve By</th>
+              <th>Created by</th>
+              <th>Checker by</th>
+              <th>Approve by</th>
               <th>Created date</th>
               <th>Actions</th>
             </tr>

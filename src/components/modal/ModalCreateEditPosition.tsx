@@ -107,7 +107,7 @@ const ModalCreateEditPosition: React.FC<ModalCreateEditPositionProps> = ({
           <div className="flex flex-col mb-4">
             <label
               htmlFor="positionName"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-xs font-medium text-gray-700 mb-1"
             >
               Position name<span className="text-red-500 ml-1">*</span>
             </label>
@@ -130,7 +130,7 @@ const ModalCreateEditPosition: React.FC<ModalCreateEditPositionProps> = ({
           <div className="flex flex-col mb-4">
             <label
               htmlFor="positionFullName"
-              className="block text-sm font-medium text-gray-700 mb-1"
+              className="block text-xs font-medium text-gray-700 mb-1"
             >
               Position full name<span className="text-red-500 ml-1">*</span>
             </label>

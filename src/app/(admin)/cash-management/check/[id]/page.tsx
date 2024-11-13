@@ -129,10 +129,10 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
             <tr>
               <th rowSpan={2}>Description</th>
               <th colSpan={3} className="text-center">
-                Vault​ Account
+                Vault​ account
               </th>
               <th colSpan={3} className="text-center">
-                Nostro Account
+                Nostro account
               </th>
             </tr>
             <tr>
@@ -176,7 +176,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
 
             <tr>
               {/* vault account */}
-              <td>{"Cash In System"}</td>
+              <td>{"Cash in system"}</td>
               <td>{cashInSystem?.vaultAccount.usdBalance.toFixed(2)}</td>
               <td>{cashInSystem?.vaultAccount.khrBalance.toFixed(2)}</td>
               <td>{cashInSystem?.vaultAccount.thbBalance.toFixed(2)}</td>
@@ -188,7 +188,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
             </tr>
 
             <tr>
-              <td>{"Cash Result"}</td>
+              <td>{"Cash result"}</td>
               <td>{cashRecordDetail?.vaultAccount.usdBalance.toFixed(2)}</td>
               <td>{cashRecordDetail?.vaultAccount.khrBalance.toFixed(2)}</td>
               <td>{cashRecordDetail?.vaultAccount.thbBalance.toFixed(2)}</td>
@@ -205,7 +205,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
         {/* Remarks and file upload sections */}
         <div className="max-w-[45%] flex-1">
           <label className="block text-xs font-medium text-gray-700 mb-1 line1">
-            Remark From Created<span className="text-red-500 ml-1">*</span>
+            Remark from created<span className="text-red-500 ml-1">*</span>
           </label>
           <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
             {cashRecordDetail?.remarkFromCreate || "No remark provided"}
@@ -215,7 +215,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
         {/* Display Reference File with PDF Icon */}
         <div className="max-w-[45%] flex-1">
           <label className="block text-xs font-medium text-gray-700 mb-1 line1">
-            Reference File<span className="text-red-500 ml-1">*</span>
+            Reference file<span className="text-red-500 ml-1">*</span>
           </label>
           <div className="border rounded  py-1 px-2 w-full text-xs bg-gray-100 text-gray-700 flex items-center">
             <div className="flex flex-1 items-center space-x-2">
@@ -231,7 +231,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
                 className="ml-2 px-3 text-xs text-blue-700 underline cursor-pointer"
                 onClick={handleViewFile}
               >
-                View File
+                View file
               </div>
             )}
           </div>
@@ -241,7 +241,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
       <div className="flex flex-1 mt-4 gap-8 w-full justify-between">
         <div className="max-w-[45%] flex-1">
           <label className="block text-xs font-medium text-gray-700 mb-1 line1">
-            Remark From Checker<span className="text-red-500 ml-1">*</span>
+            Remark from checker<span className="text-red-500 ml-1">*</span>
           </label>
           <textarea
             disabled={cashRecordDetail?.status != CashStatusEnum.PENDING}
@@ -265,7 +265,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
         {rolesUser == UserRoleEnum.AUTHORIZER_USER && (
           <div className="max-w-[45%] flex-1">
             <label className="block text-xs font-medium text-gray-700 mb-1 line1">
-              Remark From Authorizer<span className="text-red-500 ml-1">*</span>
+              Remark from authorizer<span className="text-red-500 ml-1">*</span>
             </label>
             <textarea
               disabled={cashRecordDetail?.status != CashStatusEnum.PROCESSING}
@@ -291,7 +291,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
       <div className="grid grid-cols-3 gap-4 mt-4">
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1 ">
-            Authorizer By<span className="text-red-500 ml-1">*</span>
+            Authorizer by<span className="text-red-500 ml-1">*</span>
           </label>
           <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
             {cashRecordDetail?.approvedBy.name}
@@ -300,7 +300,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
 
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1 ">
-            Checker By<span className="text-red-500 ml-1">*</span>
+            Checker by<span className="text-red-500 ml-1">*</span>
           </label>
           <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
             {cashRecordDetail?.checkerBy.name}
@@ -309,7 +309,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
 
         <div>
           <label className="block text-xs font-medium text-gray-700 mb-1 ">
-            Created By<span className="text-red-500 ml-1">*</span>
+            Created by<span className="text-red-500 ml-1">*</span>
           </label>
           <div className="border rounded px-2 py-1.5 w-full text-xs bg-gray-100 text-gray-700">
             {cashRecordDetail?.createdBy.name}
@@ -352,7 +352,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
       {/* Confirmation approve */}
       <ModalConfirmation
         isOpen={modalApprove}
-        title="Confirm Approve!"
+        title="Confirm approve!"
         onClose={() => setModalApprove(false)}
         onConfirm={handleApprove}
         message={`Are you sure you want to approve?`}
@@ -362,7 +362,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
       {/* Confirmation Reject */}
       <ModalConfirmation
         isOpen={modalReject}
-        title="Confirm Reject!"
+        title="Confirm reject!"
         onClose={() => setModalReject(false)}
         onConfirm={handleReject}
         message={`Are you sure you want to reject?`}

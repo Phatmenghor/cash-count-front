@@ -17,7 +17,6 @@ import {
 } from "@/redux/models/userManagement/UserRequestModel";
 import ModalConfirmation from "@/components/modal/ModalConfirmation";
 import { useRouter } from "next/navigation";
-import { ToastContainer } from "react-toastify";
 import { FaTimes } from "react-icons/fa";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { UserRoleEnum } from "@/constants/userRole";
@@ -270,7 +269,6 @@ const UserRequestPage: React.FC = () => {
         onConfirm={handleReject}
         message={`Are you sure you want to reject?`}
       />
-      <ToastContainer />
     </div>
   );
 };

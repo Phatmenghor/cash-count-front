@@ -8,7 +8,6 @@ import UserManagementService from "@/redux/service/userManagementService";
 import ModalConfirmation from "@/components/modal/ModalConfirmation";
 import showToast from "@/components/toast/useToast";
 import { useRouter } from "next/navigation";
-import { ToastContainer } from "react-toastify";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { UserRoleEnum } from "@/constants/userRole";
 
@@ -89,88 +88,98 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
     <div className="px-6">
       <h2 data-aos="fade-down" className="text-gray-700 hide mb-4">
         {typeView
-          ? "Compare Information Request"
-          : "New user Information Request"}
+          ? "Compare information request"
+          : "New user information request"}
       </h2>
 
       <div className="flex">
         <div className="flex-1 space-y-4" data-aos="fade-right">
-          <div>
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-1 "
-            >
-              {typeView ? "Name Before" : "Name user"}
-              <span className="text-red-500 ml-1">*</span>
-            </label>
-            <Input
-              value={userRequest?.name}
-              className="py-1.5 w-full"
-              disabled={true}
-            />
-          </div>
-
+          {/* Name Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              {typeView ? "Email Before" : "Email user"}
+              {typeView ? "Name before" : "Name user"}
               <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
-              value={userRequest?.email}
+              value={userInfo?.name}
               className="py-1.5 w-full"
               disabled={true}
             />
           </div>
 
-          <div className="flex-1" data-aos="fade-right">
-            <label
-              htmlFor="branch"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              {typeView ? "Branch Before" : "Branch user"}
-              <span className="text-red-500 ml-1">*</span>
-            </label>
-            <Input
-              value={userRequest?.branch.mnemonic}
-              className="py-1.5 w-full"
-              disabled={true}
-            />
-          </div>
-
+          {/* Email Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              {typeView ? "Branch Location Before" : "Branch Location user"}
+              {typeView ? "Email before" : "Email user"}
               <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
-              value={userRequest?.branch.city}
+              value={userInfo?.email}
               className="py-1.5 w-full"
               disabled={true}
             />
           </div>
 
+          {/* Branch after Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              {typeView ? "Position Before" : "Position user"}
+              {typeView ? "Branch before" : "Branch user"}
               <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
-              value={userRequest?.position.fullName}
+              value={userInfo?.branch.mnemonic}
               className="py-1.5 w-full"
               disabled={true}
             />
           </div>
 
+          {/* Branch after Field */}
           <div>
-            <label
-              htmlFor="role"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            >
-              {typeView ? "Role Before" : "Role user"}
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {typeView ? "Branch type before" : "Branch type user"}
               <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
-              value={userRequest?.role.name}
+              value={userInfo?.branch.userType}
+              className="py-1.5 w-full"
+              disabled={true}
+            />
+          </div>
+
+          {/* Branch Location after Field */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {typeView ? "Branch location before" : "Branch location user"}
+              <span className="text-red-500 ml-1">*</span>
+            </label>
+            <Input
+              value={userInfo?.branch.city}
+              className="py-1.5 w-full"
+              disabled={true}
+            />
+          </div>
+
+          {/* Position after Field */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {typeView ? "Position before" : "Position user"}
+              <span className="text-red-500 ml-1">*</span>
+            </label>
+            <Input
+              value={userInfo?.position.fullName}
+              className="py-1.5 w-full"
+              disabled={true}
+            />
+          </div>
+
+          {/* Role after Field */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              {typeView ? "Role before" : "Role user"}
+              <span className="text-red-500 ml-1">*</span>
+            </label>
+            <Input
+              value={userInfo?.role.name}
               className="py-1.5 w-full"
               disabled={true}
             />
@@ -191,7 +200,6 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
 
         {typeView && (
           <div className="flex-1 space-y-4" data-aos="fade-left">
-            {/* Name Field */}
             <div>
               <label
                 className={`block text-sm font-medium text-gray-700 mb-1 ${
@@ -200,10 +208,12 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
                     : ""
                 }`}
               >
-                Name After<span className="text-red-500 ml-1">*</span>
+                Name after
+                <span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userInfo?.name}
+                value={userRequest?.name}
+                // className="py-1.5 w-full"
                 className={`py-1.5 w-full ${
                   userInfo?.name != userRequest?.name
                     ? "border-red-500 text-red-500"
@@ -213,7 +223,6 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
               />
             </div>
 
-            {/* Email Field */}
             <div>
               <label
                 className={`block text-sm font-medium text-gray-700 mb-1 ${
@@ -222,10 +231,11 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
                     : ""
                 }`}
               >
-                Email After<span className="text-red-500 ml-1">*</span>
+                {typeView ? "Email Before" : "Email user"}
+                <span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userInfo?.email}
+                value={userRequest?.email}
                 className={`py-1.5 w-full ${
                   userInfo?.email != userRequest?.email
                     ? "border-red-500 text-red-500"
@@ -235,7 +245,6 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
               />
             </div>
 
-            {/* Branch after Field */}
             <div>
               <label
                 className={`block text-sm font-medium text-gray-700 mb-1  ${
@@ -244,10 +253,11 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
                     : ""
                 }`}
               >
-                Branch After<span className="text-red-500 ml-1">*</span>
+                Branch after
+                <span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userInfo?.branch.mnemonic}
+                value={userRequest?.branch.mnemonic}
                 className={`py-1.5 w-full ${
                   userInfo?.branch.mnemonic != userRequest?.branch.mnemonic
                     ? "border-red-500 text-red-500"
@@ -257,7 +267,28 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
               />
             </div>
 
-            {/* Branch Location after Field */}
+            <div>
+              <label
+                className={`block text-sm font-medium text-gray-700 mb-1  ${
+                  userInfo?.branch.userType != userRequest?.branch.userType
+                    ? "border-red-500 text-red-500"
+                    : ""
+                }`}
+              >
+                Branch type after
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userRequest?.branch.userType}
+                className={`py-1.5 w-full ${
+                  userInfo?.branch.userType != userRequest?.branch.userType
+                    ? "border-red-500 text-red-500"
+                    : ""
+                }`}
+                disabled={true}
+              />
+            </div>
+
             <div>
               <label
                 className={`block text-sm font-medium text-gray-700 mb-1  ${
@@ -266,11 +297,11 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
                     : ""
                 }`}
               >
-                Branch Location After
+                Branch location after
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userInfo?.branch.city}
+                value={userRequest?.branch.city}
                 className={`py-1.5 w-full ${
                   userInfo?.branch.city != userRequest?.branch.city
                     ? "border-red-500 text-red-500"
@@ -280,7 +311,6 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
               />
             </div>
 
-            {/* Position after Field */}
             <div>
               <label
                 className={`block text-sm font-medium text-gray-700 mb-1  ${
@@ -289,11 +319,11 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
                     : ""
                 }`}
               >
-                Position After
+                Position after
                 <span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userInfo?.position.fullName}
+                value={userRequest?.position.fullName}
                 className={`py-1.5 w-full ${
                   userInfo?.position.fullName != userRequest?.position.fullName
                     ? "border-red-500 text-red-500"
@@ -303,7 +333,6 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
               />
             </div>
 
-            {/* Role after Field */}
             <div>
               <label
                 className={`block text-sm font-medium text-gray-700 mb-1 ${
@@ -312,10 +341,11 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
                     : ""
                 }`}
               >
-                Role After<span className="text-red-500 ml-1">*</span>
+                Role after
+                <span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userInfo?.role.name}
+                value={userRequest?.role.name}
                 className={`py-1.5 w-full ${
                   userInfo?.role.name != userRequest?.role.name
                     ? "border-red-500 text-red-500"
@@ -370,8 +400,6 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
         loading={loading}
         textLoading="Rejecting ..."
       />
-
-      <ToastContainer />
     </div>
   );
 };

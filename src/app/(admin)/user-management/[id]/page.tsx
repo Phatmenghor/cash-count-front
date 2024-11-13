@@ -148,13 +148,13 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
     <div className="px-6">
       {(modeTypeEdit || moveToEdit) && (
         <h2 data-aos="fade-right" className="text-gray-700 hide mb-4">
-          Update User Information
+          Update user information
         </h2>
       )}
 
       {!(modeTypeEdit || moveToEdit) && (
         <h2 data-aos="fade-right" className="text-gray-700 hide mb-4">
-          User Information
+          User information
         </h2>
       )}
 
@@ -338,10 +338,10 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
                 htmlFor="mnemonic"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Mnemonic<span className="text-red-500 ml-1">*</span>
+                Branch type<span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userInfo?.branch.mnemonic}
+                value={userInfo?.branch.userType}
                 className="py-1.5"
                 disabled={true}
               />

@@ -111,7 +111,7 @@ const LoginPage: React.FC = () => {
               htmlFor="username"
               className="block text-sm font-medium text-gray-700"
             >
-              AD Username
+              AD username
               <span className="text-red-500 ml-1">*</span>
             </label>
             <Input

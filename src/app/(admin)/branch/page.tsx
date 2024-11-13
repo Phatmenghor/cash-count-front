@@ -26,7 +26,7 @@ const BranchPage: React.FC = () => {
   });
   const [size, setSize] = useState<number>(10);
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const headers = ["Number", "Mnemonic", "Branch Code", "City", "Actions"];
+  const headers = ["Number", "Mnemonic", "Branch code", "City", "Actions"];
   const listSize = branchList.pagination?.currentPage ?? 10;
   const [isModalOpen, setModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);

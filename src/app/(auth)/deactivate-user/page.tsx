@@ -7,7 +7,7 @@ import { UserRoleEnum } from "@/constants/userRole";
 import { LoginService } from "@/redux/service/loginService";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect } from "react";
-import { FaExclamationTriangle } from "react-icons/fa"; // Alert icon
+import { FaExclamationTriangle } from "react-icons/fa"; 
 
 const DeactivateUser: React.FC = () => {
   const router = useRouter();
@@ -49,7 +49,7 @@ const DeactivateUser: React.FC = () => {
         />
 
         <h1 className="text-3xl font-bold text-gray-800 mb-2">
-          Your Account is Deactivated
+          Your account is Deactivated
         </h1>
 
         <p className="text-lg text-gray-600 ">

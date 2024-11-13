@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { route } from "@/constants/routed";
@@ -15,7 +16,7 @@ import { BranchModel } from "@/redux/models/register/BranchModel";
 import { RoleModel } from "@/redux/models/register/RoleModel";
 import UserStorage from "@/utils/localStorage/userStorage";
 
-const Register: React.FC = () => {
+const RegisterPage: React.FC = () => {
   const searchParams = useSearchParams();
   const name = searchParams.get("name") ?? "";
 
@@ -320,7 +321,7 @@ const Register: React.FC = () => {
                     htmlFor="usernameAD"
                     className="block text-xs font-medium text-gray-700 mb-1"
                   >
-                    AD Username<span className="text-red-500 ml-1">*</span>
+                    AD username<span className="text-red-500 ml-1">*</span>
                   </label>
                   <Input
                     type="text"
@@ -375,7 +376,7 @@ const Register: React.FC = () => {
                     htmlFor="firstName"
                     className="block text-xs font-medium text-gray-700 mb-1"
                   >
-                    First Name<span className="text-red-500 ml-1">*</span>
+                    First name<span className="text-red-500 ml-1">*</span>
                   </label>
                   <Input
                     type="text"
@@ -397,7 +398,7 @@ const Register: React.FC = () => {
                     htmlFor="lastName"
                     className="block text-xs font-medium text-gray-700 mb-1"
                   >
-                    Last Name<span className="text-red-500 ml-1">*</span>
+                    Last name<span className="text-red-500 ml-1">*</span>
                   </label>
                   <Input
                     type="text"
@@ -493,4 +494,4 @@ const Register: React.FC = () => {
   );
 };
 
-export default Register;
+export default RegisterPage;

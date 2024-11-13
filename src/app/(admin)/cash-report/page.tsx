@@ -17,7 +17,7 @@ import showToast from "@/components/toast/useToast";
 import { UserRoleEnum } from "@/constants/userRole";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 
- function CashReportPage() {
+function CashReportPage() {
   const [loading, setLoading] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string>("");
   const [openPreview, setOpenPreview] = useState<boolean>(false);
@@ -321,7 +321,6 @@ import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
           )}
         </>
       )}
-
       <LoadingFullPage loading={loading} />
     </div>
   );

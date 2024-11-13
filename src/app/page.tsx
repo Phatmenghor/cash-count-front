@@ -7,25 +7,28 @@ import TokenStorage from "@/utils/localStorage/tokenStorage";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useEffect } from "react";
 
 export default function App() {
   const router = useRouter();
 
-  // Check if the token exists
-  if (!TokenStorage.getToken()) {
-    router.push(`/${route.LOGIN}`);
-    return;
-  }
+  useEffect(() => {
+    // Check if the token exists
+    if (!TokenStorage.getToken()) {
+      router.push(`/${route.LOGIN}`);
+      return;
+    }
 
-  // Redirect based on the user role
-  if (
-    UserRoleStorage.getUserRole() == UserRoleEnum.IT_ADMIN_USER ||
-    UserRoleStorage.getUserRole() == UserRoleEnum.OPERATION_ADMIN_USER
-  ) {
-    router.push(`/${route.USER_MANAGEMENT}`);
-  } else {
-    router.push("/cash-management");
-  }
+    // Redirect based on the user role
+    if (
+      UserRoleStorage.getUserRole() == UserRoleEnum.IT_ADMIN_USER ||
+      UserRoleStorage.getUserRole() == UserRoleEnum.OPERATION_ADMIN_USER
+    ) {
+      router.push(`/${route.USER_MANAGEMENT}`);
+    } else {
+      router.push("/cash-management");
+    }
+  }, [router]);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen  text-white overflow-hidden">

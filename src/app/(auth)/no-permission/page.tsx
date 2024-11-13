@@ -1,10 +1,13 @@
-// pages/no-permission.tsx
 "use client";
 
+import { route } from "@/constants/routed";
+import { useRouter } from "next/navigation";
 import React from "react";
-import { FaLock } from "react-icons/fa"; // Lock icon from react-icons
+import { FaLock } from "react-icons/fa";
 
 const NoPermission: React.FC = () => {
+  const rounter = useRouter();
+
   return (
     <div
       data-aos="fade-up"
@@ -19,7 +22,7 @@ const NoPermission: React.FC = () => {
       </p>
       <button
         className="px-6 py-3 bg-red-500 text-white text-lg rounded-lg hover:bg-red-600 transition duration-300"
-        onClick={() => (window.location.href = "/login-user")}
+        onClick={() => rounter.replace(`${route.LOGIN}`)}
       >
         Go to Login
       </button>

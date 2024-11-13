@@ -357,7 +357,7 @@ const ProfileSelfPage = () => {
                 htmlFor="adUsername"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                AD Username<span className="text-red-500 ml-1">*</span>
+                AD username<span className="text-red-500 ml-1">*</span>
               </label>
               <Input
                 value={userData?.username}
@@ -417,10 +417,10 @@ const ProfileSelfPage = () => {
                 htmlFor="mnemonic"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
-                Mnemonic<span className="text-red-500 ml-1">*</span>
+                Branch type<span className="text-red-500 ml-1">*</span>
               </label>
               <Input
-                value={userData?.branch.mnemonic}
+                value={userData?.branch.userType}
                 className="py-1.5"
                 disabled={true}
               />

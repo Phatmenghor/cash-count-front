@@ -59,10 +59,10 @@ const ViewCashRecordPage = ({ params }: { params: { id: number } }) => {
             <tr>
               <th rowSpan={2}>Description</th>
               <th colSpan={3} className="text-center">
-                Vault Account
+                Vault account
               </th>
               <th colSpan={3} className="text-center">
-                Nostro Account
+                Nostro account
               </th>
             </tr>
             <tr>
@@ -106,7 +106,7 @@ const ViewCashRecordPage = ({ params }: { params: { id: number } }) => {
 
             <tr>
               {/* vault account */}
-              <td>{"Cash In System"}</td>
+              <td>{"Cash in system"}</td>
               <td>{cashInSystem?.vaultAccount.usdBalance.toFixed(2)}</td>
               <td>{cashInSystem?.vaultAccount.khrBalance.toFixed(2)}</td>
               <td>{cashInSystem?.vaultAccount.thbBalance.toFixed(2)}</td>
@@ -118,7 +118,7 @@ const ViewCashRecordPage = ({ params }: { params: { id: number } }) => {
             </tr>
 
             <tr>
-              <td>{"Cash Result"}</td>
+              <td>{"Cash result"}</td>
               <td>{cashRecordDetail?.vaultAccount.usdBalance.toFixed(2)}</td>
               <td>{cashRecordDetail?.vaultAccount.khrBalance.toFixed(2)}</td>
               <td>{cashRecordDetail?.vaultAccount.thbBalance.toFixed(2)}</td>

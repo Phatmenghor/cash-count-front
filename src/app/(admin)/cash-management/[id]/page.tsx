@@ -281,10 +281,10 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
             <tr>
               <th rowSpan={2}>Description</th>
               <th colSpan={3} className="text-center">
-                Vault​ Account
+                Vault​ account
               </th>
               <th colSpan={3} className="text-center">
-                Nostro Account
+                Nostro account
               </th>
             </tr>
             <tr>
@@ -358,7 +358,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
 
             <tr>
               {/* vault account */}
-              <td>{"Cash In System"}</td>
+              <td>{"Cash in system"}</td>
               <td>{cashInSystem?.vaultAccount.usdBalance.toFixed(2)}</td>
               <td>{cashInSystem?.vaultAccount.khrBalance.toFixed(2)}</td>
               <td>{cashInSystem?.vaultAccount.thbBalance.toFixed(2)}</td>
@@ -370,7 +370,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
             </tr>
 
             <tr>
-              <td>{"Cash Result"}</td>
+              <td>{"Cash result"}</td>
               <td>{usdVaultResult.toFixed(2)}</td>
               <td>{khrVaultResult.toFixed(2)}</td>
               <td>{thbVaultResult.toFixed(2)}</td>
@@ -383,10 +383,10 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
       </div>
 
       {/* Remarks and file upload sections */}
-      <div className="flex flex-1 mt-4 gap-8 w-full justify-between">
+      <div className="flex flex-1 mt-6 gap-8 w-full justify-between">
         <div className="max-w-[45%] flex-1">
           <label className="block mb-1 text-xs">
-            Remark <span className="text-red-500 ml-1">*</span>
+            Remark<span className="text-red-500 ml-1">*</span>
           </label>
           <textarea
             className="border rounded px-2 py-1.5 w-full resize-none text-xs bg-gray-50 border-gray-300"
@@ -408,7 +408,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
 
         <div className="max-w-[45%] flex-1">
           <label className="block mb-1 text-xs">
-            Remark <span className="text-red-500 ml-1">*</span>
+            Reference file<span className="text-red-500 ml-1">*</span>
           </label>
 
           <input
@@ -448,14 +448,14 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
       </div>
 
       {/* Approvals section */}
-      <div className="grid grid-cols-3 gap-4 mt-2">
+      <div className="grid grid-cols-3 gap-4 mt-4">
         {/* Approve By */}
         <CustomSelect
           id="approveBy"
           value={formData.approve}
           onChange={(option) => handleChange("approve", option)}
           options={allData.approve}
-          label="Approve By"
+          label="Approve by"
           getOptionLabel={(option) => option.name || ""}
           errorMessage={errors.approve}
           required
@@ -467,7 +467,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
           value={formData.checker}
           onChange={(option) => handleChange("checker", option)}
           options={allData.checker}
-          label="Checker By"
+          label="Checker by"
           getOptionLabel={(option) => option.name || ""}
           errorMessage={errors.checker}
           required

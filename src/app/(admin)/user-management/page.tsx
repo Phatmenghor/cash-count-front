@@ -169,7 +169,7 @@ const UserManagement = () => {
           <FilterUser
             options={userStatus}
             onSelect={handleFilterStatus}
-            label="Select User"
+            label="Select user"
           />
         </div>
         {/* User List Table */}
@@ -181,11 +181,11 @@ const UserManagement = () => {
             <thead>
               <tr>
                 <th>ID</th>
-                <th>Full Name</th>
+                <th>Full name</th>
                 <th>Email</th>
-                <th>AD User</th>
+                <th>AD user</th>
                 <th>Position</th>
-                <th>Position Fullname</th>
+                <th>Position fullname</th>
                 <th>Branch</th>
                 <th>Role</th>
                 <th>Status</th>

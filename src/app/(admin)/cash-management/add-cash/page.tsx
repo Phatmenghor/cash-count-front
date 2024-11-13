@@ -1,4 +1,5 @@
 "use client";
+
 import ModalVerify from "@/components/modal/ModalVerify";
 import Button from "@/components/custom/Button";
 import Input from "@/components/custom/Input";
@@ -248,10 +249,10 @@ const AddCashManagementPage = () => {
             <tr>
               <th rowSpan={2}>Description</th>
               <th colSpan={3} className="text-center">
-                Vault​ Account
+                Vault​ account
               </th>
               <th colSpan={3} className="text-center">
-                Nostro Account
+                Nostro account
               </th>
             </tr>
             <tr>
@@ -331,7 +332,7 @@ const AddCashManagementPage = () => {
 
             <tr>
               {/* vault account */}
-              <td>{"Cash In System"}</td>
+              <td>{"Cash in system"}</td>
               <td className={isCheckVerified}>
                 {isVerified
                   ? verifyCash?.vaultAccount.usdBalance.toFixed(2)
@@ -367,7 +368,7 @@ const AddCashManagementPage = () => {
             </tr>
 
             <tr>
-              <td>{"Cash Result"}</td>
+              <td>{"Cash result"}</td>
               <td className={isCheckVerified}>
                 {isVerified ? usdVaultResult.toFixed(2) : "0.00"}
               </td>
@@ -392,10 +393,10 @@ const AddCashManagementPage = () => {
       </div>
 
       {/* Remarks and file upload sections */}
-      <div className="flex flex-1 mt-4 gap-8 w-full justify-between">
+      <div className="flex flex-1 mt-6 gap-8 w-full justify-between">
         <div className="max-w-[45%] flex-1">
           <label className="block mb-1 text-xs">
-            Remark <span className="text-red-500 ml-1">*</span>
+            Remark<span className="text-red-500 ml-1">*</span>
           </label>
           <textarea
             className="border rounded px-2 py-1.5 w-full resize-none text-xs bg-gray-50 border-gray-300"
@@ -418,7 +419,7 @@ const AddCashManagementPage = () => {
         {/* Upload PDF File */}
         <div className="max-w-[45%] flex-1">
           <label className="block mb-1 text-xs">
-            Reference File <span className="text-red-500 ml-1">*</span>
+            Reference file<span className="text-red-500 ml-1">*</span>
           </label>
           <Input
             type="file"
@@ -430,14 +431,14 @@ const AddCashManagementPage = () => {
       </div>
 
       {/* Approvals section */}
-      <div className="grid grid-cols-3 gap-4 mt-2">
+      <div className="grid grid-cols-3 gap-4 mt-4">
         {/* Approve By */}
         <CustomSelect
           id="approveBy"
           value={formData.approve}
           onChange={(option) => handleChange("approve", option)}
           options={allData.approve}
-          label="Approve By"
+          label="Approve by"
           getOptionLabel={(option) => option.name}
           errorMessage={errors.approve}
           required
@@ -449,7 +450,7 @@ const AddCashManagementPage = () => {
           value={formData.checker}
           onChange={(option) => handleChange("checker", option)}
           options={allData.checker}
-          label="Checker By"
+          label="Checker by"
           getOptionLabel={(option) => option.name}
           errorMessage={errors.checker}
           required
