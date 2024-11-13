@@ -46,7 +46,9 @@ const Navbar = () => {
     onCloseModal();
   };
 
-  function onClickNotification() {}
+  function onClickNotification() {
+    router.push("/user-request");
+  }
 
   return (
     <div className="flex items-center justify-end p-4 ">
