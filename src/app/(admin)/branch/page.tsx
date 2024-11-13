@@ -158,7 +158,7 @@ const BranchPage: React.FC = () => {
         <div className="relative rounded  max-w-md">
           <Input
             type="text"
-            placeholder="Search Branch ... "
+            placeholder="Search Branch... "
             value={searchTerm}
             onChange={onSearch}
             className="mr-4 py-1 pr-8"

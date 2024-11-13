@@ -479,10 +479,10 @@ const RegisterPage: React.FC = () => {
               className="py-1.5 text-sm"
               textLoading={
                 step === 1
-                  ? "Request OTP ..."
+                  ? "Request OTP..."
                   : step === 2
-                  ? "Verify OTP ..."
-                  : "Register ..."
+                  ? "Verify OTP..."
+                  : "Register..."
               }
             >
               {step === 1 ? "Send OTP" : step === 2 ? "Verify OTP" : "Register"}

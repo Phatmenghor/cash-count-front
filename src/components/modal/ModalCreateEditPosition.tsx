@@ -177,7 +177,7 @@ const ModalCreateEditPosition: React.FC<ModalCreateEditPositionProps> = ({
             </Button>
             <Button
               loading={loadingButton}
-              textLoading={initialData ? "Updating ..." : "Creating ..."}
+              textLoading={initialData ? "Updating..." : "Creating..."}
               onClick={handleConfirm}
               className="px-4 py-1.5 transition"
             >

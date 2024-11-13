@@ -78,9 +78,9 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
   const usdNostroResult =
     cashOnHand.nostro.USD - (cashInSystem?.nostroAccount.usdBalance || 0);
   const khrNostroResult =
-    cashOnHand.nostro.USD - (cashInSystem?.nostroAccount.khrBalance || 0);
+    cashOnHand.nostro.KHR - (cashInSystem?.nostroAccount.khrBalance || 0);
   const thbNostroResult =
-    cashOnHand.nostro.USD - (cashInSystem?.nostroAccount.thbBalance || 0);
+    cashOnHand.nostro.THB - (cashInSystem?.nostroAccount.thbBalance || 0);
 
   const fetchData = useCallback(async () => {
     try {

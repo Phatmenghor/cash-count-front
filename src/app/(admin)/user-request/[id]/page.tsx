@@ -372,7 +372,7 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
           onClick={handleOpenModalApprove}
           className="py-1 px-2"
           loading={loading}
-          textLoading="Waiting ..."
+          textLoading="Waiting..."
         >
           Approve
         </Button>
@@ -386,7 +386,7 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
         onConfirm={handleApprove}
         message={`Are you sure you want to approve?`}
         loading={loading}
-        textLoading="Appriving ..."
+        textLoading="Appriving..."
         isNotCancel={true}
       />
 
@@ -398,7 +398,7 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
         onConfirm={handleReject}
         message={`Are you sure you want to reject?`}
         loading={loading}
-        textLoading="Rejecting ..."
+        textLoading="Rejecting..."
       />
     </div>
   );

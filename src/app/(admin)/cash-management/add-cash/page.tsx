@@ -73,9 +73,9 @@ const AddCashManagementPage = () => {
   const usdNostroResult =
     cashOnHand.nostro.USD - (verifyCash?.nostroAccount.usdBalance || 0);
   const khrNostroResult =
-    cashOnHand.nostro.USD - (verifyCash?.nostroAccount.khrBalance || 0);
+    cashOnHand.nostro.KHR - (verifyCash?.nostroAccount.khrBalance || 0);
   const thbNostroResult =
-    cashOnHand.nostro.USD - (verifyCash?.nostroAccount.thbBalance || 0);
+    cashOnHand.nostro.THB - (verifyCash?.nostroAccount.thbBalance || 0);
 
   useEffect(() => {
     fetchData();
@@ -492,7 +492,7 @@ const AddCashManagementPage = () => {
         message="Please click 'Reconcile' before saving."
       />
 
-      <LoadingFullPage loading={loading} text="Adding record, please wait..." />
+      <LoadingFullPage loading={loading} text="Processing record, please wait..." />
     </div>
   );
 };
