@@ -237,7 +237,7 @@ const AddCashManagementPage = () => {
       )}px`; // Resize to maxHeight
     } else {
       showToast(
-        "Character limit exceeded only 60000lenght in remark!",
+        "Character limit exceeded only 30000lenght in remark!",
         "error"
       );
     }

@@ -13,7 +13,6 @@ export class ReportService {
     status = "",
   }: getAllReportModel) => {
     try {
-      console.log("### ==ahah", fromDate, toDate, status);
       const response = await axiosWithAuth.get(
         `/api/report/preview?fromDate=${fromDate}&toDate=${toDate}&status=${status}`
       );

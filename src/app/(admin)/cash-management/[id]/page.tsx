@@ -24,6 +24,7 @@ import { MdOutlineClear } from "react-icons/md";
 import { UserRoleEnum } from "@/constants/userRole";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { validateText } from "@/utils/validate/textLenght";
+import { decryptId } from "@/utils/security/crypto";
 
 type Currency = "USD" | "KHR" | "THB";
 
@@ -42,8 +43,8 @@ interface FormDataType {
   checker: Partial<UserListByInputterModel> | null;
 }
 
-const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
-  const idCashRecord = params.id;
+const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
+  const idCashRecord = params.id ? decryptId(params.id) : null;
   const [cashOnHand, setCashOnHand] = useState<CashRow>({
     vault: { USD: 0, KHR: 0, THB: 0 },
     nostro: { USD: 0, KHR: 0, THB: 0 },
@@ -86,7 +87,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
   const fetchData = useCallback(async () => {
     try {
       const responseRecord = await CashManagementService.getCashRecordById({
-        id: idCashRecord,
+        id: Number(idCashRecord),
       });
 
       if (responseRecord.success) {
@@ -285,7 +286,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
       )}px`; // Resize to maxHeight
     } else {
       showToast(
-        "Character limit exceeded only 60000lenght in remark!",
+        "Character limit exceeded only 30000lenght in remark!",
         "error"
       );
     }

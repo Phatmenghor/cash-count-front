@@ -10,9 +10,10 @@ import showToast from "@/components/toast/useToast";
 import { useRouter } from "next/navigation";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { UserRoleEnum } from "@/constants/userRole";
+import { decryptId } from "@/utils/security/crypto";
 
-const UserCompareRequest = ({ params }: { params: { id: number } }) => {
-  const idUser = params.id;
+const UserCompareRequest = ({ params }: { params: { id: string } }) => {
+  const idUser = params.id ? decryptId(params.id) : null;
   const [userInfo, setUserInfo] = useState<UserProfile | null>(null);
   const [userRequest, setUserRequest] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(false);
@@ -23,7 +24,7 @@ const UserCompareRequest = ({ params }: { params: { id: number } }) => {
 
   const fetchData = useCallback(async () => {
     const responseResquest = await UserManagementService.getUserRequestByID({
-      id: idUser,
+      id: Number(idUser),
     });
 
     if (

@@ -24,6 +24,7 @@ import { FiPlus } from "react-icons/fi";
 import FilterStatusCash from "@/components/custom/FilterStatusCash";
 import UserTypeStorage from "@/utils/localStorage/userTypeStorage";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
+import { encryptId } from "@/utils/security/crypto";
 
 const DropdownSize = dynamic(() => import("@/components/custom/DropdownSize"));
 const Pagination = dynamic(() => import("@/components/pagination/Pagination"));
@@ -125,18 +126,18 @@ const CashManagementPage: React.FC = () => {
   }
 
   function onViewCash(id: number) {
-    router.prefetch(`/cash-management/view-cash-record/${id}`);
-    router.push(`/cash-management/view-cash-record/${id}`);
+    const encryptedId = encryptId(id.toString());
+    router.push(`/cash-management/view-cash-record/${encryptedId}`);
   }
 
   function onEditCash(id: number) {
-    router.prefetch(`/cash-management/${id}`);
-    router.push(`/cash-management/${id}`);
+    const encryptedId = encryptId(id.toString());
+    router.push(`/cash-management/${encryptedId}`);
   }
 
   function onCheckCash(id: number) {
-    router.prefetch(`/cash-management/check/${id}`);
-    router.push(`/cash-management/check/${id}`);
+    const encryptedId = encryptId(id.toString());
+    router.push(`/cash-management/check/${encryptedId}`);
   }
 
   return (

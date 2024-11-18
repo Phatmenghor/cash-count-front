@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { FaTimes } from "react-icons/fa";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { UserRoleEnum } from "@/constants/userRole";
+import { encryptId } from "@/utils/security/crypto";
 
 const UserRequestPage: React.FC = () => {
   const [userRequestList, setUserRequestList] = useState<userRequestListModel>({
@@ -209,7 +210,10 @@ const UserRequestPage: React.FC = () => {
                     <td className="truncate">{user.role.name}</td>
                     <td className="flex items-center truncate">
                       <button
-                        onClick={() => router.push(`/user-request/${user.id}`)}
+                        onClick={() => {
+                          const encryptedId = encryptId(user.id.toString());
+                          router.push(`/user-request/${encryptedId}`);
+                        }}
                         className="bg-gray-300 text-white px-2 p-1 rounded hover:bg-gray-400 mr-2 flex items-center"
                       >
                         <LuView size={14} className="text-white" />

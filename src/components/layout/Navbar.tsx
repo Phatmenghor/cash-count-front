@@ -64,8 +64,8 @@ const Navbar = () => {
             width={20}
             height={20}
           />
-          <div className="absolute -top-2 -right-2 w-5 h-5 flex items-center justify-center bg-purple-400 text-white rounded-full text-xs shadow-sm">
-            2
+          <div className="absolute -top-2 -right-2 w-4 h-4 flex items-center justify-center bg-purple-400 text-white rounded-full text-base shadow-sm">
+            +
           </div>
         </div>
         <div className="flex flex-col text-gray-700">

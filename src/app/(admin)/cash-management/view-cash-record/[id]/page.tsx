@@ -10,9 +10,10 @@ import { CashInSystemModel } from "@/redux/models/cashManagement/CashInSystemMod
 import { FaFilePdf } from "react-icons/fa";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { UserRoleEnum } from "@/constants/userRole";
+import { decryptId } from "@/utils/security/crypto";
 
-const ViewCashRecordPage = ({ params }: { params: { id: number } }) => {
-  const idCashRecord = params.id;
+const ViewCashRecordPage = ({ params }: { params: { id: string } }) => {
+  const idCashRecord = params.id ? decryptId(params.id) : null;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const router = useRouter();
   const [cashRecordDetail, setCashRecordDetail] =
@@ -23,7 +24,7 @@ const ViewCashRecordPage = ({ params }: { params: { id: number } }) => {
 
   const fetchData = useCallback(async () => {
     const response = await CashManagementService.getCashRecordById({
-      id: idCashRecord,
+      id: Number(idCashRecord),
     });
     if (response.success) {
       const responseSystem = await CashManagementService.getCashInSystemById({

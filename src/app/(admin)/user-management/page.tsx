@@ -24,6 +24,7 @@ import Head from "next/head";
 import { FaTimes } from "react-icons/fa";
 import { UserRoleEnum } from "@/constants/userRole";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
+import { encryptId } from "@/utils/security/crypto";
 
 const UserManagement = () => {
   const router = useRouter();
@@ -242,17 +243,23 @@ const UserManagement = () => {
                       </td>
                       <td className="flex items-center truncate">
                         <button
-                          onClick={() =>
-                            router.push(`/user-management/${user.id}?mode=view`)
-                          }
+                          onClick={() => {
+                            const encryptedId = encryptId(user.id.toString());
+                            router.push(
+                              `/user-management/${encryptedId}?mode=view`
+                            );
+                          }}
                           className="bg-gray-300 text-white px-2 p-1 rounded hover:bg-gray-400 mr-2 flex items-center"
                         >
                           <LuView size={14} className="text-white" />
                         </button>
                         <button
-                          onClick={() =>
-                            router.push(`/user-management/${user.id}?mode=edit`)
-                          }
+                          onClick={() => {
+                            const encryptedId = encryptId(user.id.toString());
+                            router.push(
+                              `/user-management/${encryptedId}?mode=edit`
+                            );
+                          }}
                           className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"
                         >
                           <FiEdit size={14} className="text-white" />

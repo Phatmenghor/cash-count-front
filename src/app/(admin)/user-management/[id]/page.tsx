@@ -20,6 +20,7 @@ import showToast from "@/components/toast/useToast";
 import LoadingFullPage from "@/components/loading/LoadingFullPage";
 import { UserRoleEnum } from "@/constants/userRole";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
+import { decryptId } from "@/utils/security/crypto";
 
 interface FormDataType {
   name: string;
@@ -28,8 +29,9 @@ interface FormDataType {
   branch: BranchModel | null;
 }
 
-const EditUserManagement = ({ params }: { params: { id: number } }) => {
-  const idUser = params.id;
+const EditUserManagement = ({ params }: { params: { id: string } }) => {
+  const idUser = params.id ? decryptId(String(params.id)) : null;
+
   const router = useRouter();
   const searchParams = useSearchParams();
   const modeTypeEdit = searchParams.get("mode") === "edit";
@@ -55,13 +57,13 @@ const EditUserManagement = ({ params }: { params: { id: number } }) => {
 
   async function fetchData() {
     const response = await UserManagementService.getUserByID({
-      id: idUser,
+      id: Number(idUser),
     });
     setFormData({
-      name: response.name,
-      branch: response.branch,
+      name: response?.name,
+      branch: response?.branch,
       position: response?.position,
-      role: response.role,
+      role: response?.role,
     });
     if (modeTypeEdit) {
       const response = await RegisterService.fetchAllData();

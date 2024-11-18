@@ -17,9 +17,10 @@ import { UserRoleEnum } from "@/constants/userRole";
 import ModalConfirmation from "@/components/modal/ModalConfirmation";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { validateText } from "@/utils/validate/textLenght";
+import { decryptId } from "@/utils/security/crypto";
 
-const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
-  const idCashRecord = params.id;
+const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
+  const idCashRecord = params.id ? decryptId(params.id) : null;
   const rolesUser = UserRoleStorage.getUserRole();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -40,7 +41,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
 
   async function fetchData() {
     const responseRecord = await CashManagementService.getCashRecordById({
-      id: idCashRecord,
+      id: Number(idCashRecord),
     });
     if (responseRecord.success) {
       const item: CashRecordDetailModel = responseRecord.data;
@@ -133,7 +134,10 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
         100
       )}px`; // Resize to maxHeight
     } else {
-      showToast("Character limit exceeded only 60000lenght in remark checker!", "error");
+      showToast(
+        "Character limit exceeded only 30000lenght in remark checker!",
+        "error"
+      );
     }
   };
 
@@ -148,7 +152,10 @@ const CheckCashManagementPage = ({ params }: { params: { id: number } }) => {
         100
       )}px`; // Resize to maxHeight
     } else {
-      showToast("Character limit exceeded only 60000lenght in remark authorizer!", "error");
+      showToast(
+        "Character limit exceeded only 60000lenght in remark authorizer!",
+        "error"
+      );
     }
   };
 
