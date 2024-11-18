@@ -3,7 +3,7 @@ import ModalVerify from "@/components/modal/ModalVerify";
 import Button from "@/components/custom/Button";
 import Input from "@/components/custom/Input";
 import { useRouter } from "next/navigation";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   CashManagementService,
   SubmissionData,
@@ -49,6 +49,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
     vault: { USD: 0, KHR: 0, THB: 0 },
     nostro: { USD: 0, KHR: 0, THB: 0 },
   });
+  const remarkRef = useRef<HTMLTextAreaElement>(null); // Ref for textarea
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -83,6 +84,14 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
     cashOnHand.nostro.KHR - (cashInSystem?.nostroAccount.khrBalance || 0);
   const thbNostroResult =
     cashOnHand.nostro.THB - (cashInSystem?.nostroAccount.thbBalance || 0);
+
+  const areAllNonZero =
+    usdVaultResult == 0 &&
+    khrVaultResult == 0 &&
+    thbVaultResult == 0 &&
+    usdNostroResult == 0 &&
+    khrNostroResult == 0 &&
+    thbNostroResult == 0;
 
   const fetchData = useCallback(async () => {
     try {
@@ -120,6 +129,15 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
         }
 
         setRemark(item.remarkFromCreate);
+        setTimeout(() => {
+          if (remarkRef.current) {
+            remarkRef.current.style.height = "auto";
+            remarkRef.current.style.height = `${Math.min(
+              remarkRef.current.scrollHeight,
+              100
+            )}px`;
+          }
+        }, 0);
         setCashInSystem(responseSystem);
       }
 
@@ -166,23 +184,15 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
     if (!validateForm()) {
       return;
     }
+    if (!areAllNonZero && !remark) {
+      showToast("Please input a remark before save.", "error");
+      return;
+    }
     setLoading(true);
     const resPDF = await uploadPdf();
 
     const cashCountData: UpdateRecordModel = {
-      checkerBy: { id: formData.checker?.id || 0 },
-      approvedBy: { id: formData.approve?.id || 0 },
-      createdBy: { id: cashRecordDetail!.createdBy.id },
-      referenceFile:
-        fileName == "No file chosen"
-          ? null
-          : {
-              id: resPDF ? resPDF : cashRecordDetail!.referenceFile.id,
-            },
-      cashInSystem: { id: cashInSystem!.id },
-      remarkFromCreate: remark ? remark : null,
       status: CashStatusEnum.PENDING,
-      branch: { id: cashRecordDetail!.branch.id },
       vaultAccount: {
         usdBalance: usdVaultResult,
         khrBalance: khrVaultResult,
@@ -194,15 +204,27 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
         thbBalance: thbNostroResult,
       },
       cashInHandVaultAccount: {
-        usdBalance: cashOnHand.nostro.USD,
-        khrBalance: cashOnHand.nostro.KHR,
-        thbBalance: cashOnHand.nostro.THB,
-      },
-      cashInHandNostroAccount: {
         usdBalance: cashOnHand.vault.USD,
         khrBalance: cashOnHand.vault.KHR,
         thbBalance: cashOnHand.vault.THB,
       },
+      cashInHandNostroAccount: {
+        usdBalance: cashOnHand.nostro.USD,
+        khrBalance: cashOnHand.nostro.KHR,
+        thbBalance: cashOnHand.nostro.THB,
+      },
+      referenceFile:
+        fileName == "No file chosen"
+          ? null
+          : {
+              id: resPDF ? resPDF : cashRecordDetail!.referenceFile.id,
+            },
+      remarkFromCreate: remark ? remark : null,
+      branch: { id: cashRecordDetail!.branch.id },
+      createdBy: { id: cashRecordDetail!.createdBy.id },
+      cashInSystem: { id: cashInSystem!.id },
+      checkerBy: { id: formData.checker?.id || 0 },
+      approvedBy: { id: formData.approve?.id || 0 },
     };
 
     const response = await CashManagementService.updateCashRecord(
@@ -409,6 +431,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
             Remark<span className="text-red-500 ml-1">*</span>
           </label>
           <textarea
+            ref={remarkRef}
             className="border rounded px-2 py-1.5 w-full resize-none text-xs bg-gray-50 border-gray-300"
             rows={1}
             placeholder="Enter your remark here..."

@@ -35,6 +35,14 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
   const [modalApprove, setModalApprove] = useState(false);
   const [modalReject, setModalReject] = useState(false);
 
+  const areAllNonZero =
+    cashRecordDetail?.vaultAccount.usdBalance == 0 &&
+    cashRecordDetail?.vaultAccount.khrBalance == 0 &&
+    cashRecordDetail?.vaultAccount.thbBalance == 0 &&
+    cashRecordDetail?.nostroAccount.usdBalance == 0 &&
+    cashRecordDetail?.nostroAccount.khrBalance == 0 &&
+    cashRecordDetail?.nostroAccount.thbBalance == 0;
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -212,7 +220,6 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
                 )}
               </td>
             </tr>
-
             <tr>
               {/* vault account */}
               <td>{"Cash in system"}</td>
@@ -380,7 +387,33 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
         >
           Reject
         </Button>
-        <Button onClick={() => setModalApprove(true)} className="py-0.5">
+        <Button
+          onClick={() => {
+            if (!areAllNonZero) {
+              if (
+                rolesUser == UserRoleEnum.AUTHORIZER_USER &&
+                !remarkFromAuthorizer
+              ) {
+                showToast(
+                  "Please input a remark from authorizer before approve.",
+                  "error"
+                );
+                return;
+              } else if (
+                rolesUser == UserRoleEnum.CHECKER_USER &&
+                !remarkFromChecker
+              ) {
+                showToast(
+                  "Please input a remark from checker before approve.",
+                  "error"
+                );
+                return;
+              }
+            }
+            setModalApprove(true);
+          }}
+          className="py-0.5"
+        >
           Approve
         </Button>
       </div>

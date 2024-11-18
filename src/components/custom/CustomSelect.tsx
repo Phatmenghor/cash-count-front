@@ -127,13 +127,13 @@ const CustomSelect = <T,>({
                 <DropdownMenuItem
                   key={index}
                   onClick={() => onChange(option)}
-                  className="cursor-pointer hover:bg-gray-200"
+                  className="cursor-pointer hover:bg-gray-700"
                 >
                   <span className="text-sm">{getOptionLabel(option)}</span>
                 </DropdownMenuItem>
               ))
             ) : (
-              <span className="block text-sm py-4 px-2 text-gray-500">
+              <span className="block text-sm py-4 px-2 text-gray-600">
                 No options found
               </span>
             )}

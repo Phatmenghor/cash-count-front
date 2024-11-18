@@ -32,10 +32,6 @@ const BranchPage: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [currentBranch, setCurrentBranch] = useState<BranchModel | null>(null);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
   async function fetchData(currentPage = 1, pageSize = size) {
     const response = await BranchService.getBranch({
       pageSize,
@@ -43,6 +39,10 @@ const BranchPage: React.FC = () => {
     });
     setBranchList(response);
   }
+
+  useEffect(() => {
+    fetchData();
+  }, []);
 
   function onPageChange(value: number) {
     fetchData(value, branchList.pagination?.pageSize ?? 10);

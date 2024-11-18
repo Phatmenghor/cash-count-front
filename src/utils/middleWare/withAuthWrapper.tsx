@@ -1,4 +1,3 @@
-// components/withAuthWrapper.tsx
 import React, { ComponentType } from "react";
 import AuthWrapper from "./AuthWrapper";
 import { UserRoleEnum } from "@/constants/userRole";

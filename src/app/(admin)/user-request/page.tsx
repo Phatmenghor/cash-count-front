@@ -199,10 +199,10 @@ const UserRequestPage: React.FC = () => {
                     <td className="truncate">
                       <span
                         className={`underline py-1.5 text-[14px] ${
-                          user.status ? "text-green-500" : "text-red-500"
+                          user.status === 1 ? "text-green-500" : "text-red-500"
                         }`}
                       >
-                        {user.status ? "Active" : "Inactive"}
+                        {user.status === 1 ? "Active" : "Inactive"}
                       </span>
                     </td>
                     <td className="truncate">{user.position.name}</td>

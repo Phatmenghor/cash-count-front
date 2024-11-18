@@ -93,16 +93,16 @@ const UserCompareRequest = ({ params }: { params: { id: string } }) => {
           : "New user information request"}
       </h2>
 
-      <div className="flex">
+      {!typeView && (
         <div className="flex-1 space-y-4" data-aos="fade-right">
           {/* Name Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              {typeView ? "Name before" : "Name user"}
+              Name user
               <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
-              value={userInfo?.name}
+              value={userRequest?.name}
               className="py-1.5 w-full"
               disabled={true}
             />
@@ -111,11 +111,11 @@ const UserCompareRequest = ({ params }: { params: { id: string } }) => {
           {/* Email Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              {typeView ? "Email before" : "Email user"}
+              Email user
               <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
-              value={userInfo?.email}
+              value={userRequest?.email}
               className="py-1.5 w-full"
               disabled={true}
             />
@@ -124,11 +124,11 @@ const UserCompareRequest = ({ params }: { params: { id: string } }) => {
           {/* Branch after Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              {typeView ? "Branch before" : "Branch user"}
+              Branch user
               <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
-              value={userInfo?.branch.mnemonic}
+              value={userRequest?.branch.mnemonic}
               className="py-1.5 w-full"
               disabled={true}
             />
@@ -137,11 +137,11 @@ const UserCompareRequest = ({ params }: { params: { id: string } }) => {
           {/* Branch after Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              {typeView ? "Branch type before" : "Branch type user"}
+              Branch type user
               <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
-              value={userInfo?.branch.userType}
+              value={userRequest?.branch.userType}
               className="py-1.5 w-full"
               disabled={true}
             />
@@ -150,11 +150,11 @@ const UserCompareRequest = ({ params }: { params: { id: string } }) => {
           {/* Branch Location after Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              {typeView ? "Branch location before" : "Branch location user"}
+              Branch location user
               <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
-              value={userInfo?.branch.city}
+              value={userRequest?.branch.city}
               className="py-1.5 w-full"
               disabled={true}
             />
@@ -163,11 +163,11 @@ const UserCompareRequest = ({ params }: { params: { id: string } }) => {
           {/* Position after Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              {typeView ? "Position before" : "Position user"}
+              Position user
               <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
-              value={userInfo?.position.fullName}
+              value={userRequest?.position.fullName}
               className="py-1.5 w-full"
               disabled={true}
             />
@@ -176,18 +176,113 @@ const UserCompareRequest = ({ params }: { params: { id: string } }) => {
           {/* Role after Field */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              {typeView ? "Role before" : "Role user"}
+              Role user
               <span className="text-red-500 ml-1">*</span>
             </label>
             <Input
-              value={userInfo?.role.name}
+              value={userRequest?.role.name}
               className="py-1.5 w-full"
               disabled={true}
             />
           </div>
         </div>
+      )}
 
-        {typeView && (
+      {typeView && (
+        <div className="flex">
+          <div className="flex-1 space-y-4" data-aos="fade-right">
+            {/* Name Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {typeView ? "Name before" : "Name user"}
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userInfo?.name}
+                className="py-1.5 w-full"
+                disabled={true}
+              />
+            </div>
+
+            {/* Email Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {typeView ? "Email before" : "Email user"}
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userInfo?.email}
+                className="py-1.5 w-full"
+                disabled={true}
+              />
+            </div>
+
+            {/* Branch after Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {typeView ? "Branch before" : "Branch user"}
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userInfo?.branch.mnemonic}
+                className="py-1.5 w-full"
+                disabled={true}
+              />
+            </div>
+
+            {/* Branch after Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {typeView ? "Branch type before" : "Branch type user"}
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userInfo?.branch.userType}
+                className="py-1.5 w-full"
+                disabled={true}
+              />
+            </div>
+
+            {/* Branch Location after Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {typeView ? "Branch location before" : "Branch location user"}
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userInfo?.branch.city}
+                className="py-1.5 w-full"
+                disabled={true}
+              />
+            </div>
+
+            {/* Position after Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {typeView ? "Position before" : "Position user"}
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userInfo?.position.fullName}
+                className="py-1.5 w-full"
+                disabled={true}
+              />
+            </div>
+
+            {/* Role after Field */}
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                {typeView ? "Role before" : "Role user"}
+                <span className="text-red-500 ml-1">*</span>
+              </label>
+              <Input
+                value={userInfo?.role.name}
+                className="py-1.5 w-full"
+                disabled={true}
+              />
+            </div>
+          </div>
+
           <div className="flex flex-col justify-between mt-6">
             <h2 className="justify-center text-lg px-4">{"==>"}</h2>
             <h2 className="justify-center text-lg px-4">{"==>"}</h2>
@@ -197,9 +292,7 @@ const UserCompareRequest = ({ params }: { params: { id: string } }) => {
             <h2 className="justify-center text-lg px-4">{"==>"}</h2>
             <h2 className="justify-center text-lg px-4">{"==>"}</h2>
           </div>
-        )}
 
-        {typeView && (
           <div className="flex-1 space-y-4" data-aos="fade-left">
             <div>
               <label
@@ -356,8 +449,8 @@ const UserCompareRequest = ({ params }: { params: { id: string } }) => {
               />
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
       <div className="mt-8 justify-end flex space-x-2">
         <Button onClick={handleCancel} variant="cancel" className="px-2 py-1">

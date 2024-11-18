@@ -78,6 +78,14 @@ const AddCashManagementPage = () => {
   const thbNostroResult =
     cashOnHand.nostro.THB - (verifyCash?.nostroAccount.thbBalance || 0);
 
+  const areAllNonZero =
+    usdVaultResult == 0 &&
+    khrVaultResult == 0 &&
+    thbVaultResult == 0 &&
+    usdNostroResult == 0 &&
+    khrNostroResult == 0 &&
+    thbNostroResult == 0;
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -128,6 +136,10 @@ const AddCashManagementPage = () => {
       if (!validateForm()) {
         return;
       }
+      if (!areAllNonZero && !remark) {
+        showToast("Please input a remark before save.", "error");
+        return;
+      }
       setLoading(true);
       const resPDF = await uploadPdf();
       const cashCountData: AddRecordParamModel = {
@@ -148,16 +160,17 @@ const AddCashManagementPage = () => {
           thbBalance: thbNostroResult,
         },
         cashInHandVaultAccount: {
-          usdBalance: cashOnHand.nostro.USD,
-          khrBalance: cashOnHand.nostro.KHR,
-          thbBalance: cashOnHand.nostro.THB,
-        },
-        cashInHandNostroAccount: {
           usdBalance: cashOnHand.vault.USD,
           khrBalance: cashOnHand.vault.KHR,
           thbBalance: cashOnHand.vault.THB,
         },
+        cashInHandNostroAccount: {
+          usdBalance: cashOnHand.nostro.USD,
+          khrBalance: cashOnHand.nostro.KHR,
+          thbBalance: cashOnHand.nostro.THB,
+        },
       };
+
       const response = await CashManagementService.createCashRecord(
         cashCountData
       );
