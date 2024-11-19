@@ -137,7 +137,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
               100
             )}px`;
           }
-        }, 0);
+        }, 2000);
         setCashInSystem(responseSystem);
       }
 

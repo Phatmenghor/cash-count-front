@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setOpenModalLogout } from "@/redux/features/userSlice";
-import Image from "next/image";
 import UserRoleStorage from "@/utils/localStorage/userRoleStorage";
 import { menuItemsSlibar } from "@/constants/data/menuItemsSlibar";
 import { UserRoleEnum } from "@/constants/userRole";
