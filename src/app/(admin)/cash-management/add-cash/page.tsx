@@ -30,8 +30,8 @@ import { formatNumberWithTwoDecimals } from "@/utils/function/convertMoney";
 type Currency = "USD" | "KHR" | "THB";
 
 interface CashRow {
-  vault: Record<Currency, number>;
-  nostro: Record<Currency, number>;
+  vault: Record<Currency, number | null>;
+  nostro: Record<Currency, number | null>;
 }
 
 interface AllUserType {
@@ -47,8 +47,8 @@ interface FormDataType {
 const AddCashManagementPage = () => {
   // State for cash on hand input
   const [cashOnHand, setCashOnHand] = useState<CashRow>({
-    vault: { USD: 0, KHR: 0, THB: 0 },
-    nostro: { USD: 0, KHR: 0, THB: 0 },
+    vault: { USD: null, KHR: null, THB: null },
+    nostro: { USD: null, KHR: null, THB: null },
   });
   const [fileName, setFileName] = useState("No file chosen");
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
@@ -77,18 +77,18 @@ const AddCashManagementPage = () => {
 
   const { userData } = useSelector((state: RootState) => state.user);
   const usdVaultResult =
-    cashOnHand.vault.USD - (verifyCash?.vaultAccount.usdBalance || 0);
+    (cashOnHand.vault.USD || 0) - (verifyCash?.vaultAccount.usdBalance || 0);
   const khrVaultResult =
-    cashOnHand.vault.KHR - (verifyCash?.vaultAccount.khrBalance || 0);
+    (cashOnHand.vault.KHR || 0) - (verifyCash?.vaultAccount.khrBalance || 0);
   const thbVaultResult =
-    cashOnHand.vault.THB - (verifyCash?.vaultAccount.thbBalance || 0);
+    (cashOnHand.vault.THB || 0) - (verifyCash?.vaultAccount.thbBalance || 0);
 
   const usdNostroResult =
-    cashOnHand.nostro.USD - (verifyCash?.nostroAccount.usdBalance || 0);
+    (cashOnHand.nostro.USD || 0) - (verifyCash?.nostroAccount.usdBalance || 0);
   const khrNostroResult =
-    cashOnHand.nostro.KHR - (verifyCash?.nostroAccount.khrBalance || 0);
+    (cashOnHand.nostro.KHR || 0) - (verifyCash?.nostroAccount.khrBalance || 0);
   const thbNostroResult =
-    cashOnHand.nostro.THB - (verifyCash?.nostroAccount.thbBalance || 0);
+    (cashOnHand.nostro.THB || 0) - (verifyCash?.nostroAccount.thbBalance || 0);
 
   const areAllNonZero =
     usdVaultResult == 0 &&
@@ -134,6 +134,18 @@ const AddCashManagementPage = () => {
   };
 
   const handleVerifyClick = async () => {
+    if (
+      [
+        ...Object.values(cashOnHand.nostro),
+        ...Object.values(cashOnHand.vault),
+      ].some((value) => !value)
+    ) {
+      showToast(
+        "Please fill input all cash on hand before reconcile.",
+        "error"
+      );
+      return;
+    }
     setLoading(true);
     setIsVerified(true);
     const resposne = await CashManagementService.getVerifyRecord();
@@ -172,14 +184,14 @@ const AddCashManagementPage = () => {
           thbBalance: thbNostroResult,
         },
         cashInHandVaultAccount: {
-          usdBalance: cashOnHand.vault.USD,
-          khrBalance: cashOnHand.vault.KHR,
-          thbBalance: cashOnHand.vault.THB,
+          usdBalance: cashOnHand.vault.USD || 0,
+          khrBalance: cashOnHand.vault.KHR || 0,
+          thbBalance: cashOnHand.vault.THB || 0,
         },
         cashInHandNostroAccount: {
-          usdBalance: cashOnHand.nostro.USD,
-          khrBalance: cashOnHand.nostro.KHR,
-          thbBalance: cashOnHand.nostro.THB,
+          usdBalance: cashOnHand.nostro.USD || 0,
+          khrBalance: cashOnHand.nostro.KHR || 0,
+          thbBalance: cashOnHand.nostro.THB || 0,
         },
       };
 
@@ -283,6 +295,11 @@ const AddCashManagementPage = () => {
     setFile(null);
     setFileName("No file chosen");
     setPdfUrl(null);
+
+    const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = ""; // Reset the file input value
+    }
   }
 
   const handleViewPdf = () => {
@@ -337,7 +354,7 @@ const AddCashManagementPage = () => {
                 <Input
                   placeholder="0.00"
                   type="text"
-                  value={cashOnHand.vault.USD === 0 ? "" : cashOnHand.vault.USD}
+                  value={cashOnHand.vault.USD ?? ""}
                   onChange={(e) => handleCashOnHandChange(e, "vault", "USD")}
                   className="rounded w-full px-1 py-[1px] -mx-1.5"
                 />
@@ -346,7 +363,7 @@ const AddCashManagementPage = () => {
                 <Input
                   placeholder="0.00"
                   type="text"
-                  value={cashOnHand.vault.KHR === 0 ? "" : cashOnHand.vault.KHR}
+                  value={cashOnHand.vault.KHR ?? ""}
                   onChange={(e) => handleCashOnHandChange(e, "vault", "KHR")}
                   className="border rounded w-full px-1 py-0.5 -mx-1.5"
                 />
@@ -355,7 +372,7 @@ const AddCashManagementPage = () => {
                 <Input
                   placeholder="0.00"
                   type="text"
-                  value={cashOnHand.vault.THB === 0 ? "" : cashOnHand.vault.THB}
+                  value={cashOnHand.vault.THB ?? ""}
                   onChange={(e) => handleCashOnHandChange(e, "vault", "THB")}
                   className="border rounded w-full px-1 py-0.5 -mx-1.5"
                 />
@@ -364,9 +381,7 @@ const AddCashManagementPage = () => {
                 <Input
                   placeholder="0.00"
                   type="text"
-                  value={
-                    cashOnHand.nostro.USD === 0 ? "" : cashOnHand.nostro.USD
-                  }
+                  value={cashOnHand.nostro.USD ?? ""}
                   onChange={(e) => handleCashOnHandChange(e, "nostro", "USD")}
                   className="border rounded w-full px-1 py-0.5 -mx-1.5"
                 />
@@ -375,9 +390,7 @@ const AddCashManagementPage = () => {
                 <Input
                   placeholder="0.00"
                   type="text"
-                  value={
-                    cashOnHand.nostro.KHR === 0 ? "" : cashOnHand.nostro.KHR
-                  }
+                  value={cashOnHand.nostro.KHR ?? ""}
                   onChange={(e) => handleCashOnHandChange(e, "nostro", "KHR")}
                   className="border rounded w-full px-1 py-0.5 -mx-1.5"
                 />
@@ -386,9 +399,7 @@ const AddCashManagementPage = () => {
                 <Input
                   placeholder="0.00"
                   type="text"
-                  value={
-                    cashOnHand.nostro.THB === 0 ? "" : cashOnHand.nostro.THB
-                  }
+                  value={cashOnHand.nostro.THB ?? ""}
                   onChange={(e) => handleCashOnHandChange(e, "nostro", "THB")}
                   className="border rounded w-full px-1 py-0.5 -mx-1.5"
                 />

@@ -299,6 +299,11 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
   function clearPdf() {
     setFile(null);
     setFileName("No file chosen");
+
+    const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = ""; // Reset the file input value
+    }
   }
 
   const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
