@@ -12,8 +12,8 @@ import { UserRoleEnum } from "@/constants/userRole";
 import showToast from "@/components/toast/useToast";
 
 const LoginPage: React.FC = () => {
-  const [adUsername, setAdUsername] = useState("sokrann.voem");
-  const [password, setPassword] = useState("123456789");
+  const [adUsername, setAdUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [usernameError, setUsernameError] = useState<string | null>(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
