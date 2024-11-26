@@ -16,6 +16,7 @@ import LoadingFullPage from "@/components/loading/LoadingFullPage";
 import showToast from "@/components/toast/useToast";
 import { UserRoleEnum } from "@/constants/userRole";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
+import { formatNumberWithTwoDecimals } from "@/utils/function/convertMoney";
 
 function CashReportPage() {
   const [loading, setLoading] = useState(false);
@@ -280,31 +281,31 @@ function CashReportPage() {
                           <td className="truncate">{report.branch}</td>
                           <td className="truncate">{report.typeOfTxn}</td>
                           <td className="truncate">
-                            {report.cashUsd.toFixed(2)}
+                            {formatNumberWithTwoDecimals(report.cashUsd)}
                           </td>
                           <td className="truncate">
-                            {report.cashKhr.toFixed(2)}
+                            {formatNumberWithTwoDecimals(report.cashKhr)}
                           </td>
                           <td className="truncate">
-                            {report.cashThb.toFixed(2)}
+                            {formatNumberWithTwoDecimals(report.cashThb)}
                           </td>
                           <td className="truncate">
-                            {report.systemUsd.toFixed(2)}
+                            {formatNumberWithTwoDecimals(report.systemUsd)}
                           </td>
                           <td className="truncate">
-                            {report.systemKhr.toFixed(2)}
+                            {formatNumberWithTwoDecimals(report.systemKhr)}
                           </td>
                           <td className="truncate">
-                            {report.systemThb.toFixed(2)}
+                            {formatNumberWithTwoDecimals(report.systemThb)}
                           </td>
                           <td className="truncate">
-                            {report.varianUsd.toFixed(2)}
+                            {formatNumberWithTwoDecimals(report.varianUsd)}
                           </td>
                           <td className="truncate">
-                            {report.varianKhr.toFixed(2)}
+                            {formatNumberWithTwoDecimals(report.varianKhr)}
                           </td>
                           <td className="truncate">
-                            {report.varianThb.toFixed(2)}
+                            {formatNumberWithTwoDecimals(report.varianThb)}
                           </td>
                           <td className="truncate">{report.status}</td>
                           <td className="truncate">{report.remark}</td>

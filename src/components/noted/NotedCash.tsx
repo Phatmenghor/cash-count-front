@@ -2,7 +2,7 @@ import React from "react";
 
 const NotedCash = () => {
   return (
-    <div className="flex items-center text-red-600 text-sm mt-8">
+    <div className="flex items-center text-red-600 text-xs mt-8">
       <div className="underline">Note: Cash Result</div>
       <div className="ml-4">
         <div>Cash Surplus</div>

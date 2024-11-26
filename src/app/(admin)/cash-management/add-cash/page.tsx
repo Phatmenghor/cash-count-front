@@ -23,6 +23,9 @@ import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { UserRoleEnum } from "@/constants/userRole";
 import { validateText } from "@/utils/validate/textLenght";
 import NotedCash from "@/components/noted/NotedCash";
+import { FaCloudUploadAlt } from "react-icons/fa";
+import { FiEye, FiTrash2 } from "react-icons/fi";
+import { formatNumberWithTwoDecimals } from "@/utils/function/convertMoney";
 
 type Currency = "USD" | "KHR" | "THB";
 
@@ -47,6 +50,8 @@ const AddCashManagementPage = () => {
     vault: { USD: 0, KHR: 0, THB: 0 },
     nostro: { USD: 0, KHR: 0, THB: 0 },
   });
+  const [fileName, setFileName] = useState("No file chosen");
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [isVerified, setIsVerified] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -63,6 +68,13 @@ const AddCashManagementPage = () => {
     approve: null,
     checker: null,
   });
+  const isShow =
+    isVerified &&
+    [
+      ...Object.values(cashOnHand.nostro),
+      ...Object.values(cashOnHand.vault),
+    ].some((value) => value != 0);
+
   const { userData } = useSelector((state: RootState) => state.user);
   const usdVaultResult =
     cashOnHand.vault.USD - (verifyCash?.vaultAccount.usdBalance || 0);
@@ -217,15 +229,6 @@ const AddCashManagementPage = () => {
     }
   }
 
-  const handleFileUpload = async (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    if (event.target.files) {
-      const file = event.target.files[0];
-      setFile(file);
-    }
-  };
-
   const handleChange = (key: keyof typeof formData, option: unknown) => {
     setFormData((prevData) => ({
       ...prevData,
@@ -261,6 +264,30 @@ const AddCashManagementPage = () => {
         "Character limit exceeded only 30000lenght in remark!",
         "error"
       );
+    }
+  };
+
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    if (event.target.files) {
+      const file = event.target.files[0];
+      setFile(file);
+      setFileName(file.name);
+      const url = URL.createObjectURL(file);
+      setPdfUrl(url);
+    }
+  };
+
+  function clearPdf() {
+    setFile(null);
+    setFileName("No file chosen");
+    setPdfUrl(null);
+  }
+
+  const handleViewPdf = () => {
+    if (pdfUrl) {
+      window.open(pdfUrl, "_blank");
     }
   };
 
@@ -373,34 +400,46 @@ const AddCashManagementPage = () => {
               <td>{"Cash in system"}</td>
               <td className={isCheckVerified}>
                 {isVerified
-                  ? verifyCash?.vaultAccount.usdBalance.toFixed(2)
+                  ? formatNumberWithTwoDecimals(
+                      verifyCash?.vaultAccount.usdBalance
+                    )
                   : "0.00"}
               </td>
               <td className={isCheckVerified}>
                 {isVerified
-                  ? verifyCash?.vaultAccount.khrBalance.toFixed(2)
+                  ? formatNumberWithTwoDecimals(
+                      verifyCash?.vaultAccount.khrBalance
+                    )
                   : "0.00"}
               </td>
               <td className={isCheckVerified}>
                 {isVerified
-                  ? verifyCash?.vaultAccount.thbBalance.toFixed(2)
+                  ? formatNumberWithTwoDecimals(
+                      verifyCash?.vaultAccount.thbBalance
+                    )
                   : "0.00"}
               </td>
 
               {/* nostro */}
               <td className={isCheckVerified}>
                 {isVerified
-                  ? verifyCash?.nostroAccount.usdBalance.toFixed(2)
+                  ? formatNumberWithTwoDecimals(
+                      verifyCash?.nostroAccount.usdBalance
+                    )
                   : "0.00"}
               </td>
               <td className={isCheckVerified}>
                 {isVerified
-                  ? verifyCash?.nostroAccount.khrBalance.toFixed(2)
+                  ? formatNumberWithTwoDecimals(
+                      verifyCash?.nostroAccount.khrBalance
+                    )
                   : "0.00"}
               </td>
               <td className={isCheckVerified}>
                 {isVerified
-                  ? verifyCash?.nostroAccount.thbBalance.toFixed(2)
+                  ? formatNumberWithTwoDecimals(
+                      verifyCash?.nostroAccount.thbBalance
+                    )
                   : "0.00"}
               </td>
             </tr>
@@ -408,22 +447,34 @@ const AddCashManagementPage = () => {
             <tr>
               <td>{"Cash result"}</td>
               <td className={getCheckTextClass(usdVaultResult)}>
-                {isVerified ? usdVaultResult.toFixed(2) : "0.00"}
+                {isVerified
+                  ? formatNumberWithTwoDecimals(usdVaultResult)
+                  : "0.00"}
               </td>
               <td className={getCheckTextClass(khrVaultResult)}>
-                {isVerified ? khrVaultResult.toFixed(2) : "0.00"}
+                {isVerified
+                  ? formatNumberWithTwoDecimals(khrVaultResult)
+                  : "0.00"}
               </td>
               <td className={getCheckTextClass(thbVaultResult)}>
-                {isVerified ? thbVaultResult.toFixed(2) : "0.00"}
+                {isVerified
+                  ? formatNumberWithTwoDecimals(thbVaultResult)
+                  : "0.00"}
               </td>
               <td className={getCheckTextClass(usdNostroResult)}>
-                {isVerified ? usdNostroResult.toFixed(2) : "0.00"}
+                {isVerified
+                  ? formatNumberWithTwoDecimals(usdNostroResult)
+                  : "0.00"}
               </td>
               <td className={getCheckTextClass(khrNostroResult)}>
-                {isVerified ? khrNostroResult.toFixed(2) : "0.00"}
+                {isVerified
+                  ? formatNumberWithTwoDecimals(khrNostroResult)
+                  : "0.00"}
               </td>
               <td className={getCheckTextClass(thbNostroResult)}>
-                {isVerified ? thbNostroResult.toFixed(2) : "0.00"}
+                {isVerified
+                  ? formatNumberWithTwoDecimals(thbNostroResult)
+                  : "0.00"}
               </td>
             </tr>
           </tbody>
@@ -431,34 +482,77 @@ const AddCashManagementPage = () => {
       </div>
 
       {/* Remarks and file upload sections */}
-      <div className="flex flex-1 mt-6 gap-8 w-full justify-between">
-        <div className="max-w-[45%] flex-1">
-          <label className="block mb-1 text-xs">
-            Remark<span className="text-red-500 ml-1">*</span>
-          </label>
-          <textarea
-            className="border rounded px-2 py-1.5 w-full resize-none text-xs bg-gray-50 border-gray-300"
-            rows={1}
-            placeholder="Enter your remark here..."
-            style={{ maxHeight: "100px", overflowY: "auto" }}
-            value={remark}
-            onInput={handleInput}
-          />
-        </div>
+      {isShow && (
+        <div
+          data-aos="fade-up"
+          className="flex flex-1 mt-6 gap-8 w-full justify-between"
+        >
+          <div className="max-w-[45%] flex-1">
+            <label className="block mb-1 text-xs">
+              Remark<span className="text-red-500 ml-1">*</span>
+            </label>
+            <textarea
+              className="border rounded px-2 py-1.5 w-full resize-none text-xs bg-gray-50 border-gray-300"
+              rows={1}
+              placeholder="Enter your remark here..."
+              style={{ maxHeight: "100px", overflowY: "auto" }}
+              value={remark}
+              onInput={handleInput}
+            />
+          </div>
 
-        {/* Upload PDF File */}
-        <div className="max-w-[45%] flex-1">
-          <label className="block mb-1 text-xs">
-            Reference file<span className="text-red-500 ml-1">*</span>
-          </label>
-          <Input
-            type="file"
-            className="rounded px-1 w-full max-w-full py-1 text-xs"
-            accept="application/pdf"
-            onChange={handleFileUpload}
-          />
+          {/* Upload PDF File */}
+
+          <div className="max-w-[45%] flex-1">
+            <label className="block mb-1 text-xs">
+              Reference file<span className="text-red-500 ml-1">*</span>
+            </label>
+
+            <input
+              type="file"
+              accept="application/pdf"
+              id="fileInput"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
+
+            {/* Container for file input and view more button */}
+            <div className="flex justify-between items-center bg-gray-50 rounded px-2 py-1 border  ">
+              {/* File upload label */}
+              <label
+                htmlFor="fileInput"
+                className="flex items-center text-xs space-x-2 cursor-pointer"
+              >
+                <FaCloudUploadAlt className="text-xl text-gray-700" />
+                <span className="text-gray-700">{fileName}</span>
+              </label>
+
+              {/* View More button on the right side */}
+
+              {pdfUrl && (
+                <div className="flex space-x-2">
+                  <button
+                    className="flex items-center gap-1 text-blue-500 hover:underline"
+                    onClick={handleViewPdf}
+                  >
+                    <FiEye size={16} />
+                    <span className="text-xs">View</span>
+                  </button>
+
+                  {/* Clear Button */}
+                  <button
+                    className="flex items-center gap-1 text-red-500 hover:underline"
+                    onClick={clearPdf}
+                  >
+                    <FiTrash2 size={16} />
+                    <span className="text-xs">Clear</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Approvals section */}
       <div className="grid grid-cols-3 gap-4 mt-4">

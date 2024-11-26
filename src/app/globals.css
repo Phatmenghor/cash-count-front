@@ -108,7 +108,7 @@ th {
 }
 
 td {
-  @apply border px-4 text-xs py-1.5 text-start overflow-x-auto whitespace-nowrap; /* Cell border, padding, and font size */
+  @apply border px-4 text-xs py-1 text-start overflow-x-auto whitespace-nowrap; /* Cell border, padding, and font size */
 }
 
 tbody tr:nth-child(even) {

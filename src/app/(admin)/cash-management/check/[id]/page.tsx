@@ -19,6 +19,7 @@ import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { validateText } from "@/utils/validate/textLenght";
 import { decryptId } from "@/utils/security/crypto";
 import NotedCash from "@/components/noted/NotedCash";
+import { formatNumberWithTwoDecimals } from "@/utils/function/convertMoney";
 
 const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
   const idCashRecord = params.id ? decryptId(params.id) : null;
@@ -201,41 +202,71 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
             <tr>
               <td>{"Cash on hand"}</td>
               <td>
-                {cashRecordDetail?.cashInHandVaultAccount.usdBalance.toFixed(2)}
-              </td>
-              <td>
-                {cashRecordDetail?.cashInHandVaultAccount.khrBalance.toFixed(2)}
-              </td>
-              <td>
-                {cashRecordDetail?.cashInHandVaultAccount.thbBalance.toFixed(2)}
-              </td>
-              <td>
-                {cashRecordDetail?.cashInHandNostroAccount.usdBalance.toFixed(
-                  2
+                {formatNumberWithTwoDecimals(
+                  cashRecordDetail?.cashInHandVaultAccount.usdBalance
                 )}
               </td>
               <td>
-                {cashRecordDetail?.cashInHandNostroAccount.khrBalance.toFixed(
-                  2
+                {formatNumberWithTwoDecimals(
+                  cashRecordDetail?.cashInHandVaultAccount.khrBalance
                 )}
               </td>
               <td>
-                {cashRecordDetail?.cashInHandNostroAccount.thbBalance.toFixed(
-                  2
+                {formatNumberWithTwoDecimals(
+                  cashRecordDetail?.cashInHandVaultAccount.thbBalance
+                )}
+              </td>
+              <td>
+                {formatNumberWithTwoDecimals(
+                  cashRecordDetail?.cashInHandNostroAccount.usdBalance
+                )}
+              </td>
+              <td>
+                {formatNumberWithTwoDecimals(
+                  cashRecordDetail?.cashInHandNostroAccount.khrBalance
+                )}
+              </td>
+              <td>
+                {formatNumberWithTwoDecimals(
+                  cashRecordDetail?.cashInHandNostroAccount.thbBalance
                 )}
               </td>
             </tr>
             <tr>
               {/* vault account */}
               <td>{"Cash in system"}</td>
-              <td>{cashInSystem?.vaultAccount.usdBalance.toFixed(2)}</td>
-              <td>{cashInSystem?.vaultAccount.khrBalance.toFixed(2)}</td>
-              <td>{cashInSystem?.vaultAccount.thbBalance.toFixed(2)}</td>
+              <td>
+                {formatNumberWithTwoDecimals(
+                  cashInSystem?.vaultAccount.usdBalance
+                )}
+              </td>
+              <td>
+                {formatNumberWithTwoDecimals(
+                  cashInSystem?.vaultAccount.khrBalance
+                )}
+              </td>
+              <td>
+                {formatNumberWithTwoDecimals(
+                  cashInSystem?.vaultAccount.thbBalance
+                )}
+              </td>
 
               {/* nostro */}
-              <td>{cashInSystem?.nostroAccount.usdBalance.toFixed(2)}</td>
-              <td>{cashInSystem?.nostroAccount.khrBalance.toFixed(2)}</td>
-              <td>{cashInSystem?.nostroAccount.thbBalance.toFixed(2)}</td>
+              <td>
+                {formatNumberWithTwoDecimals(
+                  cashInSystem?.nostroAccount.usdBalance
+                )}
+              </td>
+              <td>
+                {formatNumberWithTwoDecimals(
+                  cashInSystem?.nostroAccount.khrBalance
+                )}
+              </td>
+              <td>
+                {formatNumberWithTwoDecimals(
+                  cashInSystem?.nostroAccount.thbBalance
+                )}
+              </td>
             </tr>
 
             <tr>
@@ -245,42 +276,54 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
                   cashRecordDetail?.vaultAccount.usdBalance || 0
                 )}
               >
-                {cashRecordDetail?.vaultAccount.usdBalance.toFixed(2)}
+                {formatNumberWithTwoDecimals(
+                  cashRecordDetail?.vaultAccount.usdBalance
+                )}
               </td>
               <td
                 className={getCheckText(
                   cashRecordDetail?.vaultAccount.khrBalance || 0
                 )}
               >
-                {cashRecordDetail?.vaultAccount.khrBalance.toFixed(2)}
+                {formatNumberWithTwoDecimals(
+                  cashRecordDetail?.vaultAccount.khrBalance
+                )}
               </td>
               <td
                 className={getCheckText(
                   cashRecordDetail?.vaultAccount.thbBalance || 0
                 )}
               >
-                {cashRecordDetail?.vaultAccount.thbBalance.toFixed(2)}
+                {formatNumberWithTwoDecimals(
+                  cashRecordDetail?.vaultAccount.thbBalance
+                )}
               </td>
               <td
                 className={getCheckText(
                   cashRecordDetail?.nostroAccount.usdBalance || 0
                 )}
               >
-                {cashRecordDetail?.nostroAccount.usdBalance.toFixed(2)}
+                {formatNumberWithTwoDecimals(
+                  cashRecordDetail?.nostroAccount.usdBalance
+                )}
               </td>
               <td
                 className={getCheckText(
                   cashRecordDetail?.nostroAccount.khrBalance || 0
                 )}
               >
-                {cashRecordDetail?.nostroAccount.khrBalance.toFixed(2)}
+                {formatNumberWithTwoDecimals(
+                  cashRecordDetail?.nostroAccount.khrBalance
+                )}
               </td>
               <td
                 className={getCheckText(
                   cashRecordDetail?.nostroAccount.thbBalance || 0
                 )}
               >
-                {cashRecordDetail?.nostroAccount.thbBalance.toFixed(2)}
+                {formatNumberWithTwoDecimals(
+                  cashRecordDetail?.nostroAccount.thbBalance
+                )}
               </td>
             </tr>
           </tbody>

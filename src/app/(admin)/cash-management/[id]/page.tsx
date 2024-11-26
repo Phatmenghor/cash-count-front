@@ -20,12 +20,13 @@ import { CashInSystemModel } from "@/redux/models/cashManagement/CashInSystemMod
 import { CashRecordDetailModel } from "@/redux/models/cashManagement/CashRecordDetailModel";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { UpdateRecordModel } from "@/redux/models/cashManagement/UpdateRecordParam";
-import { MdOutlineClear } from "react-icons/md";
 import { UserRoleEnum } from "@/constants/userRole";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { validateText } from "@/utils/validate/textLenght";
 import { decryptId } from "@/utils/security/crypto";
 import NotedCash from "@/components/noted/NotedCash";
+import { FiEye, FiTrash2 } from "react-icons/fi";
+import { formatNumberWithTwoDecimals } from "@/utils/function/convertMoney";
 
 type Currency = "USD" | "KHR" | "THB";
 
@@ -57,6 +58,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
   const [cashInSystem, setCashInSystem] = useState<CashInSystemModel | null>(
     null
   );
+  const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [fileName, setFileName] = useState("No file chosen");
   const [cashRecordDetail, setCashRecordDetail] =
     useState<CashRecordDetailModel | null>(null);
@@ -278,6 +280,8 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
       const file = event.target.files[0];
       setFile(file);
       setFileName(file.name);
+      const url = URL.createObjectURL(file);
+      setPdfUrl(url);
     }
   };
 
@@ -317,6 +321,23 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
 
   const getCheckTextClass = (value: number): string => {
     return value == 0 ? "" : "text-red-700";
+  };
+
+  const handleViewPdf = async () => {
+    if (pdfUrl) {
+      window.open(pdfUrl, "_blank");
+      return;
+    }
+    if (cashRecordDetail?.referenceFile) {
+      const resposne = await CashManagementService.getViewPDFById({
+        id: cashRecordDetail!.referenceFile.id,
+      });
+      if (resposne) {
+        window.open(resposne, "_blank");
+        return;
+      }
+    }
+    showToast("Can't view this document, Please try again later", "error");
   };
 
   return (
@@ -406,35 +427,59 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
             <tr>
               {/* vault account */}
               <td>{"Cash in system"}</td>
-              <td>{cashInSystem?.vaultAccount.usdBalance.toFixed(2)}</td>
-              <td>{cashInSystem?.vaultAccount.khrBalance.toFixed(2)}</td>
-              <td>{cashInSystem?.vaultAccount.thbBalance.toFixed(2)}</td>
+              <td>
+                {formatNumberWithTwoDecimals(
+                  cashInSystem?.vaultAccount.usdBalance
+                )}
+              </td>
+              <td>
+                {formatNumberWithTwoDecimals(
+                  cashInSystem?.vaultAccount.khrBalance
+                )}
+              </td>
+              <td>
+                {formatNumberWithTwoDecimals(
+                  cashInSystem?.vaultAccount.thbBalance
+                )}
+              </td>
 
               {/* nostro */}
-              <td>{cashInSystem?.nostroAccount.usdBalance.toFixed(2)}</td>
-              <td>{cashInSystem?.nostroAccount.khrBalance.toFixed(2)}</td>
-              <td>{cashInSystem?.nostroAccount.thbBalance.toFixed(2)}</td>
+              <td>
+                {formatNumberWithTwoDecimals(
+                  cashInSystem?.nostroAccount.usdBalance
+                )}
+              </td>
+              <td>
+                {formatNumberWithTwoDecimals(
+                  cashInSystem?.nostroAccount.khrBalance
+                )}
+              </td>
+              <td>
+                {formatNumberWithTwoDecimals(
+                  cashInSystem?.nostroAccount.thbBalance
+                )}
+              </td>
             </tr>
 
             <tr>
               <td>{"Cash result"}</td>
               <td className={getCheckTextClass(usdVaultResult)}>
-                {usdVaultResult.toFixed(2)}
+                {formatNumberWithTwoDecimals(usdVaultResult)}
               </td>
               <td className={getCheckTextClass(khrVaultResult)}>
-                {khrVaultResult.toFixed(2)}
+                {formatNumberWithTwoDecimals(khrVaultResult)}
               </td>
               <td className={getCheckTextClass(thbVaultResult)}>
-                {thbVaultResult.toFixed(2)}
+                {formatNumberWithTwoDecimals(thbVaultResult)}
               </td>
               <td className={getCheckTextClass(usdNostroResult)}>
-                {usdNostroResult.toFixed(2)}
+                {formatNumberWithTwoDecimals(usdNostroResult)}
               </td>
               <td className={getCheckTextClass(khrNostroResult)}>
-                {khrNostroResult.toFixed(2)}
+                {formatNumberWithTwoDecimals(khrNostroResult)}
               </td>
               <td className={getCheckTextClass(thbNostroResult)}>
-                {thbNostroResult.toFixed(2)}
+                {formatNumberWithTwoDecimals(thbNostroResult)}
               </td>
             </tr>
           </tbody>
@@ -484,14 +529,23 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
 
             {/* View More button on the right side */}
 
-            {fileName != "No file chosen" && (
+            {(pdfUrl || fileName != "No file chosen") && (
               <div className="flex space-x-2">
                 <button
-                  type="button"
-                  onClick={clearPdf}
-                  className="flex items-center text-xs underline hover:text-gray-600 text-gray-500 hover:underline"
+                  className="flex items-center gap-1 text-blue-500 hover:underline"
+                  onClick={handleViewPdf}
                 >
-                  <MdOutlineClear className="text-lg" />
+                  <FiEye size={16} />
+                  <span className="text-xs">View</span>
+                </button>
+
+                {/* Clear Button */}
+                <button
+                  className="flex items-center gap-1 text-red-500 hover:underline"
+                  onClick={clearPdf}
+                >
+                  <FiTrash2 size={16} />
+                  <span className="text-xs">Clear</span>
                 </button>
               </div>
             )}
@@ -534,7 +588,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
           </label>
           <Input
             value={userData?.name}
-            className="py-1 w-full "
+            className="py-1 w-full"
             disabled={true}
           />
         </div>
