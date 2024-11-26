@@ -17,7 +17,7 @@ const config: Config = {
           md: "100%",
           lg: "100%",
           xl: "100%",
-          "2xl": "2784px",
+          "2xl": "3300px",
         },
       },
       colors: {

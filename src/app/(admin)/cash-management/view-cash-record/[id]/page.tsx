@@ -11,6 +11,7 @@ import { FaFilePdf } from "react-icons/fa";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { UserRoleEnum } from "@/constants/userRole";
 import { decryptId } from "@/utils/security/crypto";
+import NotedCash from "@/components/noted/NotedCash";
 
 const ViewCashRecordPage = ({ params }: { params: { id: string } }) => {
   const idCashRecord = params.id ? decryptId(params.id) : null;
@@ -120,12 +121,60 @@ const ViewCashRecordPage = ({ params }: { params: { id: string } }) => {
 
             <tr>
               <td>{"Cash result"}</td>
-              <td>{cashRecordDetail?.vaultAccount.usdBalance.toFixed(2)}</td>
-              <td>{cashRecordDetail?.vaultAccount.khrBalance.toFixed(2)}</td>
-              <td>{cashRecordDetail?.vaultAccount.thbBalance.toFixed(2)}</td>
-              <td>{cashRecordDetail?.nostroAccount.usdBalance.toFixed(2)}</td>
-              <td>{cashRecordDetail?.nostroAccount.khrBalance.toFixed(2)}</td>
-              <td>{cashRecordDetail?.nostroAccount.thbBalance.toFixed(2)}</td>
+              <td
+                className={`${
+                  cashRecordDetail?.vaultAccount.usdBalance == 0
+                    ? ""
+                    : "text-red-700"
+                }`}
+              >
+                {cashRecordDetail?.vaultAccount.usdBalance.toFixed(2)}
+              </td>
+              <td
+                className={`${
+                  cashRecordDetail?.vaultAccount.khrBalance == 0
+                    ? ""
+                    : "text-red-700"
+                }`}
+              >
+                {cashRecordDetail?.vaultAccount.khrBalance.toFixed(2)}
+              </td>
+              <td
+                className={`${
+                  cashRecordDetail?.vaultAccount.thbBalance == 0
+                    ? ""
+                    : "text-red-700"
+                }`}
+              >
+                {cashRecordDetail?.vaultAccount.thbBalance.toFixed(2)}
+              </td>
+              <td
+                className={`${
+                  cashRecordDetail?.nostroAccount.usdBalance == 0
+                    ? ""
+                    : "text-red-700"
+                }`}
+              >
+                {cashRecordDetail?.nostroAccount.usdBalance.toFixed(2)}
+              </td>
+              <td
+                className={`${
+                  cashRecordDetail?.nostroAccount.khrBalance == 0
+                    ? ""
+                    : "text-red-700"
+                }`}
+              >
+                {cashRecordDetail?.nostroAccount.khrBalance.toFixed(2)}
+              </td>
+              <td
+                className={`${
+                  cashRecordDetail?.nostroAccount.thbBalance == 0
+                    ? ""
+                    : "text-red-700"
+                }`}
+              >
+                {cashRecordDetail?.nostroAccount.thbBalance.toFixed(2)}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -249,6 +298,7 @@ const ViewCashRecordPage = ({ params }: { params: { id: string } }) => {
           Back
         </Button>
       </div>
+      <NotedCash />
       {/* Modal for alert */}
       <ModalVerify
         isOpen={isModalOpen}

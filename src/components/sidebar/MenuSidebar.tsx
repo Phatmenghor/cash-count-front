@@ -34,7 +34,7 @@ const MenuSidebar = () => {
   return (
     <div className="bg-gray-700 w-20 lg:w-[16%] xl:w-[14%] overflow-y-scroll px-4  scrollbar-thin scrollbar-thumb-gray-600 scrollbar-track-gray-800">
       <Link
-        href="/login-user"
+        href="/"
         className="flex mb-4 items-end py-2 gap-2 sticky left-0 right-0 top-0"
       >
         <img src="/img/haha.png" alt="logo" width={52} height={42} />

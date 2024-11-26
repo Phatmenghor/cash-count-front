@@ -18,6 +18,7 @@ import ModalConfirmation from "@/components/modal/ModalConfirmation";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { validateText } from "@/utils/validate/textLenght";
 import { decryptId } from "@/utils/security/crypto";
+import NotedCash from "@/components/noted/NotedCash";
 
 const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
   const idCashRecord = params.id ? decryptId(params.id) : null;
@@ -167,6 +168,10 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  const getCheckText = (value: number): string => {
+    return value == 0 ? "" : "text-red-700";
+  };
+
   return (
     <div className="px-4">
       <div className="overflow-auto">
@@ -235,12 +240,48 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
 
             <tr>
               <td>{"Cash result"}</td>
-              <td>{cashRecordDetail?.vaultAccount.usdBalance.toFixed(2)}</td>
-              <td>{cashRecordDetail?.vaultAccount.khrBalance.toFixed(2)}</td>
-              <td>{cashRecordDetail?.vaultAccount.thbBalance.toFixed(2)}</td>
-              <td>{cashRecordDetail?.nostroAccount.usdBalance.toFixed(2)}</td>
-              <td>{cashRecordDetail?.nostroAccount.khrBalance.toFixed(2)}</td>
-              <td>{cashRecordDetail?.nostroAccount.thbBalance.toFixed(2)}</td>
+              <td
+                className={getCheckText(
+                  cashRecordDetail?.vaultAccount.usdBalance || 0
+                )}
+              >
+                {cashRecordDetail?.vaultAccount.usdBalance.toFixed(2)}
+              </td>
+              <td
+                className={getCheckText(
+                  cashRecordDetail?.vaultAccount.khrBalance || 0
+                )}
+              >
+                {cashRecordDetail?.vaultAccount.khrBalance.toFixed(2)}
+              </td>
+              <td
+                className={getCheckText(
+                  cashRecordDetail?.vaultAccount.thbBalance || 0
+                )}
+              >
+                {cashRecordDetail?.vaultAccount.thbBalance.toFixed(2)}
+              </td>
+              <td
+                className={getCheckText(
+                  cashRecordDetail?.nostroAccount.usdBalance || 0
+                )}
+              >
+                {cashRecordDetail?.nostroAccount.usdBalance.toFixed(2)}
+              </td>
+              <td
+                className={getCheckText(
+                  cashRecordDetail?.nostroAccount.khrBalance || 0
+                )}
+              >
+                {cashRecordDetail?.nostroAccount.khrBalance.toFixed(2)}
+              </td>
+              <td
+                className={getCheckText(
+                  cashRecordDetail?.nostroAccount.thbBalance || 0
+                )}
+              >
+                {cashRecordDetail?.nostroAccount.thbBalance.toFixed(2)}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -417,6 +458,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
           Approve
         </Button>
       </div>
+      <NotedCash />
       {/* Modal for alert */}
       <ModalVerify
         isOpen={isModalOpen}

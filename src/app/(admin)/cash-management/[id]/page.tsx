@@ -25,6 +25,7 @@ import { UserRoleEnum } from "@/constants/userRole";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { validateText } from "@/utils/validate/textLenght";
 import { decryptId } from "@/utils/security/crypto";
+import NotedCash from "@/components/noted/NotedCash";
 
 type Currency = "USD" | "KHR" | "THB";
 
@@ -314,6 +315,10 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
     }
   };
 
+  const getCheckTextClass = (value: number): string => {
+    return value == 0 ? "" : "text-red-700";
+  };
+
   return (
     <div className="px-4">
       <div className="overflow-auto">
@@ -413,12 +418,24 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
 
             <tr>
               <td>{"Cash result"}</td>
-              <td>{usdVaultResult.toFixed(2)}</td>
-              <td>{khrVaultResult.toFixed(2)}</td>
-              <td>{thbVaultResult.toFixed(2)}</td>
-              <td>{usdNostroResult.toFixed(2)}</td>
-              <td>{khrNostroResult.toFixed(2)}</td>
-              <td>{thbNostroResult.toFixed(2)}</td>
+              <td className={getCheckTextClass(usdVaultResult)}>
+                {usdVaultResult.toFixed(2)}
+              </td>
+              <td className={getCheckTextClass(khrVaultResult)}>
+                {khrVaultResult.toFixed(2)}
+              </td>
+              <td className={getCheckTextClass(thbVaultResult)}>
+                {thbVaultResult.toFixed(2)}
+              </td>
+              <td className={getCheckTextClass(usdNostroResult)}>
+                {usdNostroResult.toFixed(2)}
+              </td>
+              <td className={getCheckTextClass(khrNostroResult)}>
+                {khrNostroResult.toFixed(2)}
+              </td>
+              <td className={getCheckTextClass(thbNostroResult)}>
+                {thbNostroResult.toFixed(2)}
+              </td>
             </tr>
           </tbody>
         </table>
@@ -537,6 +554,7 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
           Save
         </Button>
       </div>
+      <NotedCash />
       {/* Modal for alert */}
       <ModalVerify
         isOpen={isModalOpen}

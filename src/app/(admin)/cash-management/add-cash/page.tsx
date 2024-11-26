@@ -5,7 +5,6 @@ import Button from "@/components/custom/Button";
 import Input from "@/components/custom/Input";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { FiCheckCircle } from "react-icons/fi";
 import { VerifyCashModel } from "@/redux/models/cashManagement/VerifyCashModel";
 import {
   CashManagementService,
@@ -23,6 +22,7 @@ import LoadingFullPage from "@/components/loading/LoadingFullPage";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { UserRoleEnum } from "@/constants/userRole";
 import { validateText } from "@/utils/validate/textLenght";
+import NotedCash from "@/components/noted/NotedCash";
 
 type Currency = "USD" | "KHR" | "THB";
 
@@ -236,7 +236,15 @@ const AddCashManagementPage = () => {
 
   const isCheckVerified = isVerified
     ? ""
-    : "bg-[#687180] opacity-20 backdrop-blur-sm text-white";
+    : "bg-[#687180] opacity-40 backdrop-blur-sm";
+
+  const getCheckTextClass = (value: number): string => {
+    return isVerified
+      ? value == 0
+        ? ""
+        : "text-red-700"
+      : "bg-[#687180] opacity-40 backdrop-blur-sm";
+  };
 
   const handleInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
     const value = e.currentTarget.value;
@@ -257,7 +265,7 @@ const AddCashManagementPage = () => {
   };
 
   return (
-    <div className="px-4">
+    <div className="px-4 ">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-gray-700 hide">Add cash reconcile</h2>
         <Button
@@ -269,9 +277,6 @@ const AddCashManagementPage = () => {
               : "bg-blue-500"
           }`}
         >
-          <FiCheckCircle
-            className={`mr-2 ${isVerified ? "opacity-50" : "animate-spin"}`}
-          />
           Reconcile
         </Button>
       </div>
@@ -402,22 +407,22 @@ const AddCashManagementPage = () => {
 
             <tr>
               <td>{"Cash result"}</td>
-              <td className={isCheckVerified}>
+              <td className={getCheckTextClass(usdVaultResult)}>
                 {isVerified ? usdVaultResult.toFixed(2) : "0.00"}
               </td>
-              <td className={isCheckVerified}>
+              <td className={getCheckTextClass(khrVaultResult)}>
                 {isVerified ? khrVaultResult.toFixed(2) : "0.00"}
               </td>
-              <td className={isCheckVerified}>
+              <td className={getCheckTextClass(thbVaultResult)}>
                 {isVerified ? thbVaultResult.toFixed(2) : "0.00"}
               </td>
-              <td className={isCheckVerified}>
+              <td className={getCheckTextClass(usdNostroResult)}>
                 {isVerified ? usdNostroResult.toFixed(2) : "0.00"}
               </td>
-              <td className={isCheckVerified}>
+              <td className={getCheckTextClass(khrNostroResult)}>
                 {isVerified ? khrNostroResult.toFixed(2) : "0.00"}
               </td>
-              <td className={isCheckVerified}>
+              <td className={getCheckTextClass(thbNostroResult)}>
                 {isVerified ? thbNostroResult.toFixed(2) : "0.00"}
               </td>
             </tr>
@@ -510,6 +515,8 @@ const AddCashManagementPage = () => {
           Save
         </Button>
       </div>
+      <NotedCash />
+
       {/* Modal for alert */}
       <ModalVerify
         isOpen={isModalOpen}
