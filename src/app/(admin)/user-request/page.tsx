@@ -214,7 +214,7 @@ const UserRequestPage: React.FC = () => {
                           const encryptedId = encryptId(user.id.toString());
                           router.push(`/user-request/${encryptedId}`);
                         }}
-                        className="bg-gray-300 text-white px-2 p-1 rounded hover:bg-gray-400 mr-2 flex items-center"
+                        className="bg-gray-400 text-white px-2 p-1 rounded hover:bg-gray-500 mr-2 flex items-center"
                       >
                         <LuView size={14} className="text-white" />
                       </button>

@@ -224,7 +224,7 @@ const CashManagementPage: React.FC = () => {
                     <td className="flex items-center truncate space-x-2">
                       <button
                         onClick={() => onViewCash(cash.id)}
-                        className="bg-gray-300 text-white px-2 p-1 rounded hover:bg-gray-400 mr-2 flex items-center"
+                        className="bg-gray-400 text-white px-2 p-1 rounded hover:bg-gray-500 mr-2 flex items-center"
                       >
                         <LuView size={14} className="text-white" />
                       </button>
