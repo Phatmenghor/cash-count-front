@@ -7,7 +7,7 @@ import { pageSizeData, statusCashData } from "@/constants/dataListing";
 import { debounce } from "@/utils/function/debounce";
 import EmptyState from "@/components/emthyData/EmptyState";
 import { LuView } from "react-icons/lu";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Button from "@/components/custom/Button";
 import { CashManagementService } from "@/redux/service/cashManagementService";
 import {
@@ -39,10 +39,15 @@ const CashManagementPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<string>("");
   const listSize = cashRecordList.pagination?.currentPage ?? 10;
+  const searchParams = useSearchParams();
+  const pageId = searchParams.get("page") || "1";
 
   useEffect(() => {
-    fetchData({});
-  }, []);
+    const parsedPageId = parseInt(pageId, 10) || 1;
+    if (parsedPageId && !cashRecordList.data.length) {
+      fetchData({ currentPage: parsedPageId });
+    }
+  }, [pageId, cashRecordList]);
 
   async function fetchData({
     currentPage = 1,
@@ -284,7 +289,10 @@ const CashManagementPage: React.FC = () => {
           <Pagination
             totalPages={cashRecordList.pagination?.totalPages ?? 1}
             currentPage={cashRecordList.pagination?.currentPage ?? 1}
-            onPageChange={onPageChange}
+            onPageChange={(value) => {
+              router.push(`/cash-management?page=${value}`);
+              onPageChange(value);
+            }}
           />
         </div>
       )}

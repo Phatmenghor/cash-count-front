@@ -18,3 +18,10 @@ export interface ReportModel {
   checkedBy: string;
   approvedBy: string;
 }
+
+export interface ReportFullModel {
+  data: ReportModel[];
+  pageNumber: number;
+  totalRecords: number;
+  pageSize: number;
+}

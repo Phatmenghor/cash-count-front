@@ -46,28 +46,10 @@ const Navbar = () => {
     onCloseModal();
   };
 
-  function onClickNotification() {
-    router.push("/user-request");
-  }
-
   return (
     <div className="flex items-center justify-end p-4 ">
       {/* SEARCH BAR */}
       <div className="flex items-center gap-6 justify-end w-full">
-        <div
-          onClick={onClickNotification}
-          className="bg-gray-50 rounded-full w-7 h-7 flex items-center justify-center cursor-pointer shadow relative"
-        >
-          <Image
-            src="/img/announcement.png"
-            alt="Notifications"
-            width={20}
-            height={20}
-          />
-          <div className="absolute -top-2 -right-2 w-4 h-4 flex items-center justify-center bg-purple-400 text-white rounded-full text-base shadow-sm">
-            +
-          </div>
-        </div>
         <div className="flex flex-col text-gray-700">
           <span className="text-xs leading-3 font-medium">
             {userData?.name}

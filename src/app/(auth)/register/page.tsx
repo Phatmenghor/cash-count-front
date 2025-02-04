@@ -125,7 +125,7 @@ const RegisterPage: React.FC = () => {
 
     if (step === 1) {
       const response = await RegisterService.submidEmail({
-        mail: formData.email,
+        mail: formData.email.trim(),
       });
       if (response) {
         showToast(
@@ -139,8 +139,8 @@ const RegisterPage: React.FC = () => {
       showToast("Failed to send email. Please try again.", "error");
     } else if (step === 2) {
       const response = await RegisterService.verifyEmail({
-        mail: formData.email,
-        code: formData.otp,
+        mail: formData.email.trim(),
+        code: formData.otp.trim(),
       });
       if (response) {
         showToast("Email verified successfully!", "success");
@@ -157,16 +157,16 @@ const RegisterPage: React.FC = () => {
       );
     } else if (step === 3) {
       const resposne = await RegisterService.registerAccount({
-        email: formData.email,
-        otpCode: formData.otp,
+        email: formData.email.trim(),
+        otpCode: formData.otp.trim(),
         branchId: formData.branch!.id,
         departmentId: formData.branch!.id,
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        password: formData.password,
+        firstName: formData.firstName.trim(),
+        lastName: formData.lastName.trim(),
+        password: formData.password.trim(),
         positionId: formData.position!.id,
         roleId: formData.role!.id,
-        username: formData.usernameAD,
+        username: formData.usernameAD.trim(),
       });
       if (resposne.success) {
         UserStorage.setUsername(formData.usernameAD);

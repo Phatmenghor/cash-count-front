@@ -6,19 +6,29 @@ interface getAllReportModel {
   status?: string;
 }
 
+interface getReportPaginationModel {
+  fromDate: string;
+  toDate: string;
+  status?: string;
+  pageNumber?: number;
+  pageSize?: number;
+}
+
 export class ReportService {
   static getAllReport = async ({
     fromDate = "",
     toDate = "",
     status = "",
-  }: getAllReportModel) => {
+    pageNumber = 1,
+    pageSize = 15,
+  }: getReportPaginationModel) => {
     try {
       const response = await axiosWithAuth.get(
-        `/api/report/preview?fromDate=${fromDate}&toDate=${toDate}&status=${status}`
+        `/api/report/preview?fromDate=${fromDate}&toDate=${toDate}&status=${status}&pageNumber=${pageNumber}&pageSize=${pageSize}`
       );
-      return response.data.data;
+      return response.data;
     } catch {
-      return [];
+      return null;
     }
   };
 

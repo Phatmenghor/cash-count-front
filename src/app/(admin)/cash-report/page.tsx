@@ -10,13 +10,15 @@ import Button from "@/components/custom/Button";
 import { CashStatusEnum } from "@/redux/models/cashManagement/StatusEnum";
 import FormMessage from "@/components/errorHandle/FormMessage";
 import { ReportService } from "@/redux/service/reportService";
-import { ReportModel } from "@/redux/models/report/ReportModel";
+import { ReportFullModel } from "@/redux/models/report/ReportModel";
 import EmptyState from "@/components/emthyData/EmptyState";
 import LoadingFullPage from "@/components/loading/LoadingFullPage";
 import showToast from "@/components/toast/useToast";
 import { UserRoleEnum } from "@/constants/userRole";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
 import { formatNumberWithTwoDecimals } from "@/utils/function/convertMoney";
+import Pagination from "@/components/pagination/Pagination";
+import { useRouter } from "next/navigation";
 
 function CashReportPage() {
   const [loading, setLoading] = useState(false);
@@ -25,10 +27,9 @@ function CashReportPage() {
   const [selectedEndDate, setSelectedEndDate] = useState<string>("");
   const [status, SetStatus] = useState<string>(CashStatusEnum.ALL);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
-  const [dataListingPreview, setDataListingPreview] = useState<
-    ReportModel[] | null
-  >(null);
+  const router = useRouter();
+  const [dataListingPreview, setDataListingPreview] =
+    useState<ReportFullModel | null>(null);
 
   // Handle date change from DateRangePicker or text input
   const handleDateChange = (date: string) => {
@@ -92,6 +93,7 @@ function CashReportPage() {
       toDate: selectedEndDate,
       status: status == CashStatusEnum.ALL ? "" : status,
     });
+    console.log("@@@ resposne", resposne);
     setDataListingPreview(resposne);
     setLoading(false);
     setOpenPreview(true);
@@ -117,6 +119,16 @@ function CashReportPage() {
       setLoading(false);
       showToast("Failed to generate report. Please try again.", "error");
     }
+  }
+
+  async function onPageChange(page: number) {
+    const resposne = await ReportService.getAllReport({
+      fromDate: selectedDate,
+      toDate: selectedEndDate,
+      status: status == CashStatusEnum.ALL ? "" : status,
+      pageNumber: page,
+    });
+    setDataListingPreview(resposne);
   }
 
   return (
@@ -252,7 +264,7 @@ function CashReportPage() {
 
       {openPreview && (
         <>
-          {dataListingPreview?.length === 0 ? (
+          {dataListingPreview?.data?.length === 0 ? (
             <div>
               <EmptyState message="No report available." />
             </div>
@@ -273,7 +285,7 @@ function CashReportPage() {
                     </tr>
                   </thead>
                   <tbody>
-                    {dataListingPreview?.map((report) => {
+                    {dataListingPreview?.data?.map((report) => {
                       return (
                         <tr key={report.no} className="hover:bg-gray-200">
                           <td className="truncate">{report.no}</td>
@@ -321,6 +333,19 @@ function CashReportPage() {
             </div>
           )}
         </>
+      )}
+
+      {dataListingPreview?.data && dataListingPreview.data.length > 0 && (
+        <div className="flex justify-end mt-8 mb-16">
+          <Pagination
+            totalPages={Math.ceil((dataListingPreview?.totalRecords ?? 1) / 15)}
+            currentPage={dataListingPreview?.pageNumber ?? 1}
+            onPageChange={(value) => {
+              router.push(`/cash-report?page=${value}`);
+              onPageChange(value);
+            }}
+          />
+        </div>
       )}
       <LoadingFullPage loading={loading} />
     </div>

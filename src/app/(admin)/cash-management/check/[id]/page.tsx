@@ -20,6 +20,7 @@ import { validateText } from "@/utils/validate/textLenght";
 import { decryptId } from "@/utils/security/crypto";
 import NotedCash from "@/components/noted/NotedCash";
 import { formatNumberWithTwoDecimals } from "@/utils/function/convertMoney";
+import ModalTextInputConfirmation from "@/components/modal/ModalTextInputConfirmation";
 
 const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
   const idCashRecord = params.id ? decryptId(params.id) : null;
@@ -78,8 +79,19 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
   }
 
   const handleSaveClick = async ({ isApprove = false }) => {
+    if (!isApprove) {
+      if (rolesUser == UserRoleEnum.CHECKER_USER && !remarkFromChecker) {
+        showToast("Please input a remark before reject.", "error");
+        return;
+      } else if (
+        rolesUser == UserRoleEnum.AUTHORIZER_USER &&
+        !remarkFromAuthorizer
+      ) {
+        showToast("Please input a remark before reject.", "error");
+        return;
+      }
+    }
     setLoading(true);
-
     const updateCashCount: UpdateRecordModel = {
       referenceFile: cashRecordDetail?.referenceFile,
       cashInSystem: { id: cashInSystem!.id },
@@ -124,11 +136,17 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
 
   async function handleReject() {
     handleSaveClick({ isApprove: false });
-    setModalReject(false);
+    if (
+      (rolesUser == UserRoleEnum.CHECKER_USER && remarkFromChecker) ||
+      (rolesUser == UserRoleEnum.AUTHORIZER_USER && remarkFromAuthorizer)
+    ) {
+      setModalReject(false);
+    }
   }
 
   async function handleApprove() {
     handleSaveClick({ isApprove: true });
+
     setModalApprove(false);
   }
 
@@ -171,6 +189,22 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
 
   const getCheckText = (value: number): string => {
     return value == 0 ? "" : "text-red-700";
+  };
+
+  const onRemarkRejectChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    if (rolesUser == UserRoleEnum.CHECKER_USER) {
+      setRemarkFromChecker(e.target.value);
+    } else {
+      setRemarkFromAuthorizer(e.target.value);
+    }
+  };
+
+  const remarkRejectChange = () => {
+    if (rolesUser == UserRoleEnum.CHECKER_USER) {
+      return remarkFromChecker;
+    } else {
+      return remarkFromAuthorizer;
+    }
   };
 
   return (
@@ -524,7 +558,9 @@ const CheckCashManagementPage = ({ params }: { params: { id: string } }) => {
       />
 
       {/* Confirmation Reject */}
-      <ModalConfirmation
+      <ModalTextInputConfirmation
+        onRemarkRejectChange={onRemarkRejectChange}
+        remarkRejectChange={remarkRejectChange()}
         isOpen={modalReject}
         title="Confirm reject!"
         onClose={() => setModalReject(false)}

@@ -149,7 +149,13 @@ const AddCashManagementPage = () => {
     setLoading(true);
     setIsVerified(true);
     const resposne = await CashManagementService.getVerifyRecord();
+    if (!resposne) {
+      showToast("Failed to verify cash in system.", "error");
+      setLoading(false);
+      return;
+    }
     setVerifyCash(resposne);
+    showToast("Cash in system verified.", "success");
     setLoading(false);
   };
 

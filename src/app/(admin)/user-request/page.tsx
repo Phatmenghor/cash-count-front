@@ -7,7 +7,6 @@ import { pageSizeData } from "@/constants/dataListing";
 import { debounce } from "@/utils/function/debounce";
 import EmptyState from "@/components/emthyData/EmptyState";
 import DropdownSize from "@/components/custom/DropdownSize";
-import showToast from "@/components/toast/useToast";
 import UserManagementService from "@/redux/service/userManagementService";
 import { LuView } from "react-icons/lu";
 import { AiOutlineUser } from "react-icons/ai";
@@ -15,7 +14,6 @@ import {
   userRequestListModel,
   UserRequestModel,
 } from "@/redux/models/userManagement/UserRequestModel";
-import ModalConfirmation from "@/components/modal/ModalConfirmation";
 import { useRouter } from "next/navigation";
 import { FaTimes } from "react-icons/fa";
 import withAuthWrapper from "@/utils/middleWare/withAuthWrapper";
@@ -28,12 +26,9 @@ const UserRequestPage: React.FC = () => {
     pagination: null,
   });
   const router = useRouter();
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalReject, setModalReject] = useState(false);
   const [size, setSize] = useState<number>(15);
   const [searchTerm, setSearchTerm] = useState<string>("");
   const listSize = userRequestList.pagination?.currentPage ?? 15;
-  const [dataUser, setDataUser] = useState<UserRequestModel | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -79,54 +74,6 @@ const UserRequestPage: React.FC = () => {
   function onSearch(e: React.ChangeEvent<HTMLInputElement>) {
     setSearchTerm(e.target.value);
     handleSearch(e.target.value);
-  }
-
-  const handleOpenModalApprove = (user: UserRequestModel) => {
-    setDataUser(user);
-    setModalOpen(true);
-  };
-
-  const handleOpenModalReject = (user: UserRequestModel) => {
-    setDataUser(user);
-    setModalOpen(true);
-  };
-
-  async function handleApprove() {
-    const response = await UserManagementService.approveRequestUser({
-      id: dataUser!.id,
-    });
-    if (response.success) {
-      setUserRequestList((prevList) => ({
-        ...prevList,
-        data: prevList.data.filter((request) => request.id !== dataUser?.id),
-      }));
-      if (userRequestList.data.length === 1) {
-        fetchData();
-      }
-      showToast(response.message, "success");
-    } else {
-      showToast(response.message, "error");
-    }
-    setModalOpen(false);
-  }
-
-  async function handleReject() {
-    const response = await UserManagementService.rejectRequestUser({
-      id: dataUser!.id,
-    });
-    if (response.success) {
-      setUserRequestList((prevList) => ({
-        ...prevList,
-        data: prevList.data.filter((request) => request.id !== dataUser?.id),
-      }));
-      if (userRequestList.data.length === 1) {
-        fetchData();
-      }
-      showToast(response.message, "success");
-    } else {
-      showToast(response.message, "error");
-    }
-    setModalOpen(false);
   }
 
   const clearSearch = () => {
@@ -218,18 +165,6 @@ const UserRequestPage: React.FC = () => {
                       >
                         <LuView size={14} className="text-white" />
                       </button>
-                      <button
-                        onClick={() => handleOpenModalReject(user)}
-                        className="bg-red-500 text-white px-2 p-1 rounded hover:bg-red-600 mr-2 flex items-center"
-                      >
-                        Reject
-                      </button>
-                      <button
-                        onClick={() => handleOpenModalApprove(user)}
-                        className="bg-blue-500 text-white px-2 p-1 rounded hover:bg-blue-600 mr-2 flex items-center"
-                      >
-                        Approve
-                      </button>
                     </td>
                   </tr>
                 );
@@ -254,25 +189,6 @@ const UserRequestPage: React.FC = () => {
           />
         </div>
       )}
-
-      {/* Confirmation approve */}
-      <ModalConfirmation
-        isOpen={modalOpen}
-        title="Confirm Approve!"
-        onClose={() => setModalOpen(false)}
-        onConfirm={handleApprove}
-        message={`Are you sure you want to approve?`}
-        isNotCancel={true}
-      />
-
-      {/* Confirmation Reject */}
-      <ModalConfirmation
-        isOpen={modalReject}
-        title="Confirm Reject!"
-        onClose={() => setModalReject(false)}
-        onConfirm={handleReject}
-        message={`Are you sure you want to reject?`}
-      />
     </div>
   );
 };

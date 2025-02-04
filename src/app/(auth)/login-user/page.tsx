@@ -41,8 +41,8 @@ const LoginPage: React.FC = () => {
 
     setLoading(true);
     const response = await LoginService.loginUser({
-      email: adUsername,
-      password: password,
+      email: adUsername.trim(),
+      password: password.trim(),
     });
 
     if (response.success) {

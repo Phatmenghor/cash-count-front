@@ -69,7 +69,7 @@ const UserCompareRequest = ({ params }: { params: { id: string } }) => {
     } else {
       showToast(response.message, "error");
     }
-    setModalOpen(false);
+    setModalReject(false);
     setLoading(false);
   }
 
@@ -78,7 +78,7 @@ const UserCompareRequest = ({ params }: { params: { id: string } }) => {
   };
 
   const handleOpenModalReject = () => {
-    setModalOpen(true);
+    setModalReject(true);
   };
 
   const handleCancel = () => {
